@@ -2,25 +2,23 @@
 
 ## Current Phase
 
-Phase 0 - setup and design control.
+Phase 1 - Unreal project foundation.
 
 ## Current Repo State
 
 - Git repo exists.
 - Git LFS is configured.
 - Planning docs exist.
-- No Unreal `.uproject` exists yet.
-- No Unreal assets exist yet.
-- No generated project files exist yet.
+- Private GitHub repo exists: https://github.com/Drocai/dockshield-castor-bayou
+- Unreal Engine 5.7 is installed.
+- Production Unreal project exists at `DockShield/DockShield.uproject`.
 
 ## Current Blockers
 
 | Blocker | Owner | Unblock Step |
 | --- | --- | --- |
-| Unreal Engine not installed | D RoC | Install Unreal Engine 5.7.x from Epic Games Launcher |
 | Blender not installed | D RoC or agent with install permission | Install Blender |
 | OBS not installed | D RoC or agent with install permission | Install OBS Studio |
-| No remote repo | D RoC | Create private GitHub repo and push local commits |
 
 ## Current Agent Lane
 
@@ -39,11 +37,9 @@ Codex should not create Unreal-generated files until the Unreal project exists.
 
 ## Next Human Actions
 
-1. Install Unreal Engine 5.7.x.
-2. Install Blender.
-3. Install OBS Studio.
-4. Create a private GitHub repo.
-5. Push this repo.
+1. Install Blender.
+2. Install OBS Studio.
+3. Open `DockShield/DockShield.uproject` in Unreal and confirm the Third Person level runs in editor.
 
 ## Next Agent Actions
 
@@ -51,7 +47,7 @@ Codex should not create Unreal-generated files until the Unreal project exists.
 2. Prepare first Unreal implementation plan.
 3. Prepare asset sourcing checklist.
 4. Prepare developer/art contractor briefs.
-5. Inspect `.uproject` after Unreal project creation.
+5. Continue with the targeting test map after Unreal baseline commit.
 
 ## Current Implementation Plan
 

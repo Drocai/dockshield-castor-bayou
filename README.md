@@ -6,9 +6,9 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 ## Current Status
 
-This repo is in **Phase 0: setup and design control**.
+This repo is in **Phase 1: Unreal project foundation**.
 
-There is no Unreal Engine project committed yet. The first goal is to create the project foundation, lock the vertical slice scope, install the toolchain, and then generate the Unreal project intentionally.
+The planning/control layer exists and the production Unreal project is being established at `DockShield/DockShield.uproject`.
 
 ## Working Title Structure
 
@@ -59,3 +59,9 @@ Read these in order:
 - Git + Git LFS
 - Visual Studio with Game development with C++ workload
 - Optional later: Perforce P4 if binary assets outgrow Git/LFS
+
+## Remote
+
+Private GitHub repo:
+
+https://github.com/Drocai/dockshield-castor-bayou

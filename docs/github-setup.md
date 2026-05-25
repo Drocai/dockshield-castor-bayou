@@ -2,11 +2,13 @@
 
 ## Recommended Repo
 
-Create a private GitHub repository named:
+Created private GitHub repository:
 
 ```text
-dockshield-castor-bayou
+Drocai/dockshield-castor-bayou
 ```
+
+URL: https://github.com/Drocai/dockshield-castor-bayou
 
 ## Push Commands
 
@@ -53,4 +55,3 @@ Create these labels if using GitHub Issues:
 - `risk`
 - `blocked`
 - `playtest`
-

@@ -9,17 +9,18 @@
 - [x] Add roadmap, risk register, decision log, and handoff docs
 - [x] Add GitHub issue templates
 - [x] Add asset register
-- [ ] Install Unreal Engine 5.7.x
+- [x] Install Unreal Engine 5.7.x
 - [ ] Install Blender
-- [ ] Install Visual Studio C++ tooling
-- [ ] Create GitHub remote
-- [ ] Push setup repo
-- [ ] Create Unreal project after install
+- [x] Detect Visual Studio Build Tools
+- [x] Create GitHub remote
+- [x] Push setup repo
+- [x] Create Unreal project after install
 
 ## Phase 1 - Unreal Project Foundation
 
 - [ ] Create Third Person Unreal project named `DockShield`
-- [ ] Confirm `.uproject` opens cleanly
+- [x] Create Third Person Unreal project named `DockShield`
+- [x] Confirm `.uproject` passes headless DataValidation
 - [ ] Enable source control awareness
 - [ ] Create base folders in Unreal Content Browser
 - [ ] Commit only intentional generated files

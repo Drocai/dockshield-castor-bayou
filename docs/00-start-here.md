@@ -20,13 +20,14 @@ Three heroes sharing one target system
 
 ## Repo Truth
 
-As of setup:
+As of the initial GitHub/Unreal setup:
 
-- No Unreal `.uproject` exists yet.
+- `DockShield/DockShield.uproject` exists.
 - No package scripts exist yet.
 - No build/test scripts exist yet.
-- Git LFS patterns are prepared for future Unreal and art assets.
-- The next blocker is installing Unreal Engine and Blender.
+- Git LFS patterns are prepared for Unreal and art assets.
+- Unreal Engine 5.7 is installed and detected.
+- Blender and OBS still need installation or PATH verification.
 
 ## Operating Model
 
@@ -67,4 +68,3 @@ Setup is done when:
 - Visual Studio C++ tools are installed
 - a first Unreal project is created intentionally
 - Git LFS is confirmed before committing `.uasset` or `.umap` files
-
