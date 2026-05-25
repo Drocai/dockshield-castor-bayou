@@ -6,6 +6,9 @@
 - [x] Add repo-level agent rules
 - [x] Add Git ignore rules
 - [x] Add Git LFS patterns
+- [x] Add roadmap, risk register, decision log, and handoff docs
+- [x] Add GitHub issue templates
+- [x] Add asset register
 - [ ] Install Unreal Engine 5.7.x
 - [ ] Install Blender
 - [ ] Install Visual Studio C++ tooling
@@ -91,4 +94,3 @@ Content/DockShield/
 - [ ] Packaged Windows build
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
-

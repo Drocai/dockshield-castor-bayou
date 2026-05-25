@@ -40,6 +40,9 @@ Read these in order:
 3. [docs/core-gameplay-bible.md](docs/core-gameplay-bible.md)
 4. [docs/castor-bayou-vertical-slice.md](docs/castor-bayou-vertical-slice.md)
 5. [docs/prototype-backlog.md](docs/prototype-backlog.md)
+6. [docs/milestone-roadmap.md](docs/milestone-roadmap.md)
+7. [docs/unreal-architecture-plan.md](docs/unreal-architecture-plan.md)
+8. [docs/handoff-package.md](docs/handoff-package.md)
 
 ## Repo Rules
 
@@ -56,4 +59,3 @@ Read these in order:
 - Git + Git LFS
 - Visual Studio with Game development with C++ workload
 - Optional later: Perforce P4 if binary assets outgrow Git/LFS
-
