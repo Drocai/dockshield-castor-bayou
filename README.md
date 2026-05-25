@@ -1,0 +1,59 @@
+# DockShield: Castor Bayou Incident
+
+This is the planning/control repo for the first playable DockShield prototype.
+
+DockShield is a tactical supernatural rescue-action game platform where mutated heroes defend contaminated waterways, storm zones, marinas, lakes, docks, bayous, and hidden spill sites.
+
+## Current Status
+
+This repo is in **Phase 0: setup and design control**.
+
+There is no Unreal Engine project committed yet. The first goal is to create the project foundation, lock the vertical slice scope, install the toolchain, and then generate the Unreal project intentionally.
+
+## Working Title Structure
+
+```text
+DockShield
+  Campaign 1: The Depth
+    Vertical Slice: Castor Bayou Incident
+    Mission Arc: Hook, Line & Sinker
+```
+
+## First Playable Target
+
+Build an 8-12 minute vertical slice that proves:
+
+- shared target interaction
+- three hero verbs: Pull, Mark, Bind
+- weather-driven visibility or hazard pressure
+- civilian rescue
+- one mutation enemy
+- one scripted mini boss
+- slow-time command mode v0
+
+## Start Here
+
+Read these in order:
+
+1. [docs/00-start-here.md](docs/00-start-here.md)
+2. [docs/toolchain-setup.md](docs/toolchain-setup.md)
+3. [docs/core-gameplay-bible.md](docs/core-gameplay-bible.md)
+4. [docs/castor-bayou-vertical-slice.md](docs/castor-bayou-vertical-slice.md)
+5. [docs/prototype-backlog.md](docs/prototype-backlog.md)
+
+## Repo Rules
+
+- Do not commit secrets.
+- Track large binary assets through Git LFS.
+- Do not create fake Unreal files by hand.
+- Do not add paid dependencies unless the budget doc is updated.
+- Keep the first slice small enough to finish.
+
+## Toolchain Target
+
+- Unreal Engine 5.7
+- Blender
+- Git + Git LFS
+- Visual Studio with Game development with C++ workload
+- Optional later: Perforce P4 if binary assets outgrow Git/LFS
+

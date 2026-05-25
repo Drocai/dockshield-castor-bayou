@@ -1,0 +1,54 @@
+# Windows / OS
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editors
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Unreal generated folders
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+
+# Unreal generated files
+*.VC.db
+*.opensdf
+*.sdf
+*.sln
+*.xcodeproj
+
+# Optional local Unreal project directory if generated outside repo root
+LocalUnrealScratch/
+
+# Blender / DCC backups
+*.blend1
+*.blend2
+*.blend@
+
+# Captures / local exports
+captures/
+exports/
+renders/
+recordings/
+
