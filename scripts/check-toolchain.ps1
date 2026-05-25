@@ -39,11 +39,23 @@ $vsWhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.e
 $vsFound = Test-Path $vsWhere
 if ($vsFound) {
     $vsInstall = & $vsWhere -latest -products * -property installationPath
-    Show-Check "Visual Studio" ($null -ne $vsInstall -and $vsInstall.Length -gt 0) $vsInstall "Install Visual Studio with Game development with C++ workload"
+    Show-Check "Visual Studio" ($null -ne $vsInstall -and $vsInstall.Length -gt 0) $vsInstall "Install Visual Studio Build Tools"
+
+    $vcInstall = & $vsWhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+    Show-Check "Visual Studio C++ Tools" ($null -ne $vcInstall -and $vcInstall.Length -gt 0) $vcInstall "Install Game development with C++ workload"
 }
 else {
-    Show-Check "Visual Studio" $false "" "Install Visual Studio with Game development with C++ workload: https://visualstudio.microsoft.com/vs/features/game-development/"
+    Show-Check "Visual Studio" $false "" "Install Visual Studio Build Tools: https://visualstudio.microsoft.com/vs/features/game-development/"
+    Show-Check "Visual Studio C++ Tools" $false "" "Install Game development with C++ workload"
 }
+
+$windowsSdkRoot = "${env:ProgramFiles(x86)}\Windows Kits\10\Include"
+$windowsSdkVersions = @()
+if (Test-Path $windowsSdkRoot) {
+    $windowsSdkVersions = Get-ChildItem $windowsSdkRoot -Directory | Select-Object -ExpandProperty Name
+}
+$validWindowsSdk = $windowsSdkVersions | Where-Object { $_ -ge "10.0.19041.0" }
+Show-Check "Windows SDK" (($validWindowsSdk | Measure-Object).Count -gt 0) (($validWindowsSdk | Sort-Object -Descending | Select-Object -First 1)) "Install Windows 10/11 SDK through Visual Studio Installer"
 
 Write-Host ""
 $repoRoot = Split-Path -Parent $PSScriptRoot
