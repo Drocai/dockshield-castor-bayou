@@ -8,7 +8,7 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 This repo is in **Phase 1: Unreal project foundation**.
 
-The planning/control layer exists and the production Unreal project is being established at `DockShield/DockShield.uproject`.
+The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
 
 ## Working Title Structure
 

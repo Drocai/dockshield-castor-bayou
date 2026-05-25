@@ -24,9 +24,12 @@
 *.mov filter=lfs diff=lfs merge=lfs -text
 
 # Documents stay as normal text when possible
+.gitattributes text eol=lf
+.gitignore text eol=lf
 *.md text eol=lf
 *.txt text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
 *.json text eol=lf
 *.ini text eol=lf
 *.uproject text eol=lf
-

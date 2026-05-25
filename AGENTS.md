@@ -17,9 +17,9 @@ Before editing:
 
 ## Current Phase
 
-This is a planning/control repo for **DockShield: Castor Bayou Incident**.
+This is a planning/control repo plus Unreal prototype for **DockShield: Castor Bayou Incident**.
 
-There is no Unreal `.uproject` yet. Do not fabricate Unreal source, Blueprints, assets, maps, or generated project files until Unreal Engine is installed and the project has been created intentionally.
+The production Unreal project exists at `DockShield/DockShield.uproject`. Do not fabricate Unreal source, Blueprints, assets, maps, or generated project files by hand. Use Unreal Editor, Unreal commandlets, or reviewed automation scripts for `.uasset` and `.umap` changes.
 
 ## Coding Standards
 
@@ -84,4 +84,3 @@ Working title hierarchy:
 - First campaign: DockShield: The Depth
 - First vertical slice: DockShield: Castor Bayou Incident
 - First mission arc/signature phrase: Hook, Line & Sinker
-

@@ -4,7 +4,7 @@
 
 This repo is the command center for starting DockShield correctly.
 
-It is not yet the Unreal project. It exists to keep the concept, toolchain, budget, scope, agent prompts, and handoff materials organized before the first playable build begins.
+It now contains both the planning/control layer and the production Unreal project at `DockShield/DockShield.uproject`. Keep concept, toolchain, budget, scope, agent prompts, handoff materials, and Unreal prototype work together in this repo.
 
 ## Immediate Goal
 
@@ -23,6 +23,7 @@ Three heroes sharing one target system
 As of the initial GitHub/Unreal setup:
 
 - `DockShield/DockShield.uproject` exists.
+- `/Game/DockShield/Maps/M_Test_Targeting` is the first graybox targeting test map.
 - No package scripts exist yet.
 - No build/test scripts exist yet.
 - Git LFS patterns are prepared for Unreal and art assets.

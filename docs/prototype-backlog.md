@@ -18,12 +18,12 @@
 
 ## Phase 1 - Unreal Project Foundation
 
-- [ ] Create Third Person Unreal project named `DockShield`
 - [x] Create Third Person Unreal project named `DockShield`
 - [x] Confirm `.uproject` passes headless DataValidation
 - [ ] Enable source control awareness
-- [ ] Create base folders in Unreal Content Browser
-- [ ] Commit only intentional generated files
+- [x] Create base folders in Unreal Content Browser
+- [x] Create `M_Test_Targeting` graybox test map
+- [x] Commit only intentional generated files
 
 Suggested Unreal folders:
 
@@ -57,6 +57,7 @@ Content/DockShield/
 - [ ] Create target reticle
 - [ ] Add interact prompt
 - [ ] Add target debug overlay
+- [x] Add initial grapple, civilian, and hazard placeholder targets
 - [ ] Verify one target works for all three heroes
 
 ## Phase 3 - Heroes

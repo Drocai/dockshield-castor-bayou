@@ -14,7 +14,9 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 - prepare contractor briefs
 - prepare asset intake templates
 - research implementation options
-- inspect generated Unreal files after they exist
+- inspect generated Unreal files
+- create focused Unreal automation scripts
+- create or validate graybox test maps through Unreal commandlets
 - review diffs and catch scope creep
 
 ## Codex Should Not Do Yet
@@ -31,7 +33,6 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 
 - sign in to Epic Games Launcher
 - confirm whether Blender/OBS can be installed by agent
-- choose whether to use GitHub Issues, ClickUp, Notion, or docs-only task tracking
 - approve paid asset purchases or contractors
 
 ## Needs Unreal Installed
@@ -44,9 +45,8 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 
 ## Suggested Parallel Flow
 
-1. D RoC installs Unreal Engine 5.7.x.
-2. Codex finishes repo control docs and issue templates.
-3. D RoC creates/pushes private GitHub repo.
-4. Codex inspects GitHub/remote setup if access is available.
-5. D RoC creates Unreal project.
-6. Codex inspects generated project and starts Phase 01.
+1. D RoC installs Blender and OBS.
+2. Codex commits the verified targeting test map.
+3. Codex implements shared targetable interface v0.
+4. D RoC opens the map in Unreal for a manual editor smoke test.
+5. Codex implements The Reel Pull v0 after the target interface is verified.

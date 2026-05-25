@@ -46,5 +46,11 @@ else {
 }
 
 Write-Host ""
-Write-Host "Next: install missing tools, then create the Unreal 5.7 Third Person project named DockShield."
-
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$projectPath = Join-Path $repoRoot "DockShield\DockShield.uproject"
+if (Test-Path $projectPath) {
+    Write-Host "Next: install missing tools, then open DockShield\DockShield.uproject and verify M_Test_Targeting in editor."
+}
+else {
+    Write-Host "Next: install missing tools, then create the Unreal 5.7 Third Person project named DockShield."
+}
