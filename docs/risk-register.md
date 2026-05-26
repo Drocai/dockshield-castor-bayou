@@ -12,4 +12,4 @@
 | $10,000 is spent on polish before feel is proven | High | Medium | Spend first on targeting and graybox gameplay | Producer |
 | Hardware cannot handle Unreal comfortably | Medium | Unknown | Run local hardware/toolchain checks before heavy content | D RoC |
 | Trademark/title conflict | Medium | Unknown | Perform title search before public launch or store page | Producer |
-
+| Smart App Control blocks Unreal C++ builds | High | High | Do not commit unbuilt C++ modules; either change the Windows security setting with informed approval, keep the next pass Blueprint-only, or build on another machine | D RoC |

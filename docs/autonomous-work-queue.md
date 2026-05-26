@@ -32,7 +32,7 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 ## Needs D RoC
 
 - sign in to Epic Games Launcher
-- confirm whether Blender/OBS can be installed by agent
+- decide whether to disable Smart App Control for Unreal C++ builds, keep early work Blueprint-only, or use another C++ build machine
 - approve paid asset purchases or contractors
 
 ## Needs Unreal Installed
@@ -45,8 +45,8 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 
 ## Suggested Parallel Flow
 
-1. D RoC installs Blender and OBS.
-2. Codex commits the verified targeting test map.
+1. D RoC decides how to handle Smart App Control.
+2. Codex restores the C++ WIP only after UnrealBuildTool can load generated build-rules DLLs.
 3. Codex implements shared targetable interface v0.
 4. D RoC opens the map in Unreal for a manual editor smoke test.
 5. Codex implements The Reel Pull v0 after the target interface is verified.

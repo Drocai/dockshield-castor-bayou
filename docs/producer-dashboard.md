@@ -18,8 +18,7 @@ Phase 1 - Unreal project foundation.
 
 | Blocker | Owner | Unblock Step |
 | --- | --- | --- |
-| Blender not installed | D RoC or agent with install permission | Install Blender |
-| OBS not installed | D RoC or agent with install permission | Install OBS Studio |
+| Windows Smart App Control blocks Unreal C++ build-rules DLLs | D RoC | Decide whether to turn Smart App Control off, use Blueprint-only prototyping for now, or build C++ on another machine |
 
 ## Current Agent Lane
 
@@ -34,17 +33,16 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 ## Next Human Actions
 
-1. Install Blender.
-2. Install OBS Studio.
-3. Open `DockShield/DockShield.uproject` in Unreal and confirm `M_Test_Targeting` opens and the Third Person pawn can move.
+1. Decide how to handle Smart App Control for Unreal C++ builds.
+2. Open `DockShield/DockShield.uproject` in Unreal and confirm `M_Test_Targeting` opens.
+3. If Smart App Control stays on, keep the next implementation pass Blueprint-only or use another dev machine for C++.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
-2. Commit verified targeting map scaffold.
-3. Implement shared targetable interface v0.
-4. Implement The Reel Pull v0.
-5. Stop before The Fly, Lilly, weather, or command mode.
+2. Keep the C++ shared targeting/Reel Pull WIP in `stash@{0}` until the build policy is resolved.
+3. Prepare a Blueprint-only fallback plan if Smart App Control stays on.
+4. Stop before The Fly, Lilly, weather, or command mode.
 
 ## Current Implementation Plan
 

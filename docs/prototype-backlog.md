@@ -10,8 +10,12 @@
 - [x] Add GitHub issue templates
 - [x] Add asset register
 - [x] Install Unreal Engine 5.7.x
-- [ ] Install Blender
+- [x] Install Blender
+- [x] Install OBS Studio
 - [x] Detect Visual Studio Build Tools
+- [x] Install Visual Studio C++ tools
+- [x] Install Windows SDK
+- [ ] Resolve Windows Smart App Control block on Unreal C++ build-rules DLLs
 - [x] Create GitHub remote
 - [x] Push setup repo
 - [x] Create Unreal project after install
@@ -59,6 +63,8 @@ Content/DockShield/
 - [ ] Add target debug overlay
 - [x] Add initial grapple, civilian, and hazard placeholder targets
 - [ ] Verify one target works for all three heroes
+
+Blocked: C++ implementation WIP is preserved in local git stash `stash@{0}` until Smart App Control allows UnrealBuildTool to load generated build-rules DLLs.
 
 ## Phase 3 - Heroes
 
