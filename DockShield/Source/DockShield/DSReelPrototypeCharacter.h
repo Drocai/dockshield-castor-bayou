@@ -22,6 +22,10 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+    AActor* GetCurrentTargetActor() const;
+    FString GetCurrentTargetPrompt() const;
+    bool IsCurrentTargetReelPullValid() const;
+
 protected:
     virtual void BeginPlay() override;
 

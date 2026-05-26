@@ -59,7 +59,7 @@ Content/DockShield/
 
 - [x] Define target categories
 - [x] Create shared target interface
-- [ ] Create prototype target reticle/HUD v0
+- [x] Create prototype target reticle/HUD v0
 - [x] Add interact prompt
 - [x] Add target debug overlay
 - [x] Add initial grapple, civilian, and hazard placeholder targets
@@ -99,7 +99,7 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 ## Phase 6 - Presentation
 
 - [x] Private gameplay UI reference set
-- [ ] Basic prototype HUD
+- [x] Basic prototype HUD
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [ ] Weather state v0
@@ -107,4 +107,4 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: reference screenshots are private direction only. The next HUD task should improve target readability and prompt clarity, not recreate the full cinematic reference layouts.
+Current note: reference screenshots are private direction only. The prototype Canvas HUD improves target readability and prompt clarity, but it does not recreate the full cinematic reference layouts.

@@ -152,6 +152,32 @@ void ADSReelPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Playe
     PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
 }
 
+AActor* ADSReelPrototypeCharacter::GetCurrentTargetActor() const
+{
+    return CurrentTarget.Get();
+}
+
+FString ADSReelPrototypeCharacter::GetCurrentTargetPrompt() const
+{
+    AActor* Target = CurrentTarget.Get();
+    if (!Target)
+    {
+        return TEXT("Face a DockShield target and press E");
+    }
+
+    if (UDSTargetableComponent* Targetable = GetTargetableComponent(Target))
+    {
+        return Targetable->GetReelPrompt();
+    }
+
+    return FString::Printf(TEXT("Target: %s"), *Target->GetName());
+}
+
+bool ADSReelPrototypeCharacter::IsCurrentTargetReelPullValid() const
+{
+    return CanReelPull(CurrentTarget.Get());
+}
+
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
