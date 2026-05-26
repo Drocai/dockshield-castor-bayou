@@ -71,7 +71,7 @@ void ADSPrototypeHUD::DrawHUD()
 
     DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 126.0f, 222.0f, 58.0f, PanelColor);
     DrawText(TEXT("RMB AIM"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 114.0f, nullptr, 0.7f);
-    DrawText(TEXT("LMB / E REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 90.0f, nullptr, 0.72f);
+    DrawText(TEXT("LMB / E FIRE REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 90.0f, nullptr, 0.68f);
 
     DrawPanel(28.0f, ScreenHeight - 154.0f, 330.0f, 108.0f, PanelColor);
     DrawText(bValidTarget ? TEXT("TARGET LOCK") : TEXT("TARGET SEARCH"), HudColor, 44.0f, ScreenHeight - 139.0f, nullptr, 0.82f);

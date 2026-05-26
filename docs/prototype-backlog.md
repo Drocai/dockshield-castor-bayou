@@ -64,6 +64,7 @@ Content/DockShield/
 - [x] Add target debug overlay
 - [x] Add target lock, distance, and line tension HUD v0
 - [x] Add initial grapple, civilian, and hazard placeholder targets
+- [x] Add one-command prototype validation runner
 - [ ] Verify one target works for all three heroes
 
 Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. Full three-hero verification waits for The Fly and Lilly.
@@ -107,6 +108,7 @@ Current note: The Reel Pull v0 is implemented in C++, builds, and passes a headl
 - [x] Test-map lighting/fog pass v0
 - [ ] Basic SFX
 - [ ] Basic VFX
+- [x] Prototype Reel feedback VFX v0
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture

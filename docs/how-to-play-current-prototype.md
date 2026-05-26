@@ -11,6 +11,7 @@ You should expect:
 - simple HUD and reticle
 - target lock, distance, line tension, and action counters
 - debug target visuals
+- temporary debug Reel fire/pull feedback
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
@@ -57,9 +58,15 @@ You should not expect:
 - Lower-left HUD updates line tension, last result, pull count, and rescue count.
 - Repeating interactions does not crash or break the map.
 
-## Agent Smoke Test
+## Agent Validation
 
-Codex can validate the core Reel action without manual PIE:
+Codex can validate the current prototype without manual PIE:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
+```
+
+For the narrow Reel action smoke test only:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\validate_reel_interaction_smoke.py' -unattended -nop4 -nosplash

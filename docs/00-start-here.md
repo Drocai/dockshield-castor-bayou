@@ -20,16 +20,18 @@ Three heroes sharing one target system
 
 ## Repo Truth
 
-As of the initial GitHub/Unreal setup:
+As of the current Unreal prototype setup:
 
 - `DockShield/DockShield.uproject` exists.
 - `/Game/DockShield/Maps/M_Test_Targeting` is the first graybox targeting test map.
 - No package scripts exist yet.
-- No build/test scripts exist yet.
+- Unreal validation scripts exist under `scripts/unreal/`.
+- The current one-command validation runner is `scripts/unreal/validate-prototype.ps1`.
 - Git LFS patterns are prepared for Unreal and art assets.
 - Unreal Engine 5.7 is installed and detected.
 - Blender, OBS Studio, Visual Studio C++ tools, and Windows SDK are installed and detected.
 - Unreal C++ builds are currently unblocked after D RoC turned off Smart App Control.
+- The Reel placeholder character, target lock HUD, aim mode, and headless Reel interaction smoke test are implemented.
 
 ## Operating Model
 

@@ -13,3 +13,4 @@
 | Hardware cannot handle Unreal comfortably | Medium | Unknown | Run local hardware/toolchain checks before heavy content | D RoC |
 | Trademark/title conflict | Medium | Unknown | Perform title search before public launch or store page | Producer |
 | Smart App Control blocks Unreal C++ builds if re-enabled | High | Medium | Keep the current setting documented; rerun `scripts/check-toolchain.ps1` and a C++ build after Windows security changes | D RoC |
+| Local Visual Studio version/SDK warning causes future Unreal editor integration trouble | Low | Medium | Keep using commandlet/build validation now; install Epic-preferred VS toolchain/SDK if packaging or editor integration starts failing | Technical lead |

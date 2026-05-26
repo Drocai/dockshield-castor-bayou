@@ -128,6 +128,8 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
         UpdateTargetMetrics(nullptr);
         ShowDebugMessage(TEXT("DockShield Reel v0: face a target and press LMB or E"), FColor::White);
     }
+
+    DrawReelFeedback(DeltaSeconds);
 }
 
 void ADSReelPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -278,6 +280,7 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
 {
     if (!Target || !CanReelPull(Target))
     {
+        StartReelFeedback(Target, FColor::Red);
         LastReelResult = TEXT("NO VALID TARGET");
         ShowDebugMessage(TEXT("Reel Pull: no valid target"), FColor::Red);
         return false;
@@ -287,6 +290,7 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
 
     if (Target->ActorHasTag(TEXT("Civilian")))
     {
+        StartReelFeedback(Target, FColor::Green);
         FVector RescueForward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
         RescueForward.Z = 0.0f;
         RescueForward = RescueForward.GetSafeNormal();
@@ -298,6 +302,7 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
         return true;
     }
 
+    StartReelFeedback(Target, FColor::Cyan);
     const FVector ToTarget = Target->GetActorLocation() - GetActorLocation();
     FVector LaunchVelocity = ToTarget.GetSafeNormal() * 900.0f;
     LaunchVelocity.Z = 320.0f;
@@ -397,6 +402,34 @@ bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const
     }
 
     return Actor->ActorHasTag(TEXT("GrapplePoint")) || Actor->ActorHasTag(TEXT("Civilian"));
+}
+
+void ADSReelPrototypeCharacter::StartReelFeedback(AActor* Target, const FColor& Color)
+{
+    const FVector Start = FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation() + FVector(0.0f, 0.0f, 64.0f);
+    const FVector Forward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
+    const FVector End = Target ? Target->GetActorLocation() : Start + (Forward * 700.0f);
+
+    LastReelFeedbackStart = Start;
+    LastReelFeedbackEnd = End;
+    LastReelFeedbackColor = Color;
+    ReelFeedbackTimeRemaining = 0.35f;
+}
+
+void ADSReelPrototypeCharacter::DrawReelFeedback(float DeltaSeconds)
+{
+    if (ReelFeedbackTimeRemaining <= 0.0f || !GetWorld())
+    {
+        return;
+    }
+
+    constexpr float MaxFeedbackTime = 0.35f;
+    ReelFeedbackTimeRemaining = FMath::Max(0.0f, ReelFeedbackTimeRemaining - DeltaSeconds);
+    const float AgeAlpha = 1.0f - (ReelFeedbackTimeRemaining / MaxFeedbackTime);
+    const float PulseRadius = 52.0f + (AgeAlpha * 28.0f);
+
+    DrawDebugLine(GetWorld(), LastReelFeedbackStart, LastReelFeedbackEnd, LastReelFeedbackColor, false, 0.0f, 0, 6.0f);
+    DrawDebugSphere(GetWorld(), LastReelFeedbackEnd, PulseRadius, 16, LastReelFeedbackColor, false, 0.0f, 0, 3.0f);
 }
 
 void ADSReelPrototypeCharacter::ShowDebugMessage(const FString& Message, const FColor& Color) const

@@ -6,9 +6,9 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 ## Current Status
 
-This repo is in **Phase 1: Unreal project foundation**.
+This repo is in **Phase 2: shared targeting v0 and Reel prototype feedback**.
 
-The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
+The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, and headless Reel interaction smoke test are implemented.
 
 ## Working Title Structure
 
@@ -59,6 +59,16 @@ Read these in order:
 - Git + Git LFS
 - Visual Studio with Game development with C++ workload
 - Optional later: Perforce P4 if binary assets outgrow Git/LFS
+
+## Prototype Validation
+
+Run the current one-command validation pass from the repo root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
+```
+
+This runs the toolchain check, C++ editor build, Unreal commandlet smoke tests, DataValidation, Git status, and Git LFS status.
 
 ## Remote
 

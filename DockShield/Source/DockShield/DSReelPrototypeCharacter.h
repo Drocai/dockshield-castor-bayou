@@ -79,6 +79,10 @@ private:
     FString LastReelResult = TEXT("READY");
     int32 GrapplePullCount = 0;
     int32 CivilianRescueCount = 0;
+    FVector LastReelFeedbackStart = FVector::ZeroVector;
+    FVector LastReelFeedbackEnd = FVector::ZeroVector;
+    FColor LastReelFeedbackColor = FColor::Cyan;
+    float ReelFeedbackTimeRemaining = 0.0f;
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
@@ -89,5 +93,7 @@ private:
     float GetTargetInteractionRange(AActor* Actor) const;
     void UpdateTargetMetrics(AActor* Actor);
     bool CanReelPull(AActor* Actor) const;
+    void StartReelFeedback(AActor* Target, const FColor& Color);
+    void DrawReelFeedback(float DeltaSeconds);
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;
 };

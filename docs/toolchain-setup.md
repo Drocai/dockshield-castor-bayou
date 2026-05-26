@@ -125,6 +125,20 @@ Before serious Unreal work, confirm:
 - 100 GB free disk space minimum
 - SSD strongly preferred
 
+## Current Local Validation
+
+From the repo root, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
+```
+
+This wraps the current setup check, DockShield editor build, targeting map validation, prototype runtime validation, Reel interaction smoke test, Unreal DataValidation, Git status, and Git LFS status.
+
+## Known Local Warnings
+
+The local Unreal build currently reports Visual Studio 2026 as a non-preferred compiler version and may warn that the Visual Studio SDK is missing for editor integration. These are tracked toolchain warnings, not current prototype blockers, because the DockShield editor target still builds and commandlet validation passes.
+
 ## First Unreal Project Creation
 
 After installs:
@@ -135,4 +149,3 @@ After installs:
 4. Name it `DockShield`.
 5. Put it in this repo only after confirming the folder layout.
 6. Restart Codex and ask it to inspect the generated `.uproject` before editing anything.
-

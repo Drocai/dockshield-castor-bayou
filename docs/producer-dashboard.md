@@ -15,20 +15,21 @@ Phase 2 - Shared targeting v0 and prototype HUD/reticle pass.
 - First targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
 - Shared targeting v0 C++ module builds.
 - The Reel prototype pawn, aim mode, Pull input, target lock HUD, line tension HUD, and action counters are implemented.
+- The Reel prototype has temporary debug-rendered feedback for valid pulls, rescues, and invalid fire attempts.
 - The Reel core action now has a headless commandlet smoke test for invalid target, grapple, and civilian rescue behavior.
 - Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
 - Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
 
 ## Current Blockers
 
-No repo or toolchain blocker is currently stopping the next implementation pass.
+No repo or toolchain blocker is currently stopping the next implementation pass. The Visual Studio compiler/SDK warnings are tracked as cleanup work, not build blockers.
 
 ## Current Playtest Debt
 
 | Debt | Owner | Check |
 | --- | --- | --- |
 | Manual editor feel test for The Reel Pull v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, confirm target lock/tension HUD, hold RMB to aim, press LMB or `E` |
-| Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry and mannequin; do not judge final graphics from this test map |
+| Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry, debug feedback, and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
 
@@ -44,13 +45,14 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 ## Next Human Actions
 
 1. Optional: open `DockShield/DockShield.uproject` in Unreal.
-2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, and press `E`.
+2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, hold right mouse button to aim, then press left mouse button or `E`.
+3. Optional: judge only controls, targeting clarity, and feedback timing. The cinematic Castor Bayou graphics are not in this graybox map yet.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel Pull scope to one grapple target, one civilian target, and one invalid hazard target.
-3. Validate prototype runtime wiring and Reel action behavior with Unreal commandlets.
+3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
 4. Record manual feel-test status, but do not add The Fly, Lilly, weather, or command mode before The Reel loop is verified.
 
 ## Current Implementation Plan
