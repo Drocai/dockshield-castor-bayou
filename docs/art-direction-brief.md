@@ -72,3 +72,16 @@ Locked concept:
 - boss silhouette concept
 - command HUD style reference
 
+## Gameplay UI Reference Direction
+
+Private references live in `docs/reference/gameplay-ui/`. They are direction notes, not production assets.
+
+Use them to guide:
+
+- high contrast storm-bayou readability
+- tactical rescue HUD density without blocking target visibility
+- hero-specific UI language: rescue blue/green for The Reel, stealth green for The Fly, swamp red/green pressure for Lilly
+- objective panels that expose the next action clearly
+- reticle and prompt states that reduce time to first successful Pull
+
+Do not copy reference layouts literally. The prototype HUD should prove readability first.

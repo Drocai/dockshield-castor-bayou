@@ -19,6 +19,7 @@
 - [x] Create GitHub remote
 - [x] Push setup repo
 - [x] Create Unreal project after install
+- [x] Add private gameplay UI reference set
 
 ## Phase 1 - Unreal Project Foundation
 
@@ -58,7 +59,7 @@ Content/DockShield/
 
 - [x] Define target categories
 - [x] Create shared target interface
-- [ ] Create target reticle
+- [ ] Create prototype target reticle/HUD v0
 - [x] Add interact prompt
 - [x] Add target debug overlay
 - [x] Add initial grapple, civilian, and hazard placeholder targets
@@ -97,10 +98,13 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 
 ## Phase 6 - Presentation
 
-- [ ] Basic HUD
+- [x] Private gameplay UI reference set
+- [ ] Basic prototype HUD
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
+
+Current note: reference screenshots are private direction only. The next HUD task should improve target readability and prompt clarity, not recreate the full cinematic reference layouts.
