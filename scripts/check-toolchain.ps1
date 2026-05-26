@@ -1,4 +1,5 @@
 $ErrorActionPreference = "SilentlyContinue"
+$script:MissingChecks = @()
 
 function Show-Check {
     param(
@@ -12,6 +13,7 @@ function Show-Check {
         Write-Host "[OK]   $Name - $Detail"
     }
     else {
+        $script:MissingChecks += $Name
         Write-Host "[MISS] $Name - $Install"
     }
 }
@@ -23,13 +25,25 @@ $gitLfs = Get-Command git-lfs
 Show-Check "Git LFS" ($null -ne $gitLfs) ($gitLfs.Source) "Install: https://git-lfs.com/"
 
 $blender = Get-Command blender
-Show-Check "Blender" ($null -ne $blender) ($blender.Source) "Install: https://www.blender.org/download/"
+if ($null -eq $blender) {
+    $blenderInstall = Get-ChildItem "C:\Program Files\Blender Foundation" -Filter blender.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    Show-Check "Blender" ($null -ne $blenderInstall) ($blenderInstall.FullName) "Install: https://www.blender.org/download/"
+}
+else {
+    Show-Check "Blender" $true ($blender.Source) "Install: https://www.blender.org/download/"
+}
 
 $obs = Get-Command obs64
 if ($null -eq $obs) {
     $obs = Get-Command obs
 }
-Show-Check "OBS Studio" ($null -ne $obs) ($obs.Source) "Install: https://obsproject.com/download"
+if ($null -eq $obs) {
+    $obsInstall = Get-ChildItem "C:\Program Files\obs-studio" -Filter obs64.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    Show-Check "OBS Studio" ($null -ne $obsInstall) ($obsInstall.FullName) "Install: https://obsproject.com/download"
+}
+else {
+    Show-Check "OBS Studio" $true ($obs.Source) "Install: https://obsproject.com/download"
+}
 
 $epicDirs = Get-ChildItem "C:\Program Files\Epic Games" -Directory
 $ueDirs = $epicDirs | Where-Object { $_.Name -like "UE_*" }
@@ -61,7 +75,12 @@ Write-Host ""
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectPath = Join-Path $repoRoot "DockShield\DockShield.uproject"
 if (Test-Path $projectPath) {
-    Write-Host "Next: install missing tools, then open DockShield\DockShield.uproject and verify M_Test_Targeting in editor."
+    if ($script:MissingChecks.Count -eq 0) {
+        Write-Host "Next: open DockShield\DockShield.uproject and verify M_Test_Targeting in editor."
+    }
+    else {
+        Write-Host "Next: install missing tools, then open DockShield\DockShield.uproject and verify M_Test_Targeting in editor."
+    }
 }
 else {
     Write-Host "Next: install missing tools, then create the Unreal 5.7 Third Person project named DockShield."
