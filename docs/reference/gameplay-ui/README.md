@@ -1,8 +1,10 @@
-# DockShield Gameplay UI References
+# DockShield Canon Visual Target Pack
 
-These images are private concept references for DockShield prototype direction. They are not production assets, shipping art, marketing material, or licensed commercial assets. Treat them as internal visual targets until rights and public-use clearance are reviewed.
+These images are the private canon visual target pack for DockShield's intended movie/game look. They define the intended characters, tone, HUD density, and gameplay presentation.
 
-## Reference Takeaways
+The raw PNG files are still not production assets, shipping art, marketing material, or licensed commercial assets. Treat them as internal source-of-truth targets until the art is rebuilt as owned production assets and public-use clearance is documented.
+
+## Canon Takeaways
 
 - The Reel reads best with rescue-objective urgency, clear target prompts, center reticle feedback, and tool slots that communicate grapple/rescue gear quickly.
 - The Fly reads best with lower-light stealth language, enemy outlines, awareness state, recon markers, and compact gadget inventory.
@@ -28,7 +30,7 @@ These images are private concept references for DockShield prototype direction. 
 
 ## Use Rules
 
-- Use these references to guide prototype readability and direction only.
+- Use these images as canon visual targets for prototype readability, character direction, and gameplay presentation.
 - Do not import them into Unreal `Content/`.
 - Do not use them in public screenshots, store pages, trailers, pitch decks, or contractor packets until clearance is documented.
 - When production assets are created, log each new source separately in `docs/asset-register.csv`.

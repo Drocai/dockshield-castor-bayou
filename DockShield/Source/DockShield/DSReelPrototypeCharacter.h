@@ -56,6 +56,7 @@ private:
     void TryReelPull();
     AActor* FindBestTarget() const;
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
+    float GetTargetInteractionRange(AActor* Actor) const;
     bool CanReelPull(AActor* Actor) const;
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;
 };

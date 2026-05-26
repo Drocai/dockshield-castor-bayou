@@ -250,7 +250,7 @@ AActor* ADSReelPrototypeCharacter::FindBestTarget() const
 
         const FVector ToActor = Actor->GetActorLocation() - ViewLocation;
         const float Distance = ToActor.Size();
-        if (Distance > 1200.0f)
+        if (Distance > GetTargetInteractionRange(Actor))
         {
             continue;
         }
@@ -275,6 +275,16 @@ AActor* ADSReelPrototypeCharacter::FindBestTarget() const
 UDSTargetableComponent* ADSReelPrototypeCharacter::GetTargetableComponent(AActor* Actor) const
 {
     return Actor ? Actor->FindComponentByClass<UDSTargetableComponent>() : nullptr;
+}
+
+float ADSReelPrototypeCharacter::GetTargetInteractionRange(AActor* Actor) const
+{
+    if (const UDSTargetableComponent* Targetable = GetTargetableComponent(Actor))
+    {
+        return FMath::Max(Targetable->InteractionRange, 1.0f);
+    }
+
+    return 1200.0f;
 }
 
 bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const

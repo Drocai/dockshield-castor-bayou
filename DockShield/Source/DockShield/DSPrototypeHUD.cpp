@@ -30,6 +30,10 @@ void ADSPrototypeHUD::DrawHUD()
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
     }
+    if (Prompt.Len() > 72)
+    {
+        Prompt = Prompt.Left(69) + TEXT("...");
+    }
 
     const FLinearColor ValidColor(0.05f, 0.95f, 0.35f, 1.0f);
     const FLinearColor InvalidColor(1.0f, 0.55f, 0.08f, 1.0f);

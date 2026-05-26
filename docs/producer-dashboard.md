@@ -15,7 +15,8 @@ Phase 2 - Shared targeting v0 and prototype HUD/reticle pass.
 - First targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
 - Shared targeting v0 C++ module builds.
 - The Reel prototype pawn and Pull input are implemented for manual smoke testing.
-- Private gameplay UI reference set is stored in `docs/reference/gameplay-ui/`.
+- Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
+- Current playable graphics are graybox prototype quality, not the canon Castor Bayou look yet.
 
 ## Current Blockers
 
@@ -26,6 +27,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Debt | Owner | Check |
 | --- | --- | --- |
 | Manual editor smoke test for The Reel Pull v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, face target, press `E` |
+| Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
 
@@ -47,7 +49,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel Pull scope to one grapple target and one civilian target.
-3. Add a prototype Canvas HUD/reticle for target readability.
+3. Validate prototype runtime wiring with Unreal commandlets.
 4. Record manual smoke-test status, but do not add The Fly, Lilly, weather, or command mode before The Reel loop is verified.
 
 ## Current Implementation Plan

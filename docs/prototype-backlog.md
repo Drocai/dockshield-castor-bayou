@@ -19,7 +19,7 @@
 - [x] Create GitHub remote
 - [x] Push setup repo
 - [x] Create Unreal project after install
-- [x] Add private gameplay UI reference set
+- [x] Add private canon visual target pack
 
 ## Phase 1 - Unreal Project Foundation
 
@@ -100,6 +100,7 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 
 - [x] Private gameplay UI reference set
 - [x] Basic prototype HUD
+- [x] Current prototype audit and play guide
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [ ] Weather state v0
@@ -107,4 +108,4 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: reference screenshots are private direction only. The prototype Canvas HUD improves target readability and prompt clarity, but it does not recreate the full cinematic reference layouts.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build is still a graybox mechanics prototype and does not recreate the full cinematic look yet.
