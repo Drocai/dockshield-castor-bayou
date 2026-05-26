@@ -27,6 +27,27 @@ public:
     bool IsCurrentTargetReelPullValid() const;
     bool IsAiming() const;
 
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    bool ExecuteReelActionOnTarget(AActor* Target);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void TryReelPull();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    float GetCurrentTargetDistance() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    float GetLineTension() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    FString GetLastReelResult() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    int32 GetGrapplePullCount() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    int32 GetCivilianRescueCount() const;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -53,15 +74,20 @@ private:
     TWeakObjectPtr<AActor> CurrentTarget;
 
     bool bIsAiming = false;
+    float CurrentTargetDistance = 0.0f;
+    float LineTension = 0.0f;
+    FString LastReelResult = TEXT("READY");
+    int32 GrapplePullCount = 0;
+    int32 CivilianRescueCount = 0;
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void StartAim();
     void StopAim();
-    void TryReelPull();
     AActor* FindBestTarget() const;
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     float GetTargetInteractionRange(AActor* Actor) const;
+    void UpdateTargetMetrics(AActor* Actor);
     bool CanReelPull(AActor* Actor) const;
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;
 };

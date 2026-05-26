@@ -62,6 +62,7 @@ Content/DockShield/
 - [x] Create prototype target reticle/HUD v0
 - [x] Add interact prompt
 - [x] Add target debug overlay
+- [x] Add target lock, distance, and line tension HUD v0
 - [x] Add initial grapple, civilian, and hazard placeholder targets
 - [ ] Verify one target works for all three heroes
 
@@ -72,13 +73,14 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Reel placeholder character
 - [x] The Reel pull/grapple ability v0
 - [x] The Reel aim mode v0
+- [x] The Reel headless interaction smoke test
 - [ ] The Fly placeholder character
 - [ ] The Fly mark ability
 - [ ] Lilly placeholder character
 - [ ] Lilly bind ability
 - [ ] Character switching
 
-Current note: The Reel Pull v0 is implemented in C++ and builds, but it still needs a manual in-editor play smoke test before closing the gameplay task.
+Current note: The Reel Pull v0 is implemented in C++, builds, and passes a headless commandlet smoke test. It still needs a manual in-editor feel test before closing the gameplay task.
 
 ## Phase 4 - Mission Objects
 

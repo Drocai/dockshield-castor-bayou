@@ -109,6 +109,7 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
     CurrentTarget = FindBestTarget();
     if (AActor* Target = CurrentTarget.Get())
     {
+        UpdateTargetMetrics(Target);
         const FVector Start = FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation();
         DrawDebugLine(GetWorld(), Start, Target->GetActorLocation(), FColor::Cyan, false, 0.0f, 0, 2.0f);
         DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 48.0f, 12, CanReelPull(Target) ? FColor::Green : FColor::Orange, false, 0.0f);
@@ -124,7 +125,8 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
     }
     else
     {
-        ShowDebugMessage(TEXT("DockShield Reel v0: face a target and press E"), FColor::White);
+        UpdateTargetMetrics(nullptr);
+        ShowDebugMessage(TEXT("DockShield Reel v0: face a target and press LMB or E"), FColor::White);
     }
 }
 
@@ -186,6 +188,31 @@ bool ADSReelPrototypeCharacter::IsAiming() const
     return bIsAiming;
 }
 
+float ADSReelPrototypeCharacter::GetCurrentTargetDistance() const
+{
+    return CurrentTargetDistance;
+}
+
+float ADSReelPrototypeCharacter::GetLineTension() const
+{
+    return LineTension;
+}
+
+FString ADSReelPrototypeCharacter::GetLastReelResult() const
+{
+    return LastReelResult;
+}
+
+int32 ADSReelPrototypeCharacter::GetGrapplePullCount() const
+{
+    return GrapplePullCount;
+}
+
+int32 ADSReelPrototypeCharacter::GetCivilianRescueCount() const
+{
+    return CivilianRescueCount;
+}
+
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -244,12 +271,19 @@ void ADSReelPrototypeCharacter::StopAim()
 
 void ADSReelPrototypeCharacter::TryReelPull()
 {
-    AActor* Target = CurrentTarget.Get();
+    ExecuteReelActionOnTarget(CurrentTarget.Get());
+}
+
+bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
+{
     if (!Target || !CanReelPull(Target))
     {
+        LastReelResult = TEXT("NO VALID TARGET");
         ShowDebugMessage(TEXT("Reel Pull: no valid target"), FColor::Red);
-        return;
+        return false;
     }
+
+    UpdateTargetMetrics(Target);
 
     if (Target->ActorHasTag(TEXT("Civilian")))
     {
@@ -258,15 +292,20 @@ void ADSReelPrototypeCharacter::TryReelPull()
         RescueForward = RescueForward.GetSafeNormal();
         const FVector RescueLocation = GetActorLocation() + (RescueForward * 150.0f) + FVector(0.0f, 0.0f, 60.0f);
         Target->SetActorLocation(RescueLocation, false, nullptr, ETeleportType::TeleportPhysics);
+        ++CivilianRescueCount;
+        LastReelResult = FString::Printf(TEXT("RESCUE COMPLETE %d"), CivilianRescueCount);
         ShowDebugMessage(TEXT("Rescue Reel: civilian pulled clear"), FColor::Green);
-        return;
+        return true;
     }
 
     const FVector ToTarget = Target->GetActorLocation() - GetActorLocation();
     FVector LaunchVelocity = ToTarget.GetSafeNormal() * 900.0f;
     LaunchVelocity.Z = 320.0f;
     LaunchCharacter(LaunchVelocity, true, true);
+    ++GrapplePullCount;
+    LastReelResult = FString::Printf(TEXT("GRAPPLE CAST %d"), GrapplePullCount);
     ShowDebugMessage(TEXT("Grapple Cast: pulling to target"), FColor::Green);
+    return true;
 }
 
 AActor* ADSReelPrototypeCharacter::FindBestTarget() const
@@ -328,6 +367,20 @@ float ADSReelPrototypeCharacter::GetTargetInteractionRange(AActor* Actor) const
     }
 
     return 1200.0f;
+}
+
+void ADSReelPrototypeCharacter::UpdateTargetMetrics(AActor* Actor)
+{
+    if (!Actor)
+    {
+        CurrentTargetDistance = 0.0f;
+        LineTension = 0.0f;
+        return;
+    }
+
+    CurrentTargetDistance = FVector::Dist(GetActorLocation(), Actor->GetActorLocation());
+    const float Range = GetTargetInteractionRange(Actor);
+    LineTension = Range > 0.0f ? FMath::Clamp(CurrentTargetDistance / Range, 0.0f, 1.0f) : 0.0f;
 }
 
 bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const

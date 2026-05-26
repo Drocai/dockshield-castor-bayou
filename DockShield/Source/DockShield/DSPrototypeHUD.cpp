@@ -26,14 +26,24 @@ void ADSPrototypeHUD::DrawHUD()
     const bool bHasTarget = ReelCharacter && ReelCharacter->GetCurrentTargetActor();
     const bool bValidTarget = ReelCharacter && ReelCharacter->IsCurrentTargetReelPullValid();
     const bool bAiming = ReelCharacter && ReelCharacter->IsAiming();
+    const float TargetDistance = ReelCharacter ? ReelCharacter->GetCurrentTargetDistance() : 0.0f;
+    const float LineTension = ReelCharacter ? ReelCharacter->GetLineTension() : 0.0f;
+    const int32 GrapplePullCount = ReelCharacter ? ReelCharacter->GetGrapplePullCount() : 0;
+    const int32 CivilianRescueCount = ReelCharacter ? ReelCharacter->GetCivilianRescueCount() : 0;
     FString Prompt = TEXT("DockShield Reel v0: acquire target");
+    FString LastReelResult = TEXT("READY");
     if (ReelCharacter)
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
+        LastReelResult = ReelCharacter->GetLastReelResult();
     }
     if (Prompt.Len() > 72)
     {
         Prompt = Prompt.Left(69) + TEXT("...");
+    }
+    if (LastReelResult.Len() > 32)
+    {
+        LastReelResult = LastReelResult.Left(29) + TEXT("...");
     }
 
     const FLinearColor ValidColor(0.05f, 0.95f, 0.35f, 1.0f);
@@ -62,6 +72,14 @@ void ADSPrototypeHUD::DrawHUD()
     DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 126.0f, 222.0f, 58.0f, PanelColor);
     DrawText(TEXT("RMB AIM"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 114.0f, nullptr, 0.7f);
     DrawText(TEXT("LMB / E REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 90.0f, nullptr, 0.72f);
+
+    DrawPanel(28.0f, ScreenHeight - 154.0f, 330.0f, 108.0f, PanelColor);
+    DrawText(bValidTarget ? TEXT("TARGET LOCK") : TEXT("TARGET SEARCH"), HudColor, 44.0f, ScreenHeight - 139.0f, nullptr, 0.82f);
+    DrawText(FString::Printf(TEXT("DIST %.0fm"), TargetDistance / 100.0f), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), 232.0f, ScreenHeight - 139.0f, nullptr, 0.72f);
+    DrawText(TEXT("LINE TENSION"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), 44.0f, ScreenHeight - 112.0f, nullptr, 0.68f);
+    DrawBar(144.0f, ScreenHeight - 106.0f, 174.0f, 8.0f, LineTension, HudColor);
+    DrawText(LastReelResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 84.0f, nullptr, 0.68f);
+    DrawText(FString::Printf(TEXT("PULLS %d   RESCUES %d"), GrapplePullCount, CivilianRescueCount), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 62.0f, nullptr, 0.64f);
 }
 
 void ADSPrototypeHUD::DrawReticle(float CenterX, float CenterY, const FLinearColor& Color)
@@ -80,4 +98,13 @@ void ADSPrototypeHUD::DrawPanel(float X, float Y, float Width, float Height, con
     DrawRect(Color, X, Y, Width, Height);
     DrawLine(X, Y, X + Width, Y, FLinearColor(0.7f, 0.78f, 0.68f, 0.35f), 1.0f);
     DrawLine(X, Y + Height, X + Width, Y + Height, FLinearColor(0.7f, 0.78f, 0.68f, 0.25f), 1.0f);
+}
+
+void ADSPrototypeHUD::DrawBar(float X, float Y, float Width, float Height, float Value, const FLinearColor& FillColor)
+{
+    const float ClampedValue = FMath::Clamp(Value, 0.0f, 1.0f);
+    DrawRect(FLinearColor(0.02f, 0.03f, 0.03f, 0.72f), X, Y, Width, Height);
+    DrawRect(FillColor, X, Y, Width * ClampedValue, Height);
+    DrawLine(X, Y, X + Width, Y, FLinearColor(0.7f, 0.78f, 0.68f, 0.3f), 1.0f);
+    DrawLine(X, Y + Height, X + Width, Y + Height, FLinearColor(0.7f, 0.78f, 0.68f, 0.24f), 1.0f);
 }

@@ -14,7 +14,8 @@ Phase 2 - Shared targeting v0 and prototype HUD/reticle pass.
 - Production Unreal project exists at `DockShield/DockShield.uproject`.
 - First targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
 - Shared targeting v0 C++ module builds.
-- The Reel prototype pawn, aim mode, and Pull input are implemented for manual smoke testing.
+- The Reel prototype pawn, aim mode, Pull input, target lock HUD, line tension HUD, and action counters are implemented.
+- The Reel core action now has a headless commandlet smoke test for invalid target, grapple, and civilian rescue behavior.
 - Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
 - Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
 
@@ -26,7 +27,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 
 | Debt | Owner | Check |
 | --- | --- | --- |
-| Manual editor smoke test for The Reel Pull v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, hold RMB to aim, face target, press LMB or `E` |
+| Manual editor feel test for The Reel Pull v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, confirm target lock/tension HUD, hold RMB to aim, press LMB or `E` |
 | Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
@@ -48,9 +49,9 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
-2. Keep The Reel Pull scope to one grapple target and one civilian target.
-3. Validate prototype runtime wiring with Unreal commandlets.
-4. Record manual smoke-test status, but do not add The Fly, Lilly, weather, or command mode before The Reel loop is verified.
+2. Keep The Reel Pull scope to one grapple target, one civilian target, and one invalid hazard target.
+3. Validate prototype runtime wiring and Reel action behavior with Unreal commandlets.
+4. Record manual feel-test status, but do not add The Fly, Lilly, weather, or command mode before The Reel loop is verified.
 
 ## Current Implementation Plan
 
