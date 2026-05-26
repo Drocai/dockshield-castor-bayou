@@ -2,7 +2,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSPrototypeBoatActor.h"
 #include "DSTargetableComponent.h"
+#include "DSWaterZoneActor.h"
 #include "Engine/Engine.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -106,6 +108,7 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+    UpdateWaterState();
     CurrentTarget = FindBestTarget();
     if (AActor* Target = CurrentTarget.Get())
     {
@@ -215,6 +218,26 @@ int32 ADSReelPrototypeCharacter::GetCivilianRescueCount() const
     return CivilianRescueCount;
 }
 
+int32 ADSReelPrototypeCharacter::GetBoatTowCount() const
+{
+    return BoatTowCount;
+}
+
+float ADSReelPrototypeCharacter::GetCurrentWaterDepth() const
+{
+    return CurrentWaterDepth;
+}
+
+float ADSReelPrototypeCharacter::GetWaterMovementScale() const
+{
+    return WaterMovementScale;
+}
+
+bool ADSReelPrototypeCharacter::IsInBoatableWater() const
+{
+    return bInBoatableWater;
+}
+
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -246,7 +269,7 @@ void ADSReelPrototypeCharacter::StartAim()
 
     UCharacterMovementComponent* Movement = GetCharacterMovement();
     Movement->bOrientRotationToMovement = false;
-    Movement->MaxWalkSpeed = 360.0f;
+    ApplyMovementSpeed();
 
     if (CameraBoom)
     {
@@ -263,7 +286,7 @@ void ADSReelPrototypeCharacter::StopAim()
 
     UCharacterMovementComponent* Movement = GetCharacterMovement();
     Movement->bOrientRotationToMovement = true;
-    Movement->MaxWalkSpeed = 500.0f;
+    ApplyMovementSpeed();
 
     if (CameraBoom)
     {
@@ -287,6 +310,22 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
     }
 
     UpdateTargetMetrics(Target);
+
+    if (ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(Target))
+    {
+        StartReelFeedback(Target, FColor::Cyan);
+        if (!Boat->ApplyReelTowFrom(GetActorLocation(), Boat->ReelTowStepDistance))
+        {
+            LastReelResult = FString::Printf(TEXT("BOAT %s"), *Boat->GetBoatStateText());
+            ShowDebugMessage(TEXT("Boat Tow: blocked by shallow water or anchor"), FColor::Orange);
+            return false;
+        }
+
+        ++BoatTowCount;
+        LastReelResult = FString::Printf(TEXT("BOAT TOW %d"), BoatTowCount);
+        ShowDebugMessage(TEXT("Boat Tow: reel line pulled the boat"), FColor::Cyan);
+        return true;
+    }
 
     if (Target->ActorHasTag(TEXT("Civilian")))
     {
@@ -388,6 +427,46 @@ void ADSReelPrototypeCharacter::UpdateTargetMetrics(AActor* Actor)
     LineTension = Range > 0.0f ? FMath::Clamp(CurrentTargetDistance / Range, 0.0f, 1.0f) : 0.0f;
 }
 
+void ADSReelPrototypeCharacter::UpdateWaterState()
+{
+    bInWaterZone = false;
+    bInBoatableWater = false;
+    CurrentWaterDepth = 0.0f;
+    WaterMovementScale = 1.0f;
+
+    for (TActorIterator<ADSWaterZoneActor> It(GetWorld()); It; ++It)
+    {
+        const ADSWaterZoneActor* WaterZone = *It;
+        if (!WaterZone || !WaterZone->ContainsWorldLocation(GetActorLocation()))
+        {
+            continue;
+        }
+
+        const float Depth = WaterZone->GetDepthAtLocation(GetActorLocation());
+        if (!bInWaterZone || Depth > CurrentWaterDepth)
+        {
+            bInWaterZone = true;
+            CurrentWaterDepth = Depth;
+            WaterMovementScale = WaterZone->GetMovementScaleAtLocation(GetActorLocation());
+            bInBoatableWater = WaterZone->CanBoatOperateAtLocation(GetActorLocation());
+        }
+    }
+
+    ApplyMovementSpeed();
+}
+
+void ADSReelPrototypeCharacter::ApplyMovementSpeed()
+{
+    UCharacterMovementComponent* Movement = GetCharacterMovement();
+    if (!Movement)
+    {
+        return;
+    }
+
+    const float BaseSpeed = bIsAiming ? 360.0f : 500.0f;
+    Movement->MaxWalkSpeed = BaseSpeed * WaterMovementScale;
+}
+
 bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const
 {
     if (!Actor)
@@ -401,7 +480,7 @@ bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const
         return Targetable->bCanReelPull;
     }
 
-    return Actor->ActorHasTag(TEXT("GrapplePoint")) || Actor->ActorHasTag(TEXT("Civilian"));
+    return Actor->ActorHasTag(TEXT("GrapplePoint")) || Actor->ActorHasTag(TEXT("Civilian")) || Actor->ActorHasTag(TEXT("Boat"));
 }
 
 void ADSReelPrototypeCharacter::StartReelFeedback(AActor* Target, const FColor& Color)

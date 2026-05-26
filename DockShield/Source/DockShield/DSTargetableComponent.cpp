@@ -21,6 +21,10 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         return;
     }
 
+    bCanReelPull = false;
+    bCanFlyMark = false;
+    bCanLillyBind = false;
+
     if (Owner->ActorHasTag(TEXT("GrapplePoint")))
     {
         TargetType = EDSTargetType::GrapplePoint;
@@ -39,6 +43,12 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         DisplayName = FText::FromString(TEXT("Toxic Hazard"));
         bCanReelPull = false;
     }
+    else if (Owner->ActorHasTag(TEXT("Boat")))
+    {
+        TargetType = EDSTargetType::Boat;
+        DisplayName = FText::FromString(TEXT("Prototype Rescue Boat"));
+        bCanReelPull = true;
+    }
 }
 
 FString UDSTargetableComponent::GetReelPrompt() const
@@ -54,6 +64,8 @@ FString UDSTargetableComponent::GetReelPrompt() const
         return FString::Printf(TEXT("Press E: Grapple Pull to %s"), *DisplayName.ToString());
     case EDSTargetType::Civilian:
         return FString::Printf(TEXT("Press E: Rescue Reel %s"), *DisplayName.ToString());
+    case EDSTargetType::Boat:
+        return FString::Printf(TEXT("Press E: Tow / Reel %s"), *DisplayName.ToString());
     default:
         return FString::Printf(TEXT("Press E: Reel Pull %s"), *DisplayName.ToString());
     }

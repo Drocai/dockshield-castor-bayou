@@ -15,6 +15,7 @@ You should expect:
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
+- C++ foundation for water depth and prototype boat towing
 
 You should not expect:
 
@@ -22,6 +23,7 @@ You should not expect:
 - final character models
 - storm/rain/water art
 - The Fly, Lilly, command mode, boss combat, or full mission flow
+- placed/finished boat gameplay in the current map
 
 ## Launch
 
@@ -47,6 +49,9 @@ You should not expect:
 6. Confirm the reticle/prompt changes.
 7. Hold right mouse button to aim, then press left mouse button or `E`.
 8. Repeat both interactions and watch for crashes, stuck movement, bad prompts, or missing HUD updates.
+9. Face `DS_Boat_Prototype_Tow` near the water test area.
+10. Hold right mouse button to aim, then press left mouse button or `E`.
+11. Confirm the boat moves toward you, the Reel feedback line appears, and the boat tow count increases.
 
 ## Pass Criteria
 
@@ -56,6 +61,7 @@ You should not expect:
 - Valid target reticle/prompt appears.
 - Left mouse button or `E` triggers grapple/rescue behavior.
 - Lower-left HUD updates line tension, last result, pull count, and rescue count.
+- Lower-left HUD includes water depth, movement scale, and boat tow count when water/boat actors are present.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation

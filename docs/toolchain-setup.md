@@ -133,7 +133,7 @@ From the repo root, run:
 powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
 ```
 
-This wraps the current setup check, DockShield editor build, targeting map validation, prototype runtime validation, Reel interaction smoke test, Unreal DataValidation, Git status, and Git LFS status.
+This wraps the current setup check, DockShield editor build, targeting map validation, prototype runtime validation, Reel interaction smoke tests, water/boat smoke tests, Unreal DataValidation, Git status, and Git LFS status.
 
 ## Known Local Warnings
 

@@ -32,6 +32,7 @@ As of the current Unreal prototype setup:
 - Blender, OBS Studio, Visual Studio C++ tools, and Windows SDK are installed and detected.
 - Unreal C++ builds are currently unblocked after D RoC turned off Smart App Control.
 - The Reel placeholder character, target lock HUD, aim mode, and headless Reel interaction smoke test are implemented.
+- Prototype water depth and boat towing foundations are implemented in C++ and validated by commandlet smoke tests.
 
 ## Operating Model
 

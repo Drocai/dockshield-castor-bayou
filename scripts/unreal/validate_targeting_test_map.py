@@ -34,6 +34,8 @@ REQUIRED_ACTORS = {
     "DS_Light_Toxic_Hazard": [],
     "DS_Light_Rescue_Warm": [],
     "DS_Fog_Bayou_Test": [],
+    "DS_Water_Depth_Test": [],
+    "DS_Boat_Prototype_Tow": ["DockShieldTarget", "Boat"],
 }
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
@@ -72,6 +74,7 @@ def main():
             label != "PlayerStart_Test_Targeting"
             and label != "Light_Test_Targeting"
             and not label.startswith("DS_Light_")
+            and not label.startswith("DS_Water_")
             and label != "DS_Fog_Bayou_Test"
         ):
             mesh_component = actor.get_component_by_class(unreal.StaticMeshComponent)

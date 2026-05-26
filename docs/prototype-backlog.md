@@ -75,6 +75,7 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Reel pull/grapple ability v0
 - [x] The Reel aim mode v0
 - [x] The Reel headless interaction smoke test
+- [x] The Reel prototype boat tow action v0
 - [ ] The Fly placeholder character
 - [ ] The Fly mark ability
 - [ ] Lilly placeholder character
@@ -91,6 +92,10 @@ Current note: The Reel Pull v0 is implemented in C++, builds, and passes a headl
 - [ ] Grapple point
 - [ ] Enemy weak point
 - [ ] Extraction point
+- [x] Prototype water depth zone
+- [x] Prototype boat target
+- [x] Prototype boat boarding/tow logic
+- [x] Place water/boat prototype actors in `M_Test_Targeting`
 
 ## Phase 5 - Encounter
 
@@ -109,6 +114,8 @@ Current note: The Reel Pull v0 is implemented in C++, builds, and passes a headl
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [x] Prototype Reel feedback VFX v0
+- [x] Water depth HUD metrics v0
+- [x] Placed water/boat debug visualization v0
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture

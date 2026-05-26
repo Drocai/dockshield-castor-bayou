@@ -48,6 +48,18 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
     int32 GetCivilianRescueCount() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    int32 GetBoatTowCount() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetCurrentWaterDepth() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetWaterMovementScale() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    bool IsInBoatableWater() const;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -79,6 +91,11 @@ private:
     FString LastReelResult = TEXT("READY");
     int32 GrapplePullCount = 0;
     int32 CivilianRescueCount = 0;
+    int32 BoatTowCount = 0;
+    bool bInWaterZone = false;
+    bool bInBoatableWater = false;
+    float CurrentWaterDepth = 0.0f;
+    float WaterMovementScale = 1.0f;
     FVector LastReelFeedbackStart = FVector::ZeroVector;
     FVector LastReelFeedbackEnd = FVector::ZeroVector;
     FColor LastReelFeedbackColor = FColor::Cyan;
@@ -92,6 +109,8 @@ private:
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     float GetTargetInteractionRange(AActor* Actor) const;
     void UpdateTargetMetrics(AActor* Actor);
+    void UpdateWaterState();
+    void ApplyMovementSpeed();
     bool CanReelPull(AActor* Actor) const;
     void StartReelFeedback(AActor* Target, const FColor& Color);
     void DrawReelFeedback(float DeltaSeconds);
