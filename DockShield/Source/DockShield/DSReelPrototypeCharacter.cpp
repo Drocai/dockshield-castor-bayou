@@ -150,6 +150,9 @@ void ADSReelPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Playe
     }
 
     PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
+    PlayerInputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
+    PlayerInputComponent->BindKey(EKeys::RightMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::StartAim);
+    PlayerInputComponent->BindKey(EKeys::RightMouseButton, IE_Released, this, &ADSReelPrototypeCharacter::StopAim);
 }
 
 AActor* ADSReelPrototypeCharacter::GetCurrentTargetActor() const
@@ -178,6 +181,11 @@ bool ADSReelPrototypeCharacter::IsCurrentTargetReelPullValid() const
     return CanReelPull(CurrentTarget.Get());
 }
 
+bool ADSReelPrototypeCharacter::IsAiming() const
+{
+    return bIsAiming;
+}
+
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -202,6 +210,38 @@ void ADSReelPrototypeCharacter::Look(const FInputActionValue& Value)
     AddControllerPitchInput(LookAxisVector.Y);
 }
 
+void ADSReelPrototypeCharacter::StartAim()
+{
+    bIsAiming = true;
+    bUseControllerRotationYaw = true;
+
+    UCharacterMovementComponent* Movement = GetCharacterMovement();
+    Movement->bOrientRotationToMovement = false;
+    Movement->MaxWalkSpeed = 360.0f;
+
+    if (CameraBoom)
+    {
+        CameraBoom->TargetArmLength = 360.0f;
+    }
+
+    ShowDebugMessage(TEXT("Aim locked: Left Click or E to fire Reel Pull"), FColor::Cyan);
+}
+
+void ADSReelPrototypeCharacter::StopAim()
+{
+    bIsAiming = false;
+    bUseControllerRotationYaw = false;
+
+    UCharacterMovementComponent* Movement = GetCharacterMovement();
+    Movement->bOrientRotationToMovement = true;
+    Movement->MaxWalkSpeed = 500.0f;
+
+    if (CameraBoom)
+    {
+        CameraBoom->TargetArmLength = 450.0f;
+    }
+}
+
 void ADSReelPrototypeCharacter::TryReelPull()
 {
     AActor* Target = CurrentTarget.Get();
@@ -213,7 +253,10 @@ void ADSReelPrototypeCharacter::TryReelPull()
 
     if (Target->ActorHasTag(TEXT("Civilian")))
     {
-        const FVector RescueLocation = GetActorLocation() + (GetActorForwardVector() * 150.0f) + FVector(0.0f, 0.0f, 60.0f);
+        FVector RescueForward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
+        RescueForward.Z = 0.0f;
+        RescueForward = RescueForward.GetSafeNormal();
+        const FVector RescueLocation = GetActorLocation() + (RescueForward * 150.0f) + FVector(0.0f, 0.0f, 60.0f);
         Target->SetActorLocation(RescueLocation, false, nullptr, ETeleportType::TeleportPhysics);
         ShowDebugMessage(TEXT("Rescue Reel: civilian pulled clear"), FColor::Green);
         return;

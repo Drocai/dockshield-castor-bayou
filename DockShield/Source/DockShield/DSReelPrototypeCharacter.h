@@ -25,6 +25,7 @@ public:
     AActor* GetCurrentTargetActor() const;
     FString GetCurrentTargetPrompt() const;
     bool IsCurrentTargetReelPullValid() const;
+    bool IsAiming() const;
 
 protected:
     virtual void BeginPlay() override;
@@ -51,8 +52,12 @@ private:
     UPROPERTY()
     TWeakObjectPtr<AActor> CurrentTarget;
 
+    bool bIsAiming = false;
+
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
+    void StartAim();
+    void StopAim();
     void TryReelPull();
     AActor* FindBestTarget() const;
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;

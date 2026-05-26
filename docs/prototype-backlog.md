@@ -70,7 +70,8 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 ## Phase 3 - Heroes
 
 - [x] The Reel placeholder character
-- [ ] The Reel pull/grapple ability
+- [x] The Reel pull/grapple ability v0
+- [x] The Reel aim mode v0
 - [ ] The Fly placeholder character
 - [ ] The Fly mark ability
 - [ ] Lilly placeholder character
@@ -101,6 +102,7 @@ Current note: The Reel Pull v0 is implemented in C++ and builds, but it still ne
 - [x] Private gameplay UI reference set
 - [x] Basic prototype HUD
 - [x] Current prototype audit and play guide
+- [x] Test-map lighting/fog pass v0
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [ ] Weather state v0

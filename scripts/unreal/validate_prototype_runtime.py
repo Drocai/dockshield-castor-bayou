@@ -1,7 +1,10 @@
+import os
+
 import unreal
 
 
 MAP_PATH = "/Game/DockShield/Maps/M_Test_Targeting"
+PROJECT_CONFIG = os.path.join(unreal.Paths.project_config_dir(), "DefaultGame.ini")
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 ACTOR_EDITOR = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -52,6 +55,23 @@ def validate_classes():
         )
 
 
+def validate_project_defaults():
+    if not os.path.exists(PROJECT_CONFIG):
+        fail(f"missing project config {PROJECT_CONFIG}")
+
+    with open(PROJECT_CONFIG, "r", encoding="utf-8") as handle:
+        config_text = handle.read()
+
+    expected_fragments = [
+        "EditorStartupMap=/Game/DockShield/Maps/M_Test_Targeting.M_Test_Targeting",
+        "GameDefaultMap=/Game/DockShield/Maps/M_Test_Targeting.M_Test_Targeting",
+        "GlobalDefaultGameMode=/Script/DockShield.DSPrototypeGameMode",
+    ]
+    for fragment in expected_fragments:
+        if fragment not in config_text:
+            fail(f"DefaultGame.ini missing {fragment}")
+
+
 def validate_target(label, expected_prompt_fragment):
     targetable_cls = require_class("DSTargetableComponent")
     actor = next(
@@ -82,6 +102,7 @@ def validate_map():
 
 
 def main():
+    validate_project_defaults()
     validate_classes()
     validate_map()
     unreal.log("DockShield runtime validation passed: game mode, pawn, HUD, and target prompts.")

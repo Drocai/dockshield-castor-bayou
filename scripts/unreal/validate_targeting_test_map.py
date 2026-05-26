@@ -30,6 +30,10 @@ REQUIRED_ACTORS = {
     "Target_CivilianRescue_Debug": ["DockShieldTarget", "Civilian"],
     "Hazard_ToxicWater_Debug": ["DockShieldTarget", "Hazard"],
     "Light_Test_Targeting": [],
+    "DS_Light_Key_Storm": [],
+    "DS_Light_Toxic_Hazard": [],
+    "DS_Light_Rescue_Warm": [],
+    "DS_Fog_Bayou_Test": [],
 }
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
@@ -64,7 +68,12 @@ def main():
         if missing_tags:
             fail(f"{label} missing tags: {', '.join(missing_tags)}")
 
-        if label != "PlayerStart_Test_Targeting" and label != "Light_Test_Targeting":
+        if (
+            label != "PlayerStart_Test_Targeting"
+            and label != "Light_Test_Targeting"
+            and not label.startswith("DS_Light_")
+            and label != "DS_Fog_Bayou_Test"
+        ):
             mesh_component = actor.get_component_by_class(unreal.StaticMeshComponent)
             if mesh_component is None or mesh_component.static_mesh is None:
                 fail(f"{label} has no static mesh")

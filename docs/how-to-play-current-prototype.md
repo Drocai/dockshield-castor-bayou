@@ -32,16 +32,17 @@ You should not expect:
 - Move: `WASD`
 - Look: mouse
 - Jump: `Space`
-- Reel Pull / Rescue: `E`
+- Aim lock: hold right mouse button
+- Reel Pull / Rescue: left mouse button or `E`
 
 ## Test
 
 1. Face `Target_GrapplePull_Debug`.
 2. Confirm the reticle/prompt changes.
-3. Press `E`.
+3. Hold right mouse button to aim, then press left mouse button or `E`.
 4. Face `Target_CivilianRescue_Debug`.
 5. Confirm the reticle/prompt changes.
-6. Press `E`.
+6. Hold right mouse button to aim, then press left mouse button or `E`.
 7. Repeat both interactions and watch for crashes, stuck movement, bad prompts, or missing HUD updates.
 
 ## Pass Criteria

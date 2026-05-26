@@ -25,6 +25,7 @@ void ADSPrototypeHUD::DrawHUD()
 
     const bool bHasTarget = ReelCharacter && ReelCharacter->GetCurrentTargetActor();
     const bool bValidTarget = ReelCharacter && ReelCharacter->IsCurrentTargetReelPullValid();
+    const bool bAiming = ReelCharacter && ReelCharacter->IsAiming();
     FString Prompt = TEXT("DockShield Reel v0: acquire target");
     if (ReelCharacter)
     {
@@ -46,6 +47,7 @@ void ADSPrototypeHUD::DrawHUD()
     DrawPanel(28.0f, 28.0f, 300.0f, 118.0f, PanelColor);
     DrawText(TEXT("THE REEL"), FLinearColor(0.85f, 0.95f, 1.0f, 1.0f), 44.0f, 42.0f, nullptr, 1.45f);
     DrawText(TEXT("PUBLIC HERO"), FLinearColor(0.2f, 0.7f, 1.0f, 1.0f), 46.0f, 74.0f, nullptr, 0.82f);
+    DrawText(bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE"), bAiming ? ValidColor : NeutralColor, 214.0f, 74.0f, nullptr, 0.72f);
     DrawText(TEXT("OBJECTIVE: Test Pull / Rescue"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.78f);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
@@ -58,8 +60,8 @@ void ADSPrototypeHUD::DrawHUD()
     DrawText(Prompt, HudColor, CenterX - (PromptWidth * 0.5f) + 18.0f, ScreenHeight - 115.0f, nullptr, 0.86f);
 
     DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 126.0f, 222.0f, 58.0f, PanelColor);
-    DrawText(TEXT("REEL PULL"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 111.0f, nullptr, 0.78f);
-    DrawText(TEXT("E"), HudColor, ScreenWidth - 82.0f, ScreenHeight - 116.0f, nullptr, 1.2f);
+    DrawText(TEXT("RMB AIM"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 114.0f, nullptr, 0.7f);
+    DrawText(TEXT("LMB / E REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 90.0f, nullptr, 0.72f);
 }
 
 void ADSPrototypeHUD::DrawReticle(float CenterX, float CenterY, const FLinearColor& Color)
