@@ -34,12 +34,15 @@ void ADSPrototypeHUD::DrawHUD()
     const float WaterDepth = ReelCharacter ? ReelCharacter->GetCurrentWaterDepth() : 0.0f;
     const float WaterMovementScale = ReelCharacter ? ReelCharacter->GetWaterMovementScale() : 1.0f;
     const bool bBoatableWater = ReelCharacter && ReelCharacter->IsInBoatableWater();
+    const bool bBoardedBoat = ReelCharacter && ReelCharacter->IsBoardedBoat();
     FString Prompt = TEXT("DockShield Reel v0: acquire target");
     FString LastReelResult = TEXT("READY");
+    FString BoatStatus = TEXT("NO BOAT TARGET");
     if (ReelCharacter)
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
         LastReelResult = ReelCharacter->GetLastReelResult();
+        BoatStatus = ReelCharacter->GetBoatStatusText();
     }
     if (Prompt.Len() > 72)
     {
@@ -48,6 +51,10 @@ void ADSPrototypeHUD::DrawHUD()
     if (LastReelResult.Len() > 32)
     {
         LastReelResult = LastReelResult.Left(29) + TEXT("...");
+    }
+    if (BoatStatus.Len() > 42)
+    {
+        BoatStatus = BoatStatus.Left(39) + TEXT("...");
     }
 
     const FLinearColor ValidColor(0.05f, 0.95f, 0.35f, 1.0f);
@@ -61,7 +68,7 @@ void ADSPrototypeHUD::DrawHUD()
     DrawPanel(28.0f, 28.0f, 300.0f, 118.0f, PanelColor);
     DrawText(TEXT("THE REEL"), FLinearColor(0.85f, 0.95f, 1.0f, 1.0f), 44.0f, 42.0f, nullptr, 1.45f);
     DrawText(TEXT("PUBLIC HERO"), FLinearColor(0.2f, 0.7f, 1.0f, 1.0f), 46.0f, 74.0f, nullptr, 0.82f);
-    DrawText(bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE"), bAiming ? ValidColor : NeutralColor, 214.0f, 74.0f, nullptr, 0.72f);
+    DrawText(bBoardedBoat ? TEXT("BOAT CONTROL") : (bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE")), bBoardedBoat ? ValidColor : (bAiming ? ValidColor : NeutralColor), 188.0f, 74.0f, nullptr, 0.72f);
     DrawText(TEXT("OBJECTIVE: Test Pull / Rescue"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.78f);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
@@ -73,18 +80,20 @@ void ADSPrototypeHUD::DrawHUD()
     DrawPanel(CenterX - (PromptWidth * 0.5f), ScreenHeight - 132.0f, PromptWidth, PromptHeight, PanelColor);
     DrawText(Prompt, HudColor, CenterX - (PromptWidth * 0.5f) + 18.0f, ScreenHeight - 115.0f, nullptr, 0.86f);
 
-    DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 126.0f, 222.0f, 58.0f, PanelColor);
-    DrawText(TEXT("RMB AIM"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 114.0f, nullptr, 0.7f);
-    DrawText(TEXT("LMB / E FIRE REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 90.0f, nullptr, 0.68f);
+    DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 154.0f, 222.0f, 86.0f, PanelColor);
+    DrawText(TEXT("RMB AIM"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), ScreenWidth - 232.0f, ScreenHeight - 142.0f, nullptr, 0.7f);
+    DrawText(TEXT("LMB / E FIRE REEL"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 118.0f, nullptr, 0.68f);
+    DrawText(TEXT("F / B BOARD-EXIT"), bBoardedBoat ? ValidColor : NeutralColor, ScreenWidth - 232.0f, ScreenHeight - 94.0f, nullptr, 0.68f);
 
-    DrawPanel(28.0f, ScreenHeight - 184.0f, 360.0f, 138.0f, PanelColor);
-    DrawText(bValidTarget ? TEXT("TARGET LOCK") : TEXT("TARGET SEARCH"), HudColor, 44.0f, ScreenHeight - 169.0f, nullptr, 0.82f);
-    DrawText(FString::Printf(TEXT("DIST %.0fm"), TargetDistance / 100.0f), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), 252.0f, ScreenHeight - 169.0f, nullptr, 0.72f);
-    DrawText(TEXT("LINE TENSION"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), 44.0f, ScreenHeight - 142.0f, nullptr, 0.68f);
-    DrawBar(144.0f, ScreenHeight - 136.0f, 174.0f, 8.0f, LineTension, HudColor);
-    DrawText(LastReelResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 114.0f, nullptr, 0.68f);
-    DrawText(FString::Printf(TEXT("PULLS %d   RESCUES %d   BOATS %d"), GrapplePullCount, CivilianRescueCount, BoatTowCount), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.6f);
-    DrawText(FString::Printf(TEXT("WATER %.0fcm   MOVE %.0f%%   %s"), WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), FLinearColor(0.48f, 0.82f, 1.0f, 1.0f), 44.0f, ScreenHeight - 70.0f, nullptr, 0.6f);
+    DrawPanel(28.0f, ScreenHeight - 208.0f, 390.0f, 162.0f, PanelColor);
+    DrawText(bValidTarget ? TEXT("TARGET LOCK") : TEXT("TARGET SEARCH"), HudColor, 44.0f, ScreenHeight - 193.0f, nullptr, 0.82f);
+    DrawText(FString::Printf(TEXT("DIST %.0fm"), TargetDistance / 100.0f), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), 282.0f, ScreenHeight - 193.0f, nullptr, 0.72f);
+    DrawText(TEXT("LINE TENSION"), FLinearColor(0.85f, 0.85f, 0.78f, 1.0f), 44.0f, ScreenHeight - 166.0f, nullptr, 0.68f);
+    DrawBar(144.0f, ScreenHeight - 160.0f, 174.0f, 8.0f, LineTension, HudColor);
+    DrawText(LastReelResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 138.0f, nullptr, 0.68f);
+    DrawText(FString::Printf(TEXT("PULLS %d   RESCUES %d   BOATS %d"), GrapplePullCount, CivilianRescueCount, BoatTowCount), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 116.0f, nullptr, 0.6f);
+    DrawText(FString::Printf(TEXT("WATER %.0fcm   MOVE %.0f%%   %s"), WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), FLinearColor(0.48f, 0.82f, 1.0f, 1.0f), 44.0f, ScreenHeight - 94.0f, nullptr, 0.6f);
+    DrawText(BoatStatus, bBoardedBoat ? ValidColor : NeutralColor, 44.0f, ScreenHeight - 72.0f, nullptr, 0.6f);
 }
 
 void ADSPrototypeHUD::DrawReticle(float CenterX, float CenterY, const FLinearColor& Color)

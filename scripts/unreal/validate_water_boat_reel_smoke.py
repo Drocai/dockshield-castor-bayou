@@ -98,7 +98,33 @@ def main():
             fail("character should board a floating empty boat")
         if boat.board_boat(character):
             fail("occupied boat should reject a second board action")
+
+        if "OCCUPIED" not in boat.get_boat_state_text():
+            fail(f"expected occupied boat state, got {boat.get_boat_state_text()}")
+
+        seat_distance = distance(character.get_actor_location(), boat.get_seat_world_location())
+        if seat_distance > 5.0:
+            fail(f"boarded character was not moved to the boat seat, distance={seat_distance:.1f}")
+
+        pilot_start = boat.get_actor_location()
+        if not boat.apply_pilot_input(unreal.Vector2D(0.0, 1.0), 0.0, 0.25):
+            fail("occupied floating boat should accept pilot movement input")
+        pilot_end = boat.get_actor_location()
+        if boat.get_last_pilot_distance() <= 0.0:
+            fail("boat reported no pilot movement distance")
+        if distance(pilot_start, pilot_end) <= 1.0:
+            fail("pilot input did not move the boat")
+
         boat.exit_boat()
+        if "READY" not in boat.get_boat_state_text():
+            fail(f"expected ready boat after exit, got {boat.get_boat_state_text()}")
+
+        if not hasattr(character, "try_board_or_exit_boat"):
+            fail("Reel character is missing board/exit input method")
+        if not hasattr(character, "is_boarded_boat"):
+            fail("Reel character is missing boarded-state accessor")
+        if not hasattr(character, "get_boat_status_text"):
+            fail("Reel character is missing boat status HUD accessor")
 
         boat.set_water_depth(30.0)
         if boat.apply_reel_tow_from(character.get_actor_location(), 280.0):
@@ -109,7 +135,7 @@ def main():
             if actor:
                 ACTOR_EDITOR.destroy_actor(actor)
 
-    unreal.log("DockShield water/boat/Reel smoke validation passed: depth, slowdown, floating, towing, and boarding.")
+    unreal.log("DockShield water/boat/Reel smoke validation passed: depth, slowdown, floating, towing, boarding, and piloting.")
 
 
 main()

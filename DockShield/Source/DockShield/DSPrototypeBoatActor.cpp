@@ -69,11 +69,23 @@ bool ADSPrototypeBoatActor::BoardBoat(AActor* Rider)
     }
 
     bOccupied = true;
+    Occupant = Rider;
+
+    Rider->SetActorLocation(GetSeatWorldLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+    Rider->SetActorRotation(GetActorRotation(), ETeleportType::TeleportPhysics);
+    Rider->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
     return true;
 }
 
 void ADSPrototypeBoatActor::ExitBoat()
 {
+    if (AActor* Rider = Occupant.Get())
+    {
+        Rider->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        Rider->SetActorLocation(GetExitWorldLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+    }
+
+    Occupant.Reset();
     bOccupied = false;
 }
 
@@ -102,6 +114,42 @@ bool ADSPrototypeBoatActor::ApplyReelTowFrom(FVector PullOrigin, float Strength)
     return true;
 }
 
+bool ADSPrototypeBoatActor::ApplyPilotInput(FVector2D MoveInput, float ControllerYawDegrees, float DeltaSeconds)
+{
+    LastPilotDistance = 0.0f;
+
+    if (!bOccupied || bAnchored || !CanFloat() || DeltaSeconds <= 0.0f)
+    {
+        return false;
+    }
+
+    MoveInput = MoveInput.GetClampedToMaxSize(1.0f);
+    if (MoveInput.IsNearlyZero())
+    {
+        return false;
+    }
+
+    const FRotator YawRotation(0.0f, ControllerYawDegrees, 0.0f);
+    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+    FVector PilotDirection = (ForwardDirection * MoveInput.Y) + (RightDirection * MoveInput.X);
+    PilotDirection.Z = 0.0f;
+    if (!PilotDirection.Normalize())
+    {
+        return false;
+    }
+
+    const float DepthAssist = FMath::Clamp(CurrentWaterDepth / (RequiredWaterDepth * 2.0f), 0.35f, 1.0f);
+    LastPilotDistance = FMath::Max(0.0f, PilotSpeed) * DepthAssist * DeltaSeconds * MoveInput.Size();
+    FVector NewLocation = GetActorLocation() + (PilotDirection * LastPilotDistance);
+    NewLocation.Z = BaseZ;
+
+    SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+    SetActorRotation(PilotDirection.Rotation(), ETeleportType::TeleportPhysics);
+    BaseZ = NewLocation.Z;
+    return true;
+}
+
 FString ADSPrototypeBoatActor::GetBoatStateText() const
 {
     if (bAnchored)
@@ -120,4 +168,19 @@ FString ADSPrototypeBoatActor::GetBoatStateText() const
 float ADSPrototypeBoatActor::GetLastTowDistance() const
 {
     return LastTowDistance;
+}
+
+float ADSPrototypeBoatActor::GetLastPilotDistance() const
+{
+    return LastPilotDistance;
+}
+
+FVector ADSPrototypeBoatActor::GetSeatWorldLocation() const
+{
+    return GetActorTransform().TransformPosition(SeatOffset);
+}
+
+FVector ADSPrototypeBoatActor::GetExitWorldLocation() const
+{
+    return GetActorTransform().TransformPosition(ExitOffset);
 }

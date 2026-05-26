@@ -29,8 +29,8 @@ Current graphics are prototype quality:
 - test-map graybox floor/cubes
 - debug target line/spheres
 - simple Canvas HUD
-- no bayou lighting pass
-- no storm/rain/water visuals
+- first test-map lighting/fog pass only
+- no final storm/rain/water visuals
 - no custom Reel/Fly/Lilly models
 - no cinematic props or VFX
 

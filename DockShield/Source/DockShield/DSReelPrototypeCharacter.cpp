@@ -158,6 +158,8 @@ void ADSReelPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
     PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
     PlayerInputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
+    PlayerInputComponent->BindKey(EKeys::F, IE_Pressed, this, &ADSReelPrototypeCharacter::HandleBoardOrExitInput);
+    PlayerInputComponent->BindKey(EKeys::B, IE_Pressed, this, &ADSReelPrototypeCharacter::HandleBoardOrExitInput);
     PlayerInputComponent->BindKey(EKeys::RightMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::StartAim);
     PlayerInputComponent->BindKey(EKeys::RightMouseButton, IE_Released, this, &ADSReelPrototypeCharacter::StopAim);
 }
@@ -169,10 +171,22 @@ AActor* ADSReelPrototypeCharacter::GetCurrentTargetActor() const
 
 FString ADSReelPrototypeCharacter::GetCurrentTargetPrompt() const
 {
+    if (bIsBoardedBoat)
+    {
+        return TEXT("F/B: Exit boat | WASD: pilot rescue boat | LMB/E: fire Reel");
+    }
+
     AActor* Target = CurrentTarget.Get();
     if (!Target)
     {
         return TEXT("Face a DockShield target and press E");
+    }
+
+    if (const ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(Target))
+    {
+        const bool bCloseEnough = FVector::Dist(GetActorLocation(), Boat->GetActorLocation()) <= BoardInteractionRange;
+        const FString BoardPrompt = bCloseEnough ? TEXT("F/B: Board boat") : TEXT("Move closer to board");
+        return FString::Printf(TEXT("%s | Boat %s | LMB/E: Tow"), *BoardPrompt, *Boat->GetBoatStateText());
     }
 
     if (UDSTargetableComponent* Targetable = GetTargetableComponent(Target))
@@ -238,11 +252,41 @@ bool ADSReelPrototypeCharacter::IsInBoatableWater() const
     return bInBoatableWater;
 }
 
+bool ADSReelPrototypeCharacter::IsBoardedBoat() const
+{
+    return bIsBoardedBoat && BoardedBoat.IsValid();
+}
+
+FString ADSReelPrototypeCharacter::GetBoatStatusText() const
+{
+    if (const ADSPrototypeBoatActor* Boat = BoardedBoat.Get())
+    {
+        return FString::Printf(TEXT("BOAT %s | PILOT %.0fcm"), *Boat->GetBoatStateText(), Boat->GetLastPilotDistance());
+    }
+
+    if (const ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(CurrentTarget.Get()))
+    {
+        return FString::Printf(TEXT("BOAT %s | F/B BOARD"), *Boat->GetBoatStateText());
+    }
+
+    return bInBoatableWater ? TEXT("BOATABLE WATER") : TEXT("NO BOAT TARGET");
+}
+
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
     if (!Controller)
     {
+        return;
+    }
+
+    if (ADSPrototypeBoatActor* Boat = BoardedBoat.Get())
+    {
+        const float DeltaSeconds = GetWorld() ? GetWorld()->GetDeltaSeconds() : 0.0f;
+        if (Boat->ApplyPilotInput(MovementVector, Controller->GetControlRotation().Yaw, DeltaSeconds))
+        {
+            LastReelResult = TEXT("BOAT PILOT");
+        }
         return;
     }
 
@@ -267,6 +311,17 @@ void ADSReelPrototypeCharacter::StartAim()
     bIsAiming = true;
     bUseControllerRotationYaw = true;
 
+    if (bIsBoardedBoat)
+    {
+        if (CameraBoom)
+        {
+            CameraBoom->TargetArmLength = 430.0f;
+        }
+
+        ShowDebugMessage(TEXT("Boat aim: LMB or E to fire Reel"), FColor::Cyan);
+        return;
+    }
+
     UCharacterMovementComponent* Movement = GetCharacterMovement();
     Movement->bOrientRotationToMovement = false;
     ApplyMovementSpeed();
@@ -284,6 +339,15 @@ void ADSReelPrototypeCharacter::StopAim()
     bIsAiming = false;
     bUseControllerRotationYaw = false;
 
+    if (bIsBoardedBoat)
+    {
+        if (CameraBoom)
+        {
+            CameraBoom->TargetArmLength = 520.0f;
+        }
+        return;
+    }
+
     UCharacterMovementComponent* Movement = GetCharacterMovement();
     Movement->bOrientRotationToMovement = true;
     ApplyMovementSpeed();
@@ -297,6 +361,66 @@ void ADSReelPrototypeCharacter::StopAim()
 void ADSReelPrototypeCharacter::TryReelPull()
 {
     ExecuteReelActionOnTarget(CurrentTarget.Get());
+}
+
+void ADSReelPrototypeCharacter::HandleBoardOrExitInput()
+{
+    TryBoardOrExitBoat();
+}
+
+bool ADSReelPrototypeCharacter::TryBoardOrExitBoat()
+{
+    if (IsBoardedBoat())
+    {
+        ExitBoardedBoat();
+        return true;
+    }
+
+    bIsBoardedBoat = false;
+    BoardedBoat.Reset();
+
+    ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(CurrentTarget.Get());
+    if (!Boat)
+    {
+        LastReelResult = TEXT("NO BOAT TARGET");
+        ShowDebugMessage(TEXT("Board: face the rescue boat first"), FColor::Orange);
+        return false;
+    }
+
+    const float DistanceToBoat = FVector::Dist(GetActorLocation(), Boat->GetActorLocation());
+    if (DistanceToBoat > BoardInteractionRange)
+    {
+        LastReelResult = TEXT("BOAT TOO FAR");
+        ShowDebugMessage(TEXT("Board: move closer to the boat"), FColor::Orange);
+        return false;
+    }
+
+    if (!Boat->BoardBoat(this))
+    {
+        LastReelResult = FString::Printf(TEXT("BOAT %s"), *Boat->GetBoatStateText());
+        ShowDebugMessage(TEXT("Board: boat is not ready"), FColor::Orange);
+        return false;
+    }
+
+    BoardedBoat = Boat;
+    bIsBoardedBoat = true;
+    bIsAiming = false;
+    bUseControllerRotationYaw = false;
+
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+    {
+        Movement->DisableMovement();
+        Movement->bOrientRotationToMovement = false;
+    }
+
+    if (CameraBoom)
+    {
+        CameraBoom->TargetArmLength = 520.0f;
+    }
+
+    LastReelResult = TEXT("BOARDED BOAT");
+    ShowDebugMessage(TEXT("Boarded rescue boat: WASD pilots, F/B exits"), FColor::Cyan);
+    return true;
 }
 
 bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
@@ -481,6 +605,34 @@ bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const
     }
 
     return Actor->ActorHasTag(TEXT("GrapplePoint")) || Actor->ActorHasTag(TEXT("Civilian")) || Actor->ActorHasTag(TEXT("Boat"));
+}
+
+void ADSReelPrototypeCharacter::ExitBoardedBoat()
+{
+    if (ADSPrototypeBoatActor* Boat = BoardedBoat.Get())
+    {
+        Boat->ExitBoat();
+    }
+
+    BoardedBoat.Reset();
+    bIsBoardedBoat = false;
+    bUseControllerRotationYaw = false;
+
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+    {
+        Movement->SetMovementMode(MOVE_Walking);
+        Movement->bOrientRotationToMovement = true;
+    }
+
+    ApplyMovementSpeed();
+
+    if (CameraBoom)
+    {
+        CameraBoom->TargetArmLength = 450.0f;
+    }
+
+    LastReelResult = TEXT("EXITED BOAT");
+    ShowDebugMessage(TEXT("Exited rescue boat"), FColor::Cyan);
 }
 
 void ADSReelPrototypeCharacter::StartReelFeedback(AActor* Target, const FColor& Color)

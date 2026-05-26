@@ -9,6 +9,7 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UDSTargetableComponent;
+class ADSPrototypeBoatActor;
 struct FInputActionValue;
 
 UCLASS()
@@ -60,6 +61,15 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Water")
     bool IsInBoatableWater() const;
 
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Boat")
+    bool TryBoardOrExitBoat();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat")
+    bool IsBoardedBoat() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat")
+    FString GetBoatStatusText() const;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -85,7 +95,11 @@ private:
     UPROPERTY()
     TWeakObjectPtr<AActor> CurrentTarget;
 
+    UPROPERTY()
+    TWeakObjectPtr<ADSPrototypeBoatActor> BoardedBoat;
+
     bool bIsAiming = false;
+    bool bIsBoardedBoat = false;
     float CurrentTargetDistance = 0.0f;
     float LineTension = 0.0f;
     FString LastReelResult = TEXT("READY");
@@ -100,11 +114,13 @@ private:
     FVector LastReelFeedbackEnd = FVector::ZeroVector;
     FColor LastReelFeedbackColor = FColor::Cyan;
     float ReelFeedbackTimeRemaining = 0.0f;
+    float BoardInteractionRange = 360.0f;
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void StartAim();
     void StopAim();
+    void HandleBoardOrExitInput();
     AActor* FindBestTarget() const;
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     float GetTargetInteractionRange(AActor* Actor) const;
@@ -112,6 +128,7 @@ private:
     void UpdateWaterState();
     void ApplyMovementSpeed();
     bool CanReelPull(AActor* Actor) const;
+    void ExitBoardedBoat();
     void StartReelFeedback(AActor* Target, const FColor& Color);
     void DrawReelFeedback(float DeltaSeconds);
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;
