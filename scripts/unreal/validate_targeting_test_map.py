@@ -34,6 +34,7 @@ REQUIRED_ACTORS = {
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 ACTOR_EDITOR = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+TARGETABLE_COMPONENT_CLASS = getattr(unreal, "DSTargetableComponent", None)
 
 
 def fail(message):
@@ -67,6 +68,11 @@ def main():
             mesh_component = actor.get_component_by_class(unreal.StaticMeshComponent)
             if mesh_component is None or mesh_component.static_mesh is None:
                 fail(f"{label} has no static mesh")
+
+        if TARGETABLE_COMPONENT_CLASS and required_tags:
+            targetable_component = actor.get_component_by_class(TARGETABLE_COMPONENT_CLASS)
+            if targetable_component is None:
+                fail(f"{label} is missing DSTargetableComponent")
 
     unreal.log(
         "DockShield targeting map validation passed: "

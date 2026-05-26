@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 1 - Unreal project foundation.
+Phase 2 - Shared targeting v0.
 
 ## Current Repo State
 
@@ -13,12 +13,14 @@ Phase 1 - Unreal project foundation.
 - Unreal Engine 5.7 is installed.
 - Production Unreal project exists at `DockShield/DockShield.uproject`.
 - First targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`.
+- Shared targeting v0 C++ module builds.
+- The Reel prototype pawn and Pull input are implemented for manual smoke testing.
 
 ## Current Blockers
 
 | Blocker | Owner | Unblock Step |
 | --- | --- | --- |
-| Windows Smart App Control blocks Unreal C++ build-rules DLLs | D RoC | Decide whether to turn Smart App Control off, use Blueprint-only prototyping for now, or build C++ on another machine |
+| Manual editor smoke test pending | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, face target, press `E` |
 
 ## Current Agent Lane
 
@@ -33,16 +35,15 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 ## Next Human Actions
 
-1. Decide how to handle Smart App Control for Unreal C++ builds.
-2. Open `DockShield/DockShield.uproject` in Unreal and confirm `M_Test_Targeting` opens.
-3. If Smart App Control stays on, keep the next implementation pass Blueprint-only or use another dev machine for C++.
+1. Open `DockShield/DockShield.uproject` in Unreal.
+2. Confirm `M_Test_Targeting` opens by default.
+3. Press Play, face the grapple/civilian placeholders, and press `E`.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
-2. Keep the C++ shared targeting/Reel Pull WIP in `stash@{0}` until the build policy is resolved.
-3. Prepare a Blueprint-only fallback plan if Smart App Control stays on.
-4. Stop before The Fly, Lilly, weather, or command mode.
+2. Keep The Reel Pull scope to one grapple target and one civilian target.
+3. Close the manual smoke-test gap before The Fly, Lilly, weather, or command mode.
 
 ## Current Implementation Plan
 

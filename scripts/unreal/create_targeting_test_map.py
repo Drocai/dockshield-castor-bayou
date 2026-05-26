@@ -28,6 +28,14 @@ CONTENT_DIRS = [
 MAP_PATH = "/Game/DockShield/Maps/M_Test_Targeting"
 CUBE_MESH_PATH = "/Game/LevelPrototyping/Meshes/SM_Cube"
 PLANE_MESH_PATH = "/Game/LevelPrototyping/Meshes/SM_Plane"
+RESET_ACTOR_LABELS = {
+    "PlayerStart_Test_Targeting",
+    "Graybox_Floor",
+    "Target_GrapplePull_Debug",
+    "Target_CivilianRescue_Debug",
+    "Hazard_ToxicWater_Debug",
+    "Light_Test_Targeting",
+}
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 ACTOR_EDITOR = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -46,9 +54,9 @@ def set_mesh(actor, mesh_path, scale):
     actor.set_actor_scale3d(scale)
 
 
-def spawn_static(label, location, scale, mesh_path=CUBE_MESH_PATH):
+def spawn_actor(actor_class, label, location, scale, mesh_path=CUBE_MESH_PATH):
     actor = ACTOR_EDITOR.spawn_actor_from_class(
-        unreal.StaticMeshActor,
+        actor_class,
         location,
         unreal.Rotator(0.0, 0.0, 0.0),
     )
@@ -57,14 +65,32 @@ def spawn_static(label, location, scale, mesh_path=CUBE_MESH_PATH):
     return actor
 
 
+def spawn_static(label, location, scale, mesh_path=CUBE_MESH_PATH):
+    return spawn_actor(unreal.StaticMeshActor, label, location, scale, mesh_path)
+
+
+def spawn_target(label, location, scale, target_tags, mesh_path=CUBE_MESH_PATH):
+    target_actor_class = getattr(unreal, "DSTargetActor", unreal.StaticMeshActor)
+    actor = spawn_actor(target_actor_class, label, location, scale, mesh_path)
+    actor.tags = [unreal.Name("DockShieldTarget")] + [unreal.Name(tag) for tag in target_tags]
+    return actor
+
+
+def reset_existing_test_actors():
+    for actor in ACTOR_EDITOR.get_all_level_actors():
+        if actor.get_actor_label() in RESET_ACTOR_LABELS:
+            ACTOR_EDITOR.destroy_actor(actor)
+
+
 def create_map():
     if unreal.EditorAssetLibrary.does_asset_exist(MAP_PATH):
-        unreal.log(f"{MAP_PATH} already exists; loading without modifying actors.")
+        unreal.log(f"{MAP_PATH} already exists; rebuilding test actors.")
         LEVEL_EDITOR.load_level(MAP_PATH)
-        return
     else:
         unreal.log(f"Creating {MAP_PATH}.")
         LEVEL_EDITOR.new_level(MAP_PATH)
+
+    reset_existing_test_actors()
 
     player_start = ACTOR_EDITOR.spawn_actor_from_class(
         unreal.PlayerStart,
@@ -81,30 +107,30 @@ def create_map():
     )
     floor.set_folder_path("DockShield/Graybox")
 
-    grapple = spawn_static(
+    grapple = spawn_target(
         "Target_GrapplePull_Debug",
         unreal.Vector(250.0, -250.0, 100.0),
         unreal.Vector(1.0, 1.0, 2.0),
+        ["GrapplePoint"],
     )
     grapple.set_folder_path("DockShield/Targets")
-    grapple.tags = [unreal.Name("DockShieldTarget"), unreal.Name("GrapplePoint")]
 
-    civilian = spawn_static(
+    civilian = spawn_target(
         "Target_CivilianRescue_Debug",
         unreal.Vector(250.0, 250.0, 100.0),
         unreal.Vector(1.0, 1.0, 1.5),
+        ["Civilian"],
     )
     civilian.set_folder_path("DockShield/Targets")
-    civilian.tags = [unreal.Name("DockShieldTarget"), unreal.Name("Civilian")]
 
-    hazard = spawn_static(
+    hazard = spawn_target(
         "Hazard_ToxicWater_Debug",
         unreal.Vector(650.0, 0.0, 20.0),
         unreal.Vector(2.5, 2.5, 0.15),
+        ["Hazard"],
         PLANE_MESH_PATH,
     )
     hazard.set_folder_path("DockShield/Hazards")
-    hazard.tags = [unreal.Name("DockShieldTarget"), unreal.Name("Hazard")]
 
     light = ACTOR_EDITOR.spawn_actor_from_class(
         unreal.PointLight,

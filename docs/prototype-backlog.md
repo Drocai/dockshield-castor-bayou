@@ -15,7 +15,7 @@
 - [x] Detect Visual Studio Build Tools
 - [x] Install Visual Studio C++ tools
 - [x] Install Windows SDK
-- [ ] Resolve Windows Smart App Control block on Unreal C++ build-rules DLLs
+- [x] Resolve Windows Smart App Control block on Unreal C++ build-rules DLLs
 - [x] Create GitHub remote
 - [x] Push setup repo
 - [x] Create Unreal project after install
@@ -56,25 +56,27 @@ Content/DockShield/
 
 ## Phase 2 - Shared Targeting
 
-- [ ] Define target categories
-- [ ] Create shared target interface
+- [x] Define target categories
+- [x] Create shared target interface
 - [ ] Create target reticle
-- [ ] Add interact prompt
-- [ ] Add target debug overlay
+- [x] Add interact prompt
+- [x] Add target debug overlay
 - [x] Add initial grapple, civilian, and hazard placeholder targets
 - [ ] Verify one target works for all three heroes
 
-Blocked: C++ implementation WIP is preserved in local git stash `stash@{0}` until Smart App Control allows UnrealBuildTool to load generated build-rules DLLs.
+Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. Full three-hero verification waits for The Fly and Lilly.
 
 ## Phase 3 - Heroes
 
-- [ ] The Reel placeholder character
+- [x] The Reel placeholder character
 - [ ] The Reel pull/grapple ability
 - [ ] The Fly placeholder character
 - [ ] The Fly mark ability
 - [ ] Lilly placeholder character
 - [ ] Lilly bind ability
 - [ ] Character switching
+
+Current note: The Reel Pull v0 is implemented in C++ and builds, but it still needs a manual in-editor play smoke test before closing the gameplay task.
 
 ## Phase 4 - Mission Objects
 

@@ -29,7 +29,7 @@ As of the initial GitHub/Unreal setup:
 - Git LFS patterns are prepared for Unreal and art assets.
 - Unreal Engine 5.7 is installed and detected.
 - Blender, OBS Studio, Visual Studio C++ tools, and Windows SDK are installed and detected.
-- Unreal C++ builds are blocked by Windows Smart App Control until the security policy is changed or the project is built on another machine.
+- Unreal C++ builds are currently unblocked after D RoC turned off Smart App Control.
 
 ## Operating Model
 

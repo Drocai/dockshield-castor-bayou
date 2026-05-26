@@ -32,7 +32,7 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 ## Needs D RoC
 
 - sign in to Epic Games Launcher
-- decide whether to disable Smart App Control for Unreal C++ builds, keep early work Blueprint-only, or use another C++ build machine
+- run the manual editor smoke test for The Reel Pull v0
 - approve paid asset purchases or contractors
 
 ## Needs Unreal Installed
@@ -45,8 +45,6 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 
 ## Suggested Parallel Flow
 
-1. D RoC decides how to handle Smart App Control.
-2. Codex restores the C++ WIP only after UnrealBuildTool can load generated build-rules DLLs.
-3. Codex implements shared targetable interface v0.
-4. D RoC opens the map in Unreal for a manual editor smoke test.
-5. Codex implements The Reel Pull v0 after the target interface is verified.
+1. Codex commits the shared targetable interface and The Reel Pull v0 implementation after validation.
+2. D RoC opens the map in Unreal for a manual editor smoke test.
+3. Codex fixes any smoke-test issues before adding The Fly, Lilly, weather, or command mode.
