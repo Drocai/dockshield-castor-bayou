@@ -35,6 +35,8 @@ def reflected_text(value):
 def validate_classes():
     game_mode_cls = require_class("DSPrototypeGameMode")
     reel_cls = require_class("DSReelPrototypeCharacter")
+    require_class("DSFlyPrototypeCharacter")
+    require_class("DSLillyPrototypeCharacter")
     hud_cls = require_class("DSPrototypeHUD")
     player_controller_cls = require_class("DSPrototypePlayerController")
     require_class("DSTargetableComponent")

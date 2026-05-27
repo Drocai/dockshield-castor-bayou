@@ -42,6 +42,15 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
     int32 FlyMarkCount = 0;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    bool bIsLillyBound = false;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    float LillyBindStrength = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    int32 LillyBindCount = 0;
+
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     void ConfigureFromOwnerTags();
 
@@ -62,4 +71,19 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
     FString GetFlyPrompt() const;
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    bool BindForLilly(float Strength = 1.0f);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    void ClearLillyBind();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool CanLillyBind() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool IsLillyBound() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    FString GetLillyPrompt() const;
 };

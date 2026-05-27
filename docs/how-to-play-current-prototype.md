@@ -2,7 +2,7 @@
 
 ## What This Is
 
-This is a mechanics test for The Reel, not the full DockShield look.
+This is a mechanics test for the shared hero loop, not the full DockShield look.
 
 You should expect:
 
@@ -13,18 +13,20 @@ You should expect:
 - debug target visuals
 - temporary debug Reel cast/reel feedback
 - first-pass prototype visual identity kits for The Reel and The Fly
+- first-pass prototype visual identity kit for Lilly Loch
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
 - C++ foundation for water depth, current/flood pressure, prototype boat drifting/towing, boat boarding, and boat piloting
 - C++ foundation for The Fly sonar pulse and mark state
+- C++ foundation for Lilly swamp pulse and bind state
 
 You should not expect:
 
 - the canon Castor Bayou visuals yet
 - final character models
 - storm/rain/water art
-- Lilly, command mode, boss combat, or full mission flow
+- command mode, boss combat, or full mission flow
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
 
@@ -42,6 +44,7 @@ You should not expect:
 - Aim lock: hold right mouse button
 - Switch to The Reel: `1`
 - Switch to The Fly: `2`
+- Switch to Lilly Loch: `3`
 - Cycle hero: `Tab`
 - Cast / detach Reel line: left mouse button or `E`
 - Reel attached line: hold `R`
@@ -54,6 +57,12 @@ The Fly controls after pressing `2` or `Tab`:
 - Sonar pulse: `Q`
 - Mark recon target: left mouse button or `E`
 - Aim recon cone: hold right mouse button
+
+Lilly controls after pressing `3` or `Tab`:
+
+- Swamp pulse: `Q`
+- Bind target: left mouse button or `E`
+- Aim root focus: hold right mouse button
 
 ## Test
 
@@ -76,7 +85,10 @@ The Fly controls after pressing `2` or `Tab`:
 17. Press `2` or `Tab` to switch to The Fly.
 18. Press `Q` and confirm sonar debug feedback appears.
 19. Face a target and press left mouse button or `E` to mark it.
-20. Press `1` or `Tab` to return to The Reel.
+20. Press `3` or `Tab` to switch to Lilly.
+21. Press `Q` and confirm swamp pulse debug feedback appears.
+22. Face a bindable target and press left mouse button or `E` to bind it.
+23. Press `1` or `Tab` to return to The Reel.
 
 ## Pass Criteria
 
@@ -91,9 +103,9 @@ The Fly controls after pressing `2` or `Tab`:
 - Lower-left HUD reports flood pressure and current speed.
 - Boat HUD state appears when the player targets, boards, pilots, and exits the prototype boat.
 - A floating prototype boat can drift under water current and is harder to tow/pilot under higher flood pressure.
-- `1`, `2`, and `Tab` switch between The Reel and The Fly.
+- `1`, `2`, `3`, and `Tab` switch between The Reel, The Fly, and Lilly Loch.
 - The HUD changes to the active hero.
-- The Reel and The Fly have visibly different prototype silhouettes.
+- The Reel, The Fly, and Lilly Loch have visibly different prototype silhouettes.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation
@@ -114,4 +126,10 @@ For the narrow Fly recon smoke test only:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\validate_fly_recon_smoke.py' -unattended -nop4 -nosplash
+```
+
+For the narrow Lilly bind smoke test only:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\validate_lilly_bind_smoke.py' -unattended -nop4 -nosplash
 ```

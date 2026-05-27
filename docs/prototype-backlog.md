@@ -65,9 +65,9 @@ Content/DockShield/
 - [x] Add target lock, distance, and line tension HUD v0
 - [x] Add initial grapple, civilian, and hazard placeholder targets
 - [x] Add one-command prototype validation runner
-- [ ] Verify one target works for all three heroes
+- [x] Verify one target works for all three heroes
 
-Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. The Reel and The Fly now use the shared target system through normal switching; full three-hero verification still waits for Lilly.
+Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. The Reel, The Fly, and Lilly now use the shared target system through normal switching.
 
 ## Phase 3 - Heroes
 
@@ -81,11 +81,11 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Reel prototype boat pilot controls v0
 - [x] The Fly placeholder character
 - [x] The Fly mark ability
-- [ ] Lilly placeholder character
-- [ ] Lilly bind ability
+- [x] Lilly placeholder character
+- [x] Lilly bind ability
 - [x] Character switching
 
-Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. The Fly sonar/mark v0 is implemented as a C++ pawn and can now be reached in normal play through `1`/`2`/`Tab` switching.
+Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. The Fly sonar/mark v0 and Lilly swamp pulse/bind v0 are implemented as C++ pawns and can now be reached in normal play through `1`/`2`/`3`/`Tab` switching.
 
 ## Phase 4 - Mission Objects
 
@@ -125,8 +125,9 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Placed water/boat debug visualization v0
 - [x] Prototype boat control HUD state v0
 - [x] Fly sonar/mark prototype HUD path v0
-- [x] Reel/Fly switching HUD prompt v0
-- [x] Reel/Fly prototype visual identity kit v0
+- [x] Lilly bind prototype HUD path v0
+- [x] Reel/Fly/Lilly switching HUD prompt v0
+- [x] Reel/Fly/Lilly prototype visual identity kit v0
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture

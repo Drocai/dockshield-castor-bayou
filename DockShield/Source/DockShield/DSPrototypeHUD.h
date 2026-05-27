@@ -5,6 +5,7 @@
 #include "DSPrototypeHUD.generated.h"
 
 class ADSFlyPrototypeCharacter;
+class ADSLillyPrototypeCharacter;
 
 UCLASS()
 class DOCKSHIELD_API ADSPrototypeHUD : public AHUD
@@ -16,6 +17,7 @@ public:
 
 private:
     void DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY);
+    void DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY);
     void DrawReticle(float CenterX, float CenterY, const FLinearColor& Color);
     void DrawPanel(float X, float Y, float Width, float Height, const FLinearColor& Color);
     void DrawBar(float X, float Y, float Width, float Height, float Value, const FLinearColor& FillColor);

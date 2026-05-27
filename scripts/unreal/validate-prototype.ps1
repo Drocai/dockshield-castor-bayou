@@ -20,6 +20,7 @@ $PythonValidations = @(
     "validate_reel_interaction_smoke.py",
     "validate_water_boat_reel_smoke.py",
     "validate_fly_recon_smoke.py",
+    "validate_lilly_bind_smoke.py",
     "validate_character_switching_smoke.py"
 )
 

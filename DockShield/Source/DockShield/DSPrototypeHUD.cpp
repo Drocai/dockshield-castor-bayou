@@ -1,5 +1,6 @@
 #include "DSPrototypeHUD.h"
 #include "DSFlyPrototypeCharacter.h"
+#include "DSLillyPrototypeCharacter.h"
 #include "DSPrototypePlayerController.h"
 #include "DSReelPrototypeCharacter.h"
 #include "Engine/Canvas.h"
@@ -21,6 +22,7 @@ void ADSPrototypeHUD::DrawHUD()
 
     const ADSReelPrototypeCharacter* ReelCharacter = nullptr;
     const ADSFlyPrototypeCharacter* FlyCharacter = nullptr;
+    const ADSLillyPrototypeCharacter* LillyCharacter = nullptr;
     const ADSPrototypePlayerController* PrototypeController = nullptr;
     if (APlayerController* PlayerController = GetOwningPlayerController())
     {
@@ -28,6 +30,13 @@ void ADSPrototypeHUD::DrawHUD()
         APawn* ControlledPawn = PlayerController->GetPawn();
         ReelCharacter = Cast<ADSReelPrototypeCharacter>(ControlledPawn);
         FlyCharacter = Cast<ADSFlyPrototypeCharacter>(ControlledPawn);
+        LillyCharacter = Cast<ADSLillyPrototypeCharacter>(ControlledPawn);
+    }
+
+    if (LillyCharacter)
+    {
+        DrawLillyHUD(LillyCharacter, ScreenWidth, ScreenHeight, CenterX, CenterY);
+        return;
     }
 
     if (FlyCharacter)
@@ -60,7 +69,7 @@ void ADSPrototypeHUD::DrawHUD()
     FString ReelLineState = TEXT("IDLE");
     FString ObjectiveText = TEXT("OBJECTIVE: Test Cast / Rescue / Tow");
     FString WaterState = TEXT("DRY");
-    FString SwitchStatus = PrototypeController ? PrototypeController->GetSwitchStatusText() : TEXT("1 REEL  2 FLY  TAB CYCLE");
+    FString SwitchStatus = PrototypeController ? PrototypeController->GetSwitchStatusText() : TEXT("1 REEL  2 FLY  3 LILLY  TAB");
     if (ReelCharacter)
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
@@ -170,7 +179,7 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
     const float SonarRange = FlyCharacter ? FlyCharacter->GetSonarRange() : 0.0f;
     FString Prompt = FlyCharacter ? FlyCharacter->GetCurrentReconPrompt() : TEXT("No Fly pawn");
     FString LastReconResult = FlyCharacter ? FlyCharacter->GetLastReconResult() : TEXT("NO RECON");
-    FString SwitchStatus = TEXT("1 REEL  2 FLY  TAB CYCLE");
+    FString SwitchStatus = TEXT("1 REEL  2 FLY  3 LILLY  TAB");
     if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(GetOwningPlayerController()))
     {
         SwitchStatus = PrototypeController->GetSwitchStatusText();
@@ -226,6 +235,75 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
     DrawText(FString::Printf(TEXT("SONAR HITS %d"), SonarHits), NeutralColor, 44.0f, ScreenHeight - 140.0f, nullptr, 0.68f);
     DrawText(FString::Printf(TEXT("MARKED TARGETS %d"), MarkedTargets), ValidColor, 44.0f, ScreenHeight - 116.0f, nullptr, 0.68f);
     DrawText(LastReconResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.68f);
+    DrawText(TEXT("SQUAD STACK: REEL / FLY / LILLY"), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 68.0f, nullptr, 0.56f);
+}
+
+void ADSPrototypeHUD::DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY)
+{
+    const bool bHasTarget = LillyCharacter && LillyCharacter->GetCurrentBindTargetActor();
+    const bool bValidTarget = LillyCharacter && LillyCharacter->IsCurrentBindTargetValid();
+    const bool bAiming = LillyCharacter && LillyCharacter->IsAiming();
+    const int32 PulseHits = LillyCharacter ? LillyCharacter->GetLastSwampPulseHitCount() : 0;
+    const int32 BoundTargets = LillyCharacter ? LillyCharacter->GetBoundTargetCount() : 0;
+    const float BindRange = LillyCharacter ? LillyCharacter->GetBindRange() : 0.0f;
+    const float RootRadius = LillyCharacter ? LillyCharacter->GetRootRadius() : 0.0f;
+    FString Prompt = LillyCharacter ? LillyCharacter->GetCurrentBindPrompt() : TEXT("No Lilly pawn");
+    FString LastBindResult = LillyCharacter ? LillyCharacter->GetLastBindResult() : TEXT("NO BIND");
+    FString SwitchStatus = TEXT("1 REEL  2 FLY  3 LILLY  TAB");
+    if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(GetOwningPlayerController()))
+    {
+        SwitchStatus = PrototypeController->GetSwitchStatusText();
+    }
+
+    if (Prompt.Len() > 72)
+    {
+        Prompt = Prompt.Left(69) + TEXT("...");
+    }
+    if (LastBindResult.Len() > 34)
+    {
+        LastBindResult = LastBindResult.Left(31) + TEXT("...");
+    }
+    if (SwitchStatus.Len() > 40)
+    {
+        SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
+    }
+
+    const FLinearColor ValidColor(0.55f, 1.0f, 0.16f, 1.0f);
+    const FLinearColor InvalidColor(1.0f, 0.55f, 0.08f, 1.0f);
+    const FLinearColor NeutralColor(0.82f, 0.94f, 0.72f, 1.0f);
+    const FLinearColor HudColor = bValidTarget ? ValidColor : (bHasTarget ? InvalidColor : NeutralColor);
+    const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.52f);
+
+    DrawReticle(CenterX, CenterY, HudColor);
+
+    DrawPanel(28.0f, 28.0f, 332.0f, 172.0f, PanelColor);
+    DrawText(TEXT("LILLY LOCH"), FLinearColor(0.75f, 1.0f, 0.48f, 1.0f), 44.0f, 42.0f, nullptr, 1.32f);
+    DrawText(TEXT("SWAMP QUEEN"), FLinearColor(1.0f, 0.28f, 0.24f, 1.0f), 46.0f, 74.0f, nullptr, 0.80f);
+    DrawText(bAiming ? TEXT("ROOT AIM") : TEXT("SWAMP MOVE"), bAiming ? ValidColor : NeutralColor, 192.0f, 74.0f, nullptr, 0.72f);
+    DrawText(TEXT("OBJECTIVE: Bind Targets"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
+    DrawText(FString::Printf(TEXT("BIND %.0fm   ROOT %.0fm"), BindRange / 100.0f, RootRadius / 100.0f), NeutralColor, 44.0f, 132.0f, nullptr, 0.62f);
+    DrawText(SwitchStatus, NeutralColor, 44.0f, 156.0f, nullptr, 0.56f);
+
+    DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
+    DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
+    DrawText(TEXT("SWAMP BOND"), FLinearColor(0.55f, 1.0f, 0.16f, 1.0f), ScreenWidth - 318.0f, 72.0f, nullptr, 0.75f);
+    DrawBar(ScreenWidth - 318.0f, 102.0f, 184.0f, 6.0f, FMath::Clamp(PulseHits / 5.0f, 0.0f, 1.0f), HudColor);
+
+    const float PromptWidth = 560.0f;
+    const float PromptHeight = 56.0f;
+    DrawPanel(CenterX - (PromptWidth * 0.5f), ScreenHeight - 132.0f, PromptWidth, PromptHeight, PanelColor);
+    DrawText(Prompt, HudColor, CenterX - (PromptWidth * 0.5f) + 18.0f, ScreenHeight - 115.0f, nullptr, 0.86f);
+
+    DrawPanel(ScreenWidth - 250.0f, ScreenHeight - 160.0f, 222.0f, 92.0f, PanelColor);
+    DrawText(TEXT("Q SWAMP PULSE"), NeutralColor, ScreenWidth - 232.0f, ScreenHeight - 148.0f, nullptr, 0.70f);
+    DrawText(TEXT("LMB / E BIND"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 124.0f, nullptr, 0.70f);
+    DrawText(TEXT("RMB AIM"), bAiming ? ValidColor : NeutralColor, ScreenWidth - 232.0f, ScreenHeight - 100.0f, nullptr, 0.70f);
+
+    DrawPanel(28.0f, ScreenHeight - 186.0f, 364.0f, 140.0f, PanelColor);
+    DrawText(TEXT("VINE REEL"), HudColor, 44.0f, ScreenHeight - 170.0f, nullptr, 0.82f);
+    DrawText(FString::Printf(TEXT("PULSE HITS %d"), PulseHits), NeutralColor, 44.0f, ScreenHeight - 140.0f, nullptr, 0.68f);
+    DrawText(FString::Printf(TEXT("BOUND TARGETS %d"), BoundTargets), ValidColor, 44.0f, ScreenHeight - 116.0f, nullptr, 0.68f);
+    DrawText(LastBindResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.68f);
     DrawText(TEXT("SQUAD STACK: REEL / FLY / LILLY"), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 68.0f, nullptr, 0.56f);
 }
 

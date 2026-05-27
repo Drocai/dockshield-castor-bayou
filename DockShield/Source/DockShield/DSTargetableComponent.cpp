@@ -38,6 +38,7 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         DisplayName = FText::FromString(TEXT("Civilian Rescue Target"));
         bCanReelPull = true;
         bCanFlyMark = true;
+        bCanLillyBind = true;
     }
     else if (Owner->ActorHasTag(TEXT("Hazard")))
     {
@@ -45,6 +46,7 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         DisplayName = FText::FromString(TEXT("Toxic Hazard"));
         bCanReelPull = false;
         bCanFlyMark = true;
+        bCanLillyBind = true;
     }
     else if (Owner->ActorHasTag(TEXT("Boat")))
     {
@@ -58,6 +60,7 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         TargetType = EDSTargetType::Enemy;
         DisplayName = FText::FromString(TEXT("Enemy Patrol"));
         bCanFlyMark = true;
+        bCanLillyBind = true;
     }
     else if (Owner->ActorHasTag(TEXT("WeakPoint")))
     {
@@ -73,6 +76,7 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         DisplayName = FText::FromString(TEXT("Interactable Object"));
         bCanReelPull = true;
         bCanFlyMark = true;
+        bCanLillyBind = true;
     }
 }
 
@@ -148,5 +152,60 @@ FString UDSTargetableComponent::GetFlyPrompt() const
         return FString::Printf(TEXT("%s: Track extraction boat"), *MarkState);
     default:
         return FString::Printf(TEXT("%s: Fly Sense mark %s"), *MarkState, *DisplayName.ToString());
+    }
+}
+
+bool UDSTargetableComponent::BindForLilly(float Strength)
+{
+    ConfigureFromOwnerTags();
+    if (!bCanLillyBind)
+    {
+        return false;
+    }
+
+    bIsLillyBound = true;
+    LillyBindStrength = FMath::Clamp(Strength, 0.0f, 1.0f);
+    ++LillyBindCount;
+    return true;
+}
+
+void UDSTargetableComponent::ClearLillyBind()
+{
+    bIsLillyBound = false;
+    LillyBindStrength = 0.0f;
+}
+
+bool UDSTargetableComponent::CanLillyBind() const
+{
+    return bCanLillyBind;
+}
+
+bool UDSTargetableComponent::IsLillyBound() const
+{
+    return bIsLillyBound;
+}
+
+FString UDSTargetableComponent::GetLillyPrompt() const
+{
+    if (!bCanLillyBind)
+    {
+        return FString::Printf(TEXT("%s: no Lilly bind"), *DisplayName.ToString());
+    }
+
+    const FString BindState = bIsLillyBound ? TEXT("BOUND") : TEXT("UNBOUND");
+    switch (TargetType)
+    {
+    case EDSTargetType::Hazard:
+        return FString::Printf(TEXT("%s: Root-suppress toxic hazard"), *BindState);
+    case EDSTargetType::Enemy:
+        return FString::Printf(TEXT("%s: Root snare enemy patrol"), *BindState);
+    case EDSTargetType::WeakPoint:
+        return FString::Printf(TEXT("%s: Bind structural weak point"), *BindState);
+    case EDSTargetType::Civilian:
+        return FString::Printf(TEXT("%s: Stabilize rescue target"), *BindState);
+    case EDSTargetType::Object:
+        return FString::Printf(TEXT("%s: Vine shift object"), *BindState);
+    default:
+        return FString::Printf(TEXT("%s: Lilly Bind %s"), *BindState, *DisplayName.ToString());
     }
 }

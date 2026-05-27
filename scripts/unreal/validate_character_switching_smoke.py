@@ -33,12 +33,14 @@ def validate_controller_methods(controller_cdo):
     for method_name in [
         "switch_to_reel",
         "switch_to_fly",
+        "switch_to_lilly",
         "cycle_hero",
         "get_active_hero_label",
         "get_switch_status_text",
         "get_switch_count",
         "get_reel_pawn_actor",
         "get_fly_pawn_actor",
+        "get_lilly_pawn_actor",
     ]:
         if not hasattr(controller_cdo, method_name):
             fail(f"DSPrototypePlayerController missing Python method {method_name}")
@@ -71,6 +73,7 @@ def main():
     controller_cls = require_class("DSPrototypePlayerController")
     reel_cls = require_class("DSReelPrototypeCharacter")
     fly_cls = require_class("DSFlyPrototypeCharacter")
+    lilly_cls = require_class("DSLillyPrototypeCharacter")
 
     game_mode_cdo = unreal.get_default_object(game_mode_cls)
     player_controller_class = require_property(game_mode_cdo, "player_controller_class")
@@ -92,22 +95,30 @@ def main():
             unreal.Vector(120.0, -700.0, 120.0),
             unreal.Rotator(0.0, 0.0, 0.0),
         )
-        spawned.extend([reel, fly])
+        lilly = ACTOR_EDITOR.spawn_actor_from_class(
+            lilly_cls,
+            unreal.Vector(480.0, -700.0, 120.0),
+            unreal.Rotator(0.0, 0.0, 0.0),
+        )
+        spawned.extend([reel, fly, lilly])
 
         if reel is None:
             fail("could not spawn DSReelPrototypeCharacter")
         if fly is None:
             fail("could not spawn DSFlyPrototypeCharacter")
+        if lilly is None:
+            fail("could not spawn DSLillyPrototypeCharacter")
 
         validate_hero_visuals(reel, "THE REEL")
         validate_hero_visuals(fly, "THE FLY")
+        validate_hero_visuals(lilly, "LILLY LOCH")
 
     finally:
         for actor in reversed(spawned):
             if actor:
                 ACTOR_EDITOR.destroy_actor(actor)
 
-    unreal.log("DockShield character switching validation passed: controller class, switch methods, and Reel/Fly visual kits are wired.")
+    unreal.log("DockShield character switching validation passed: controller class, switch methods, and Reel/Fly/Lilly visual kits are wired.")
 
 
 main()

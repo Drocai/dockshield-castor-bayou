@@ -81,6 +81,7 @@ The current C++ build uses runtime prototype visual kits, not final character as
 
 - The Reel has visible red/black/gold reel gear markers: gauntlet, belt spool, back rig, and hat marker.
 - The Fly has black/teal recon markers: wing pack silhouette, visor beacon, and probe rod.
+- Lilly has green/brown swamp-force markers: root staff, vine lash, glowing bloom, and crown/foliage silhouette.
 - These are silhouette/readability placeholders only. Final photographic-quality characters require imported MetaHuman/custom character assets and licensed/custom materials.
 - Unreal 5.7 has MetaHuman plugin files installed locally, but DockShield does not yet contain imported MetaHuman hero assets or enabled project-specific MetaHuman setup.
 
