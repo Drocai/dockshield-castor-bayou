@@ -16,6 +16,7 @@ ADSWaterZoneActor::ADSWaterZoneActor()
 void ADSWaterZoneActor::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    AdvanceFlood(DeltaSeconds);
 
     if (!GetWorld() || !WaterBounds)
     {
@@ -36,6 +37,14 @@ void ADSWaterZoneActor::Tick(float DeltaSeconds)
     DrawDebugLine(GetWorld(), CornerB, CornerC, WaterColor, false, 0.0f, 0, 3.0f);
     DrawDebugLine(GetWorld(), CornerC, CornerD, WaterColor, false, 0.0f, 0, 3.0f);
     DrawDebugLine(GetWorld(), CornerD, CornerA, WaterColor, false, 0.0f, 0, 3.0f);
+
+    const FVector CurrentVelocity = GetCurrentVelocity();
+    if (!CurrentVelocity.IsNearlyZero())
+    {
+        const FVector ArrowStart = SurfaceCenter + FVector(0.0f, 0.0f, 28.0f);
+        const FVector ArrowEnd = ArrowStart + CurrentVelocity.GetClampedToMaxSize(260.0f);
+        DrawDebugDirectionalArrow(GetWorld(), ArrowStart, ArrowEnd, 90.0f, FColor::Cyan, false, 0.0f, 0, 3.0f);
+    }
 }
 
 bool ADSWaterZoneActor::ContainsWorldLocation(FVector WorldLocation) const
@@ -81,5 +90,68 @@ bool ADSWaterZoneActor::CanBoatOperateAtLocation(FVector WorldLocation) const
 
 FVector ADSWaterZoneActor::GetCurrentVelocity() const
 {
-    return CurrentDirection.GetSafeNormal() * CurrentSpeed;
+    return CurrentDirection.GetSafeNormal() * CurrentSpeed * (1.0f + FMath::Clamp(StormPressure, 0.0f, 1.0f));
+}
+
+FVector ADSWaterZoneActor::GetCurrentVelocityAtLocation(FVector WorldLocation) const
+{
+    const float Depth = GetDepthAtLocation(WorldLocation);
+    if (Depth <= 1.0f)
+    {
+        return FVector::ZeroVector;
+    }
+
+    const float DepthScale = FMath::Clamp(Depth / FMath::Max(DeepWaterDepth, 1.0f), 0.25f, 1.0f);
+    return GetCurrentVelocity() * DepthScale;
+}
+
+float ADSWaterZoneActor::GetFloodPressureAtLocation(FVector WorldLocation) const
+{
+    const float Depth = GetDepthAtLocation(WorldLocation);
+    if (Depth <= 1.0f)
+    {
+        return 0.0f;
+    }
+
+    const float DepthPressure = FMath::Clamp(Depth / FMath::Max(DeepWaterDepth, 1.0f), 0.0f, 1.0f);
+    const float CurrentPressure = FMath::Clamp(GetCurrentVelocityAtLocation(WorldLocation).Size() / 420.0f, 0.0f, 1.0f);
+    const float ToxicPressure = bToxic ? ToxicPressureBonus : 0.0f;
+    return FMath::Clamp((DepthPressure * 0.48f) + (CurrentPressure * 0.26f) + (StormPressure * 0.22f) + ToxicPressure, 0.0f, 1.0f);
+}
+
+float ADSWaterZoneActor::GetReelTensionPressureAtLocation(FVector WorldLocation) const
+{
+    const float MovementDrag = 1.0f - GetMovementScaleAtLocation(WorldLocation);
+    return FMath::Clamp((MovementDrag * 0.58f) + (GetFloodPressureAtLocation(WorldLocation) * 0.62f), 0.0f, 1.0f);
+}
+
+void ADSWaterZoneActor::AdvanceFlood(float DeltaSeconds)
+{
+    if (DeltaSeconds <= 0.0f || FloodSurgeRate <= 0.0f)
+    {
+        return;
+    }
+
+    WaterSurfaceZ = FMath::Min(WaterSurfaceZ + (FloodSurgeRate * DeltaSeconds), MaxWaterSurfaceZ);
+}
+
+FString ADSWaterZoneActor::GetWaterStateTextAtLocation(FVector WorldLocation) const
+{
+    const float Pressure = GetFloodPressureAtLocation(WorldLocation);
+    if (Pressure >= 0.72f)
+    {
+        return bToxic ? TEXT("TOXIC SURGE") : TEXT("FLOOD SURGE");
+    }
+
+    if (Pressure >= 0.42f)
+    {
+        return bToxic ? TEXT("TOXIC CURRENT") : TEXT("STRONG CURRENT");
+    }
+
+    if (GetDepthAtLocation(WorldLocation) > 1.0f)
+    {
+        return bToxic ? TEXT("TOXIC WATER") : TEXT("WATER");
+    }
+
+    return TEXT("DRY");
 }

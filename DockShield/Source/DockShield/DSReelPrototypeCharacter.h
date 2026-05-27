@@ -94,6 +94,24 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Water")
     bool IsInBoatableWater() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetCurrentWaterPressure() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    FVector GetCurrentWaterVelocity() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetCurrentWaterSpeed() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    FString GetWaterStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mission")
+    FString GetPrototypeObjectiveText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mission")
+    float GetPrototypeObjectiveProgress() const;
+
     UFUNCTION(BlueprintCallable, Category = "DockShield|Boat")
     bool TryBoardOrExitBoat();
 
@@ -150,6 +168,9 @@ private:
     bool bInBoatableWater = false;
     float CurrentWaterDepth = 0.0f;
     float WaterMovementScale = 1.0f;
+    float CurrentWaterPressure = 0.0f;
+    FVector CurrentWaterVelocity = FVector::ZeroVector;
+    FString CurrentWaterStateText = TEXT("DRY");
     FVector LastReelFeedbackStart = FVector::ZeroVector;
     FVector LastReelFeedbackEnd = FVector::ZeroVector;
     FColor LastReelFeedbackColor = FColor::Cyan;
@@ -174,8 +195,9 @@ private:
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     float GetTargetInteractionRange(AActor* Actor) const;
     void UpdateTargetMetrics(AActor* Actor);
-    void UpdateWaterState();
+    void UpdateWaterState(float DeltaSeconds);
     void ApplyMovementSpeed();
+    void ApplyWaterCurrent(float DeltaSeconds);
     bool CanReelPull(AActor* Actor) const;
     void ApplyContinuousReelPull(AActor* Target, float DeltaSeconds);
     void DetachReelLineInternal(const FString& ResultText, bool bWasSnap);

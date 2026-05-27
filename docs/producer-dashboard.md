@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, and water/boat prototype foundations.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, and water/boat prototype foundations.
 
 ## Current Repo State
 
@@ -17,7 +17,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, and water/boat prototyp
 - The Reel prototype pawn, aim mode, cast/hold/release Reel input, target lock HUD, line tension state HUD, and action counters are implemented.
 - The Reel prototype has temporary debug-rendered feedback for valid casts, rescues, boat towing, and invalid cast attempts.
 - The Reel core action now has a headless commandlet smoke test for invalid target, grapple, and civilian rescue behavior.
-- Prototype water-depth zones and prototype boat towing/boarding/piloting actors are implemented in C++ and covered by a headless smoke test.
+- Prototype water-depth/current/flood-pressure zones and prototype boat drifting/towing/boarding/piloting actors are implemented in C++ and covered by a headless smoke test.
 - `M_Test_Targeting` now contains `DS_Water_Depth_Test` and `DS_Boat_Prototype_Tow` for the first boat tow pass.
 - Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
 - Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
@@ -31,7 +31,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Debt | Owner | Check |
 | --- | --- | --- |
 | Manual editor feel test for The Reel continuous line v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, confirm target lock/tension HUD, hold RMB to aim, press LMB or `E` to cast, hold `R` to reel, release `R` to ease |
-| Manual editor feel test for water/boat v0 | D RoC or Codex with editor session | Face `DS_Boat_Prototype_Tow`, hold RMB, press LMB or `E` to cast, hold `R` to tow, confirm boat feedback and HUD boat count, then press `F` or `B` to board/exit and use `WASD` to pilot |
+| Manual editor feel test for water/boat pressure v0 | D RoC or Codex with editor session | Face `DS_Boat_Prototype_Tow`, confirm HUD pressure/current readout, cast with LMB or `E`, hold `R` to tow, confirm boat feedback and HUD boat count, then press `F` or `B` to board/exit and use `WASD` to pilot |
 | Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry, debug feedback, and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
@@ -49,14 +49,14 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 1. Optional: open `DockShield/DockShield.uproject` in Unreal.
 2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, hold right mouse button to aim, press left mouse button or `E` to cast, then hold `R` to reel.
-3. Optional: judge only controls, targeting clarity, tension readability, and feedback timing. The cinematic Castor Bayou graphics are not in this graybox map yet.
+3. Optional: judge only controls, targeting clarity, tension readability, flood/current readability, and feedback timing. The cinematic Castor Bayou graphics are not in this graybox map yet.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next pass should improve visual readability of rescue raft/boat feedback, then move toward basic water current/boating hazard behavior.
+4. Next pass should improve visual readability of rescue raft/boat feedback, then move toward The Fly sonar/mark placeholder or a simple enemy threat.
 
 ## Current Implementation Plan
 

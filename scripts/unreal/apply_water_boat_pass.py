@@ -50,6 +50,9 @@ def main():
     water.set_editor_property("water_surface_z", 40.0)
     water.set_editor_property("boat_operational_depth", 120.0)
     water.set_editor_property("current_speed", 70.0)
+    water.set_editor_property("storm_pressure", 0.35)
+    water.set_editor_property("flood_surge_rate", 1.5)
+    water.set_editor_property("max_water_surface_z", 95.0)
     water_bounds = water.get_component_by_class(unreal.BoxComponent)
     if water_bounds:
         water_bounds.set_box_extent(unreal.Vector(780.0, 540.0, 190.0), True)
@@ -66,6 +69,8 @@ def main():
     boat.set_editor_property("current_water_depth", 145.0)
     boat.set_editor_property("required_water_depth", 120.0)
     boat.set_editor_property("reel_tow_step_distance", 240.0)
+    boat.set_editor_property("current_drift_scale", 0.42)
+    boat.set_editor_property("flood_drag_scale", 0.35)
 
     LEVEL_EDITOR.save_current_level()
     unreal.log("DockShield water/boat map pass applied: DS_Water_Depth_Test and DS_Boat_Prototype_Tow.")

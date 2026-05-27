@@ -2,6 +2,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "DSTargetableComponent.h"
+#include "DSWaterZoneActor.h"
+#include "EngineUtils.h"
 #include "UObject/ConstructorHelpers.h"
 
 ADSPrototypeBoatActor::ADSPrototypeBoatActor()
@@ -37,6 +39,9 @@ void ADSPrototypeBoatActor::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 
     RunningTime += DeltaSeconds;
+    LastDriftDistance = 0.0f;
+    UpdateWaterZoneForces(DeltaSeconds);
+
     if (CanFloat())
     {
         FVector Location = GetActorLocation();
@@ -46,8 +51,14 @@ void ADSPrototypeBoatActor::Tick(float DeltaSeconds)
 
     if (GetWorld())
     {
-        const FColor DebugColor = CanFloat() ? FColor::Cyan : FColor::Orange;
+        const FColor DebugColor = FloodPressure >= 0.65f ? FColor::Red : (CanFloat() ? FColor::Cyan : FColor::Orange);
         DrawDebugBox(GetWorld(), GetActorLocation(), FVector(145.0f, 65.0f, 28.0f), DebugColor, false, 0.0f, 0, 2.0f);
+        if (!WaterCurrentVelocity.IsNearlyZero())
+        {
+            const FVector ArrowStart = GetActorLocation() + FVector(0.0f, 0.0f, 55.0f);
+            const FVector ArrowEnd = ArrowStart + WaterCurrentVelocity.GetClampedToMaxSize(180.0f);
+            DrawDebugDirectionalArrow(GetWorld(), ArrowStart, ArrowEnd, 55.0f, DebugColor, false, 0.0f, 0, 2.0f);
+        }
     }
 }
 
@@ -106,7 +117,7 @@ bool ADSPrototypeBoatActor::ApplyReelTowFrom(FVector PullOrigin, float Strength)
     }
 
     const float DepthAssist = FMath::Clamp(CurrentWaterDepth / (RequiredWaterDepth * 2.0f), 0.35f, 1.0f);
-    LastTowDistance = FMath::Max(0.0f, Strength) * DepthAssist;
+    LastTowDistance = FMath::Max(0.0f, Strength) * DepthAssist * GetFloodDragMultiplier();
     FVector NewLocation = GetActorLocation() + (TowDirection * LastTowDistance);
     NewLocation.Z = BaseZ;
     SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
@@ -140,12 +151,38 @@ bool ADSPrototypeBoatActor::ApplyPilotInput(FVector2D MoveInput, float Controlle
     }
 
     const float DepthAssist = FMath::Clamp(CurrentWaterDepth / (RequiredWaterDepth * 2.0f), 0.35f, 1.0f);
-    LastPilotDistance = FMath::Max(0.0f, PilotSpeed) * DepthAssist * DeltaSeconds * MoveInput.Size();
+    LastPilotDistance = FMath::Max(0.0f, PilotSpeed) * DepthAssist * GetFloodDragMultiplier() * DeltaSeconds * MoveInput.Size();
     FVector NewLocation = GetActorLocation() + (PilotDirection * LastPilotDistance);
     NewLocation.Z = BaseZ;
 
     SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
     SetActorRotation(PilotDirection.Rotation(), ETeleportType::TeleportPhysics);
+    BaseZ = NewLocation.Z;
+    return true;
+}
+
+bool ADSPrototypeBoatActor::ApplyWaterForces(FVector CurrentVelocity, float InFloodPressure, float DeltaSeconds)
+{
+    WaterCurrentVelocity = CurrentVelocity;
+    FloodPressure = FMath::Clamp(InFloodPressure, 0.0f, 1.0f);
+    LastDriftDistance = 0.0f;
+
+    if (DeltaSeconds <= 0.0f || bAnchored || !CanFloat() || WaterCurrentVelocity.IsNearlyZero())
+    {
+        return false;
+    }
+
+    const float OccupantScale = bOccupied ? 0.62f : 1.0f;
+    const FVector Drift = WaterCurrentVelocity * CurrentDriftScale * OccupantScale * DeltaSeconds;
+    LastDriftDistance = Drift.Size();
+    if (LastDriftDistance <= 0.0f)
+    {
+        return false;
+    }
+
+    FVector NewLocation = GetActorLocation() + Drift;
+    NewLocation.Z = BaseZ;
+    SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
     BaseZ = NewLocation.Z;
     return true;
 }
@@ -162,6 +199,11 @@ FString ADSPrototypeBoatActor::GetBoatStateText() const
         return TEXT("TOO SHALLOW");
     }
 
+    if (FloodPressure >= 0.72f)
+    {
+        return bOccupied ? TEXT("OCCUPIED SURGE") : TEXT("SURGE DRIFT");
+    }
+
     return bOccupied ? TEXT("OCCUPIED") : TEXT("READY");
 }
 
@@ -175,6 +217,26 @@ float ADSPrototypeBoatActor::GetLastPilotDistance() const
     return LastPilotDistance;
 }
 
+float ADSPrototypeBoatActor::GetLastDriftDistance() const
+{
+    return LastDriftDistance;
+}
+
+float ADSPrototypeBoatActor::GetFloodPressure() const
+{
+    return FloodPressure;
+}
+
+FVector ADSPrototypeBoatActor::GetWaterCurrentVelocity() const
+{
+    return WaterCurrentVelocity;
+}
+
+float ADSPrototypeBoatActor::GetWaterCurrentSpeed() const
+{
+    return WaterCurrentVelocity.Size();
+}
+
 FVector ADSPrototypeBoatActor::GetSeatWorldLocation() const
 {
     return GetActorTransform().TransformPosition(SeatOffset);
@@ -183,4 +245,50 @@ FVector ADSPrototypeBoatActor::GetSeatWorldLocation() const
 FVector ADSPrototypeBoatActor::GetExitWorldLocation() const
 {
     return GetActorTransform().TransformPosition(ExitOffset);
+}
+
+void ADSPrototypeBoatActor::UpdateWaterZoneForces(float DeltaSeconds)
+{
+    if (!bUseWaterZoneForces || !GetWorld())
+    {
+        return;
+    }
+
+    bool bFoundWater = false;
+    float BestDepth = 0.0f;
+    FVector BestCurrent = FVector::ZeroVector;
+    float BestPressure = 0.0f;
+
+    for (TActorIterator<ADSWaterZoneActor> It(GetWorld()); It; ++It)
+    {
+        const ADSWaterZoneActor* WaterZone = *It;
+        if (!WaterZone || !WaterZone->ContainsWorldLocation(GetActorLocation()))
+        {
+            continue;
+        }
+
+        const float Depth = WaterZone->GetDepthAtLocation(GetActorLocation());
+        if (!bFoundWater || Depth > BestDepth)
+        {
+            bFoundWater = true;
+            BestDepth = Depth;
+            BestCurrent = WaterZone->GetCurrentVelocityAtLocation(GetActorLocation());
+            BestPressure = WaterZone->GetFloodPressureAtLocation(GetActorLocation());
+        }
+    }
+
+    if (!bFoundWater)
+    {
+        FloodPressure = 0.0f;
+        WaterCurrentVelocity = FVector::ZeroVector;
+        return;
+    }
+
+    SetWaterDepth(BestDepth);
+    ApplyWaterForces(BestCurrent, BestPressure, DeltaSeconds);
+}
+
+float ADSPrototypeBoatActor::GetFloodDragMultiplier() const
+{
+    return FMath::Clamp(1.0f - (FloodPressure * FloodDragScale), 0.48f, 1.0f);
 }

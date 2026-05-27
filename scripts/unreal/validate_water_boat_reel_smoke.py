@@ -62,6 +62,25 @@ def main():
             if actor is None:
                 fail(f"could not spawn {name} actor")
 
+        for method_name in [
+            "advance_flood",
+            "get_current_velocity_at_location",
+            "get_flood_pressure_at_location",
+            "get_reel_tension_pressure_at_location",
+            "get_water_state_text_at_location",
+        ]:
+            if not hasattr(water, method_name):
+                fail(f"DSWaterZoneActor missing Python method {method_name}")
+
+        for method_name in [
+            "apply_water_forces",
+            "get_last_drift_distance",
+            "get_flood_pressure",
+            "get_water_current_speed",
+        ]:
+            if not hasattr(boat, method_name):
+                fail(f"DSPrototypeBoatActor missing Python method {method_name}")
+
         sample_point = unreal.Vector(0.0, -700.0, -160.0)
         depth = water.get_depth_at_location(sample_point)
         if abs(depth - 160.0) > 0.5:
@@ -70,6 +89,28 @@ def main():
         movement_scale = water.get_movement_scale_at_location(sample_point)
         if movement_scale <= 0.0 or movement_scale >= 1.0:
             fail(f"expected water movement slowdown, got scale {movement_scale}")
+
+        water.set_editor_property("storm_pressure", 0.55)
+        water.set_editor_property("current_speed", 180.0)
+        water.set_editor_property("flood_surge_rate", 12.0)
+        water.set_editor_property("max_water_surface_z", 60.0)
+        surface_before = water.get_editor_property("water_surface_z")
+        water.advance_flood(1.5)
+        surface_after = water.get_editor_property("water_surface_z")
+        if surface_after <= surface_before:
+            fail("flood surge should raise the water surface")
+
+        current_velocity = water.get_current_velocity_at_location(sample_point)
+        current_speed = distance(current_velocity, unreal.Vector(0.0, 0.0, 0.0))
+        if current_speed <= 0.0:
+            fail("water current should produce velocity at submerged sample point")
+
+        flood_pressure = water.get_flood_pressure_at_location(sample_point)
+        reel_pressure = water.get_reel_tension_pressure_at_location(sample_point)
+        if flood_pressure <= 0.0 or reel_pressure <= flood_pressure * 0.4:
+            fail(f"expected meaningful flood/Reel pressure, got flood={flood_pressure}, reel={reel_pressure}")
+        if "CURRENT" not in water.get_water_state_text_at_location(sample_point) and "SURGE" not in water.get_water_state_text_at_location(sample_point):
+            fail(f"unexpected water state text: {water.get_water_state_text_at_location(sample_point)}")
 
         if not water.can_boat_operate_at_location(sample_point):
             fail("boat should operate at 160cm water depth")
@@ -81,6 +122,17 @@ def main():
         boat.set_water_depth(depth)
         if not boat.can_float():
             fail("prototype boat should float at validated water depth")
+
+        drift_start = boat.get_actor_location()
+        if not boat.apply_water_forces(current_velocity, flood_pressure, 1.0):
+            fail("floating boat should drift under water current")
+        drift_end = boat.get_actor_location()
+        if boat.get_last_drift_distance() <= 0.0:
+            fail("boat reported no water drift distance")
+        if distance(drift_start, drift_end) <= 1.0:
+            fail("water current did not move the boat")
+        if boat.get_flood_pressure() <= 0.0 or boat.get_water_current_speed() <= 0.0:
+            fail("boat did not retain flood/current telemetry")
 
         before_distance = distance(character.get_actor_location(), boat.get_actor_location())
         if not character.execute_reel_action_on_target(boat):
@@ -116,8 +168,9 @@ def main():
             fail("pilot input did not move the boat")
 
         boat.exit_boat()
-        if "READY" not in boat.get_boat_state_text():
-            fail(f"expected ready boat after exit, got {boat.get_boat_state_text()}")
+        exit_state = boat.get_boat_state_text()
+        if "OCCUPIED" in exit_state or "TOO SHALLOW" in exit_state:
+            fail(f"expected empty floating boat after exit, got {exit_state}")
 
         if not hasattr(character, "try_board_or_exit_boat"):
             fail("Reel character is missing board/exit input method")

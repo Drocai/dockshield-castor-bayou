@@ -15,7 +15,7 @@ You should expect:
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
-- C++ foundation for water depth, prototype boat towing, boat boarding, and boat piloting
+- C++ foundation for water depth, current/flood pressure, prototype boat drifting/towing, boat boarding, and boat piloting
 
 You should not expect:
 
@@ -57,9 +57,10 @@ You should not expect:
 10. Face `DS_Boat_Prototype_Tow` near the water test area.
 11. Press left mouse button or `E` to cast, then hold `R` to tow.
 12. Confirm the boat moves toward you, the Reel feedback line appears, and the boat tow count increases.
-13. Move close to `DS_Boat_Prototype_Tow`, then press `F` or `B`.
-14. Confirm the HUD switches to boat control, then use `WASD` to pilot the boat.
-15. Press `F` or `B` again and confirm the player exits back to foot movement.
+13. Watch the lower-left HUD for `PRESSURE` and `CURRENT` while standing in water or aiming at the boat.
+14. Move close to `DS_Boat_Prototype_Tow`, then press `F` or `B`.
+15. Confirm the HUD switches to boat control, then use `WASD` to pilot the boat.
+16. Press `F` or `B` again and confirm the player exits back to foot movement.
 
 ## Pass Criteria
 
@@ -71,7 +72,9 @@ You should not expect:
 - Holding `R` pulls over time and releasing `R` eases line tension.
 - Lower-left HUD updates line state, tension, snap count, last result, pull count, and rescue count.
 - Lower-left HUD includes water depth, movement scale, and boat tow count when water/boat actors are present.
+- Lower-left HUD reports flood pressure and current speed.
 - Boat HUD state appears when the player targets, boards, pilots, and exits the prototype boat.
+- A floating prototype boat can drift under water current and is harder to tow/pilot under higher flood pressure.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation

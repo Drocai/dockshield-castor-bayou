@@ -96,7 +96,9 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] Enemy weak point
 - [ ] Extraction point
 - [x] Prototype water depth zone
+- [x] Prototype water current/flood pressure logic
 - [x] Prototype boat target
+- [x] Prototype boat current drift logic
 - [x] Prototype boat boarding/tow logic
 - [x] Prototype boat piloting logic
 - [x] Place water/boat prototype actors in `M_Test_Targeting`
@@ -119,6 +121,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] Basic VFX
 - [x] Prototype Reel feedback VFX v0
 - [x] Water depth HUD metrics v0
+- [x] Flood pressure/current HUD metrics v0
 - [x] Placed water/boat debug visualization v0
 - [x] Prototype boat control HUD state v0
 - [ ] Weather state v0

@@ -108,7 +108,7 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    UpdateWaterState();
+    UpdateWaterState(DeltaSeconds);
     CurrentTarget = FindBestTarget();
     if (AActor* Target = CurrentTarget.Get())
     {
@@ -283,6 +283,55 @@ float ADSReelPrototypeCharacter::GetWaterMovementScale() const
 bool ADSReelPrototypeCharacter::IsInBoatableWater() const
 {
     return bInBoatableWater;
+}
+
+float ADSReelPrototypeCharacter::GetCurrentWaterPressure() const
+{
+    return CurrentWaterPressure;
+}
+
+FVector ADSReelPrototypeCharacter::GetCurrentWaterVelocity() const
+{
+    return CurrentWaterVelocity;
+}
+
+float ADSReelPrototypeCharacter::GetCurrentWaterSpeed() const
+{
+    return CurrentWaterVelocity.Size();
+}
+
+FString ADSReelPrototypeCharacter::GetWaterStatusText() const
+{
+    return CurrentWaterStateText;
+}
+
+FString ADSReelPrototypeCharacter::GetPrototypeObjectiveText() const
+{
+    if (CivilianRescueCount <= 0)
+    {
+        return TEXT("OBJECTIVE: Rescue civilian");
+    }
+
+    if (BoatTowCount <= 0)
+    {
+        return TEXT("OBJECTIVE: Tow rescue boat");
+    }
+
+    if (CurrentWaterPressure >= 0.65f)
+    {
+        return TEXT("OBJECTIVE: Escape flood surge");
+    }
+
+    return TEXT("OBJECTIVE: Extraction secured");
+}
+
+float ADSReelPrototypeCharacter::GetPrototypeObjectiveProgress() const
+{
+    float Progress = 0.0f;
+    Progress += CivilianRescueCount > 0 ? 0.42f : 0.0f;
+    Progress += BoatTowCount > 0 ? 0.38f : 0.0f;
+    Progress += CurrentWaterPressure < 0.65f ? 0.20f : 0.08f;
+    return FMath::Clamp(Progress, 0.0f, 1.0f);
 }
 
 bool ADSReelPrototypeCharacter::IsBoardedBoat() const
@@ -586,7 +635,7 @@ void ADSReelPrototypeCharacter::UpdateReelLine(float DeltaSeconds)
 
     const float Range = GetTargetInteractionRange(Target);
     const float DistanceRatio = Range > 0.0f ? FMath::Clamp(CurrentTargetDistance / Range, 0.0f, 1.45f) : 0.0f;
-    const float WaterPressure = bInWaterZone ? FMath::Clamp(1.0f - WaterMovementScale, 0.0f, 0.75f) : 0.0f;
+    const float WaterPressure = bInWaterZone ? CurrentWaterPressure : 0.0f;
 
     if (bReelHoldActive)
     {
@@ -692,12 +741,15 @@ void ADSReelPrototypeCharacter::UpdateTargetMetrics(AActor* Actor)
     LineTension = Range > 0.0f ? FMath::Clamp(CurrentTargetDistance / Range, 0.0f, 1.0f) : 0.0f;
 }
 
-void ADSReelPrototypeCharacter::UpdateWaterState()
+void ADSReelPrototypeCharacter::UpdateWaterState(float DeltaSeconds)
 {
     bInWaterZone = false;
     bInBoatableWater = false;
     CurrentWaterDepth = 0.0f;
     WaterMovementScale = 1.0f;
+    CurrentWaterPressure = 0.0f;
+    CurrentWaterVelocity = FVector::ZeroVector;
+    CurrentWaterStateText = TEXT("DRY");
 
     for (TActorIterator<ADSWaterZoneActor> It(GetWorld()); It; ++It)
     {
@@ -714,10 +766,14 @@ void ADSReelPrototypeCharacter::UpdateWaterState()
             CurrentWaterDepth = Depth;
             WaterMovementScale = WaterZone->GetMovementScaleAtLocation(GetActorLocation());
             bInBoatableWater = WaterZone->CanBoatOperateAtLocation(GetActorLocation());
+            CurrentWaterPressure = WaterZone->GetReelTensionPressureAtLocation(GetActorLocation());
+            CurrentWaterVelocity = WaterZone->GetCurrentVelocityAtLocation(GetActorLocation());
+            CurrentWaterStateText = WaterZone->GetWaterStateTextAtLocation(GetActorLocation());
         }
     }
 
     ApplyMovementSpeed();
+    ApplyWaterCurrent(DeltaSeconds);
 }
 
 void ADSReelPrototypeCharacter::ApplyMovementSpeed()
@@ -730,6 +786,20 @@ void ADSReelPrototypeCharacter::ApplyMovementSpeed()
 
     const float BaseSpeed = bIsAiming ? 360.0f : 500.0f;
     Movement->MaxWalkSpeed = BaseSpeed * WaterMovementScale;
+}
+
+void ADSReelPrototypeCharacter::ApplyWaterCurrent(float DeltaSeconds)
+{
+    if (!bInWaterZone || bIsBoardedBoat || DeltaSeconds <= 0.0f || CurrentWaterVelocity.IsNearlyZero())
+    {
+        return;
+    }
+
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+    {
+        const float CurrentInfluence = FMath::Clamp(CurrentWaterPressure, 0.0f, 1.0f) * 0.22f;
+        Movement->Velocity += CurrentWaterVelocity * CurrentInfluence * DeltaSeconds;
+    }
 }
 
 bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const

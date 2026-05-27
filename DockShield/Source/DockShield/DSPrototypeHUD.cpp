@@ -36,18 +36,25 @@ void ADSPrototypeHUD::DrawHUD()
     const int32 BoatTowCount = ReelCharacter ? ReelCharacter->GetBoatTowCount() : 0;
     const float WaterDepth = ReelCharacter ? ReelCharacter->GetCurrentWaterDepth() : 0.0f;
     const float WaterMovementScale = ReelCharacter ? ReelCharacter->GetWaterMovementScale() : 1.0f;
+    const float WaterPressure = ReelCharacter ? ReelCharacter->GetCurrentWaterPressure() : 0.0f;
+    const float WaterCurrentSpeed = ReelCharacter ? ReelCharacter->GetCurrentWaterSpeed() : 0.0f;
+    const float ObjectiveProgress = ReelCharacter ? ReelCharacter->GetPrototypeObjectiveProgress() : 0.0f;
     const bool bBoatableWater = ReelCharacter && ReelCharacter->IsInBoatableWater();
     const bool bBoardedBoat = ReelCharacter && ReelCharacter->IsBoardedBoat();
     FString Prompt = TEXT("DockShield Reel v0: acquire target");
     FString LastReelResult = TEXT("READY");
     FString BoatStatus = TEXT("NO BOAT TARGET");
     FString ReelLineState = TEXT("IDLE");
+    FString ObjectiveText = TEXT("OBJECTIVE: Test Cast / Rescue / Tow");
+    FString WaterState = TEXT("DRY");
     if (ReelCharacter)
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
         LastReelResult = ReelCharacter->GetLastReelResult();
         BoatStatus = ReelCharacter->GetBoatStatusText();
         ReelLineState = ReelCharacter->GetReelLineStateText();
+        ObjectiveText = ReelCharacter->GetPrototypeObjectiveText();
+        WaterState = ReelCharacter->GetWaterStatusText();
     }
     if (Prompt.Len() > 72)
     {
@@ -64,6 +71,10 @@ void ADSPrototypeHUD::DrawHUD()
     if (ReelLineState.Len() > 16)
     {
         ReelLineState = ReelLineState.Left(13) + TEXT("...");
+    }
+    if (ObjectiveText.Len() > 42)
+    {
+        ObjectiveText = ObjectiveText.Left(39) + TEXT("...");
     }
 
     const FLinearColor ValidColor(0.05f, 0.95f, 0.35f, 1.0f);
@@ -87,6 +98,9 @@ void ADSPrototypeHUD::DrawHUD()
     {
         LineStateColor = FLinearColor(0.16f, 0.8f, 1.0f, 1.0f);
     }
+    const FLinearColor WaterColor = WaterPressure >= 0.65f
+        ? FLinearColor(1.0f, 0.18f, 0.08f, 1.0f)
+        : (WaterPressure >= 0.35f ? FLinearColor(0.9f, 0.72f, 0.18f, 1.0f) : FLinearColor(0.48f, 0.82f, 1.0f, 1.0f));
     const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.48f);
 
     DrawReticle(CenterX, CenterY, bLineAttached ? LineStateColor : HudColor);
@@ -95,11 +109,12 @@ void ADSPrototypeHUD::DrawHUD()
     DrawText(TEXT("THE REEL"), FLinearColor(0.85f, 0.95f, 1.0f, 1.0f), 44.0f, 42.0f, nullptr, 1.45f);
     DrawText(TEXT("PUBLIC HERO"), FLinearColor(0.2f, 0.7f, 1.0f, 1.0f), 46.0f, 74.0f, nullptr, 0.82f);
     DrawText(bBoardedBoat ? TEXT("BOAT CONTROL") : (bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE")), bBoardedBoat ? ValidColor : (bAiming ? ValidColor : NeutralColor), 188.0f, 74.0f, nullptr, 0.72f);
-    DrawText(TEXT("OBJECTIVE: Test Cast / Rescue / Tow"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.78f);
+    DrawText(ObjectiveText, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
     DrawText(TEXT("TARGETING RANGE"), FLinearColor(1.0f, 0.42f, 0.35f, 1.0f), ScreenWidth - 318.0f, 72.0f, nullptr, 0.75f);
+    DrawBar(ScreenWidth - 318.0f, 102.0f, 184.0f, 6.0f, ObjectiveProgress, ValidColor);
 
     const float PromptWidth = 560.0f;
     const float PromptHeight = 56.0f;
@@ -120,7 +135,8 @@ void ADSPrototypeHUD::DrawHUD()
     DrawText(FString::Printf(TEXT("LINE %s   SNAPS %d"), *ReelLineState, ReelSnapCount), LineStateColor, 44.0f, ScreenHeight - 160.0f, nullptr, 0.62f);
     DrawText(LastReelResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 138.0f, nullptr, 0.68f);
     DrawText(FString::Printf(TEXT("PULLS %d   RESCUES %d   BOATS %d"), GrapplePullCount, CivilianRescueCount, BoatTowCount), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 116.0f, nullptr, 0.6f);
-    DrawText(FString::Printf(TEXT("WATER %.0fcm   MOVE %.0f%%   %s"), WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), FLinearColor(0.48f, 0.82f, 1.0f, 1.0f), 44.0f, ScreenHeight - 94.0f, nullptr, 0.6f);
+    DrawText(FString::Printf(TEXT("%s %.0fcm   MOVE %.0f%%   %s"), *WaterState, WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), WaterColor, 44.0f, ScreenHeight - 94.0f, nullptr, 0.6f);
+    DrawText(FString::Printf(TEXT("PRESSURE %.0f%%   CURRENT %.0fcm/s"), WaterPressure * 100.0f, WaterCurrentSpeed), WaterColor, 44.0f, ScreenHeight - 83.0f, nullptr, 0.52f);
     DrawText(BoatStatus, bBoardedBoat ? ValidColor : NeutralColor, 44.0f, ScreenHeight - 72.0f, nullptr, 0.6f);
 }
 

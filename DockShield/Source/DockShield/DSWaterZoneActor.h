@@ -38,6 +38,18 @@ public:
     float CurrentSpeed = 90.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Water")
+    float StormPressure = 0.25f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Water")
+    float FloodSurgeRate = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Water")
+    float MaxWaterSurfaceZ = 220.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Water")
+    float ToxicPressureBonus = 0.12f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Water")
     bool bToxic = false;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Water")
@@ -54,4 +66,19 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Water")
     FVector GetCurrentVelocity() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    FVector GetCurrentVelocityAtLocation(FVector WorldLocation) const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetFloodPressureAtLocation(FVector WorldLocation) const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    float GetReelTensionPressureAtLocation(FVector WorldLocation) const;
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Water")
+    void AdvanceFlood(float DeltaSeconds);
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Water")
+    FString GetWaterStateTextAtLocation(FVector WorldLocation) const;
 };
