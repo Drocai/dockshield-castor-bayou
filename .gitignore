@@ -17,6 +17,8 @@ $RECYCLE.BIN/
 *.temp
 *.bak
 *.swp
+__pycache__/
+*.pyc
 
 # Env / secrets
 .env
@@ -51,4 +53,3 @@ captures/
 exports/
 renders/
 recordings/
-

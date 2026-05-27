@@ -61,6 +61,19 @@ Rules:
 - Include provenance and checksum details in the relevant reference README.
 - Rebuild target images as licensed, self-created, commissioned, or otherwise cleared production assets before public use.
 
+## Private 3D Candidate Asset Exception
+
+User-provided GLB, glTF, FBX, STL, OBJ, or Blender files may be inspected as private source candidates before production use.
+
+Rules:
+
+- Do not import candidate 3D files into Unreal `Content/` until the license and technical fitness are recorded.
+- Do not use candidate 3D files in public marketing, trailers, store pages, contractor packets, or shipped builds until rights are cleared.
+- Record each candidate or candidate family in `docs/asset-register.csv`.
+- Include source path, checksum, duplicate status, mesh metrics, and import verdict in the relevant reference README or manifest.
+- Prefer GLB/glTF/FBX with materials and textures over STL for game prototypes.
+- Treat unrigged character meshes as static visual proxies or sculpt references only until retopology and rigging are complete.
+
 ## Useful Sources
 
 - Fab: https://www.fab.com/

@@ -25,6 +25,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `DSPrototypePlayerController` supports `1` for The Reel, `2` for The Fly, `3` for Lilly Loch, and `Tab` to cycle through all three in normal play.
 - The Reel, The Fly, and Lilly Loch have first-pass in-engine prototype visual kits so they no longer read as identical mannequins.
 - `M_Test_Targeting` now has generated prototype bayou materials, wet dock planks, reed silhouettes, toxic water/glow planes, storm moon key light, amber rescue light, red neon sign light, fog, and a storm-grade post-process marker.
+- User-provided Copilot3D character mesh candidates have been inspected in Blender and documented at `docs/reference/candidate-3d-assets/copilot3d-2026-05-27/`.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -41,6 +42,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Manual editor feel test for Lilly bind v0 | D RoC or Codex with editor session | Press `3` or `Tab` to switch to Lilly, press `Q` for swamp pulse, aim with RMB, press LMB or `E` to bind a target, confirm swamp HUD and prompt state |
 | Manual editor feel test for switching v0 | D RoC or Codex with editor session | Press `1`, `2`, `3`, and `Tab`; confirm possession swaps, HUD changes, and each hero keeps their own ability controls |
 | Visual expectation gap | Codex / art pipeline | Current build now has styled prototype materials/lighting, but still uses placeholder geometry, debug feedback, and mannequin bodies; do not judge final character fidelity from this test map |
+| Candidate 3D asset production gap | Codex / art pipeline | Copilot3D GLB/STL files are useful as static visual proxies or sculpt references, but they have no armatures/actions and need license confirmation, cleanup, retopology, and rigging before playable use |
 
 ## Current Agent Lane
 
@@ -64,7 +66,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next pass should either add a simple enemy threat or start replacing prototype hero mannequins with imported/custom character assets.
+4. Next visual pass should import the best Reel GLB as a static scale/lighting proxy only after license confirmation, then evaluate retopo/rigging path before replacing playable mannequins.
 
 ## Current Implementation Plan
 

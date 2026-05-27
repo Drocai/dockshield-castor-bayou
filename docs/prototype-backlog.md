@@ -114,6 +114,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 ## Phase 6 - Presentation
 
 - [x] Private gameplay UI reference set
+- [x] Private Copilot3D candidate asset audit
 - [x] Basic prototype HUD
 - [x] Current prototype audit and play guide
 - [x] Test-map lighting/fog pass v0
@@ -130,6 +131,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Lilly bind prototype HUD path v0
 - [x] Reel/Fly/Lilly switching HUD prompt v0
 - [x] Reel/Fly/Lilly prototype visual identity kit v0
+- [ ] Import best Reel GLB as static scale/lighting proxy after license confirmation
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
