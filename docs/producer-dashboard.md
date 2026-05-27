@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, and water/boat prototype foundations.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, and first Fly recon foundations.
 
 ## Current Repo State
 
@@ -20,6 +20,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, and wat
 - Prototype water-depth/current/flood-pressure zones and prototype boat drifting/towing/boarding/piloting actors are implemented in C++ and covered by a headless smoke test.
 - `M_Test_Targeting` now contains `DS_Water_Depth_Test` and `DS_Boat_Prototype_Tow` for the first boat tow pass.
 - Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
+- The Fly placeholder C++ pawn now supports sonar pulse, recon target selection, shared target mark state, and a Fly-specific prototype HUD path for future character switching.
 - Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
 
 ## Current Blockers
@@ -32,6 +33,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | --- | --- | --- |
 | Manual editor feel test for The Reel continuous line v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, confirm target lock/tension HUD, hold RMB to aim, press LMB or `E` to cast, hold `R` to reel, release `R` to ease |
 | Manual editor feel test for water/boat pressure v0 | D RoC or Codex with editor session | Face `DS_Boat_Prototype_Tow`, confirm HUD pressure/current readout, cast with LMB or `E`, hold `R` to tow, confirm boat feedback and HUD boat count, then press `F` or `B` to board/exit and use `WASD` to pilot |
+| Manual editor feel test for The Fly sonar/mark v0 | Codex with editor session after switching support | Spawn or possess `DSFlyPrototypeCharacter`, press `Q` for sonar, aim with RMB, press LMB or `E` to mark a target, confirm teal HUD and prompt state |
 | Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry, debug feedback, and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
@@ -56,7 +58,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next pass should improve visual readability of rescue raft/boat feedback, then move toward The Fly sonar/mark placeholder or a simple enemy threat.
+4. Next pass should add controlled character switching or a simple enemy threat so The Fly sonar/mark can be tested in normal PIE instead of only by commandlet.
 
 ## Current Implementation Plan
 

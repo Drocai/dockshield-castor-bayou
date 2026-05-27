@@ -11,6 +11,10 @@ The raw PNG files are still not production assets, shipping art, marketing mater
 - Lilly Loch reads best with large threat scale, transformation pressure, boss health, swamp-force impact, and heavier ability framing.
 - Tutorial overlays should teach one verb at a time: aim, fire, pull, rescue, extract, mark, snare, or scan.
 - The first prototype HUD should stay functional: hero label, objective, reticle, target prompt, location, and valid/invalid target color. Do not chase full screenshot polish yet.
+- The new mobile home/menu reference supports a long-term front-end shell: squad stack, active mission card, progress meter, right-side action shortcuts, and bottom navigation.
+- The tileables board establishes environment material targets: muddy dock wood, swamp water normals, algae surface, mossy bark, wet reeds, and cracked neon metal.
+- Character mockups lock the near-term silhouette targets: The Reel is glossy red/black rescue gear with tactical reel gauntlet; The Fly is black, netted, teal-lit recon armor with sonar visor/wings; Lilly is muddy vine/flower swamp gear with red pigtails and root staff.
+- The HUD widget sheet should drive prototype priorities: grapple tension meter, flood rising meter, squad health stack, sonar cone overlay, root trap radius, gadget wheel, rescue marker, boss weak-point reticle, minimap, objective card, threat meter, extraction timer, and danger banner.
 
 ## Manifest
 
@@ -27,6 +31,13 @@ The raw PNG files are still not production assets, shipping art, marketing mater
 | `fly-line-snare-takedown.png` | `C:\Users\djmc1\Downloads\ChatGPT Image May 25, 2026, 08_21_03 PM (2).png` | 1672x941 | 2246330 | `bc8d167c581016f6f883b86f4ca5a7a277cac1f61f21faa74b137cb830214658` |
 | `fly-sense-recon-overlay.png` | `C:\Users\djmc1\Downloads\ChatGPT Image May 25, 2026, 08_21_03 PM (3).png` | 1672x941 | 2398105 | `7a399cb0b927b2e10aa1046c065ee1bdee64d875cabc6624e4b0e8c3a01a8a9c` |
 | `fly-gadgets-loadout.png` | `C:\Users\djmc1\Downloads\ChatGPT Image May 25, 2026, 08_21_03 PM (4).png` | 1672x941 | 2421187 | `c244279b834fa8d9dc6d3d0406ca8d51c6d08dc4b97df674d1fa10d5a5d2ab06` |
+| `dockshield-mobile-home-rescue.jpeg` | `C:\Users\djmc1\Downloads\0B3CF177-834B-41EC-B9E0-A99145FB2A19.jpeg` | 864x1536 | 574428 | `d17ab4780d5558ecac42178d15f29a5c3aeb204d46d75c25e2439144c72b5c85` |
+| `environment-tileables-board.jpeg` | `C:\Users\djmc1\Downloads\BA47787C-F998-4EC4-B99D-7F8EC2E44D0A.jpeg` | 1448x1086 | 598153 | `3c53dfeef7ccd1ed49dc2551cd4dd894551508e4cbbddf9cd42b6e1b7df86330` |
+| `lilly-loch-character-mockup.jpeg` | `C:\Users\djmc1\Downloads\6DCF44F6-54F2-4C0D-BD2F-1E323DF1F0D8.jpeg` | 1086x1448 | 371489 | `08cbd6c5dab2f93e7f1422385ac858c1af2c5aa1c0bdeffcd8895161730c16ad` |
+| `fly-character-mockup.jpeg` | `C:\Users\djmc1\Downloads\27FEA4E0-E1FF-434D-BD4C-290EAAF4EAB3.jpeg` | 1086x1448 | 404817 | `535edfb830e9ba9c4a81a1415efc2c4bd018b119b8921c6593f72a58afa695e7` |
+| `reel-character-mockup.jpeg` | `C:\Users\djmc1\Downloads\18A388D2-5509-4E2B-A5D0-399CE90777AB.jpeg` | 1086x1448 | 355786 | `b3d944aaf1064a6480d9eb19dce6bd56ae17b4153780113213ca68a1b784a6c0` |
+| `hud-widget-sheet.jpeg` | `C:\Users\djmc1\Downloads\0410A0D9-1220-4086-9CA0-998FDE8A3EF1.jpeg` | 1536x864 | 477218 | `ce65247013f3acbe0aa40f0c725b9b7920b902c39d2be345e0cba18fce38db38` |
+| `character-turnarounds-sheet.jpeg` | `C:\Users\djmc1\Downloads\761F7210-3DFD-49A8-AFD3-9CFA91378E7D.jpeg` | 1536x864 | 518293 | `01bad1c4e1f365ec7ad6483668c14306078eb1a96bd26e8a1d58196db79a0db0` |
 
 ## Use Rules
 

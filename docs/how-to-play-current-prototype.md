@@ -16,13 +16,14 @@ You should expect:
 - one civilian rescue target
 - one toxic hazard placeholder
 - C++ foundation for water depth, current/flood pressure, prototype boat drifting/towing, boat boarding, and boat piloting
+- C++ foundation for The Fly sonar pulse and mark state
 
 You should not expect:
 
 - the canon Castor Bayou visuals yet
 - final character models
 - storm/rain/water art
-- The Fly, Lilly, command mode, boss combat, or full mission flow
+- normal playable character switching, Lilly, command mode, boss combat, or full mission flow
 - final rescue raft art, water simulation, or finished boat handling
 
 ## Launch
@@ -42,6 +43,12 @@ You should not expect:
 - Ease line tension: release `R`
 - Board / Exit prototype boat: `F` or `B`
 - Pilot boarded prototype boat: `WASD`
+
+The Fly sonar/mark controls exist in C++ for the placeholder `DSFlyPrototypeCharacter`, but the default playable pawn is still The Reel until character switching is added:
+
+- Sonar pulse: `Q`
+- Mark recon target: left mouse button or `E`
+- Aim recon cone: hold right mouse button
 
 ## Test
 
@@ -89,4 +96,10 @@ For the narrow Reel action smoke test only:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\validate_reel_interaction_smoke.py' -unattended -nop4 -nosplash
+```
+
+For the narrow Fly recon smoke test only:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\validate_fly_recon_smoke.py' -unattended -nop4 -nosplash
 ```

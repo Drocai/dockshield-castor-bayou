@@ -41,6 +41,7 @@ Signals:
 - rescue gear
 - hook/grapple line
 - public-facing hero posture
+- glossy black/red tactical rescue gear, blue visor glasses, heavy boots, belt reel, and visible gauntlet hardware
 
 ### The Fly
 
@@ -52,6 +53,7 @@ Signals:
 - bug-eye or visor motif
 - quiet silhouette
 - vibration/marking visual language
+- black netted armor, teal visor/sonar accents, wing-pack silhouette, dangling lines, compact probes, and dark tactical posture
 
 ### Lilly Loch
 
@@ -61,6 +63,7 @@ Locked concept:
 
 - human Lilly is petite, 22, high red pigtails, freckles, muddy country-girl charm
 - monster Lilly is huge, terrifying, beautiful, swamp-Loch-Ness She-Hulk energy
+- human combat silhouette uses mud, vine wraps, flower/bioluminescent nodes, root staff/vine whip, and tall vine-wrapped boots
 
 ## First Art Deliverables
 
@@ -83,5 +86,7 @@ Use them to guide:
 - hero-specific UI language: rescue blue/green for The Reel, stealth green for The Fly, swamp red/green pressure for Lilly
 - objective panels that expose the next action clearly
 - reticle and prompt states that reduce time to first successful Pull
+- widget language from the new sheet: tension meter, flood rising meter, squad health stack, sonar cone, rescue marker, minimap, objective card, threat meter, extraction timer, and danger banner
+- environment material targets: muddy dock wood, swamp water normals, algae surface, mossy bark, wet reeds, cracked neon metal
 
 Do not copy reference layouts literally. The prototype HUD should prove readability first.

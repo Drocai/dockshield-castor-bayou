@@ -67,7 +67,7 @@ Content/DockShield/
 - [x] Add one-command prototype validation runner
 - [ ] Verify one target works for all three heroes
 
-Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. Full three-hero verification waits for The Fly and Lilly.
+Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. The Fly mark state is implemented against the same component; full three-hero verification still waits for Lilly.
 
 ## Phase 3 - Heroes
 
@@ -79,13 +79,13 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Reel prototype boat tow action v0
 - [x] The Reel prototype boat board/exit controls v0
 - [x] The Reel prototype boat pilot controls v0
-- [ ] The Fly placeholder character
-- [ ] The Fly mark ability
+- [x] The Fly placeholder character
+- [x] The Fly mark ability
 - [ ] Lilly placeholder character
 - [ ] Lilly bind ability
 - [ ] Character switching
 
-Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. It still needs a manual in-editor feel test before closing the gameplay task.
+Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. The Fly sonar/mark v0 is implemented as a C++ pawn and commandlet smoke target, but still needs character switching or a dedicated map setup before normal PIE testing.
 
 ## Phase 4 - Mission Objects
 
@@ -124,6 +124,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Flood pressure/current HUD metrics v0
 - [x] Placed water/boat debug visualization v0
 - [x] Prototype boat control HUD state v0
+- [x] Fly sonar/mark prototype HUD path v0
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture

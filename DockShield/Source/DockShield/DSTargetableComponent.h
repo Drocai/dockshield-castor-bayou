@@ -33,9 +33,33 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Targeting")
     bool bCanLillyBind = false;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    bool bIsFlyMarked = false;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    float FlyMarkStrength = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    int32 FlyMarkCount = 0;
+
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     void ConfigureFromOwnerTags();
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     FString GetReelPrompt() const;
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    bool MarkForFly(float Strength = 1.0f);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    void ClearFlyMark();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool CanFlyMark() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool IsFlyMarked() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    FString GetFlyPrompt() const;
 };

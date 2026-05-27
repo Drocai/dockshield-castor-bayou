@@ -30,24 +30,49 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         TargetType = EDSTargetType::GrapplePoint;
         DisplayName = FText::FromString(TEXT("Grapple Pull Target"));
         bCanReelPull = true;
+        bCanFlyMark = true;
     }
     else if (Owner->ActorHasTag(TEXT("Civilian")))
     {
         TargetType = EDSTargetType::Civilian;
         DisplayName = FText::FromString(TEXT("Civilian Rescue Target"));
         bCanReelPull = true;
+        bCanFlyMark = true;
     }
     else if (Owner->ActorHasTag(TEXT("Hazard")))
     {
         TargetType = EDSTargetType::Hazard;
         DisplayName = FText::FromString(TEXT("Toxic Hazard"));
         bCanReelPull = false;
+        bCanFlyMark = true;
     }
     else if (Owner->ActorHasTag(TEXT("Boat")))
     {
         TargetType = EDSTargetType::Boat;
         DisplayName = FText::FromString(TEXT("Prototype Rescue Boat"));
         bCanReelPull = true;
+        bCanFlyMark = true;
+    }
+    else if (Owner->ActorHasTag(TEXT("Enemy")))
+    {
+        TargetType = EDSTargetType::Enemy;
+        DisplayName = FText::FromString(TEXT("Enemy Patrol"));
+        bCanFlyMark = true;
+    }
+    else if (Owner->ActorHasTag(TEXT("WeakPoint")))
+    {
+        TargetType = EDSTargetType::WeakPoint;
+        DisplayName = FText::FromString(TEXT("Structural Weak Point"));
+        bCanReelPull = true;
+        bCanFlyMark = true;
+        bCanLillyBind = true;
+    }
+    else if (Owner->ActorHasTag(TEXT("Object")))
+    {
+        TargetType = EDSTargetType::Object;
+        DisplayName = FText::FromString(TEXT("Interactable Object"));
+        bCanReelPull = true;
+        bCanFlyMark = true;
     }
 }
 
@@ -68,5 +93,60 @@ FString UDSTargetableComponent::GetReelPrompt() const
         return FString::Printf(TEXT("Press E: Tow / Reel %s"), *DisplayName.ToString());
     default:
         return FString::Printf(TEXT("Press E: Reel Pull %s"), *DisplayName.ToString());
+    }
+}
+
+bool UDSTargetableComponent::MarkForFly(float Strength)
+{
+    ConfigureFromOwnerTags();
+    if (!bCanFlyMark)
+    {
+        return false;
+    }
+
+    bIsFlyMarked = true;
+    FlyMarkStrength = FMath::Clamp(Strength, 0.0f, 1.0f);
+    ++FlyMarkCount;
+    return true;
+}
+
+void UDSTargetableComponent::ClearFlyMark()
+{
+    bIsFlyMarked = false;
+    FlyMarkStrength = 0.0f;
+}
+
+bool UDSTargetableComponent::CanFlyMark() const
+{
+    return bCanFlyMark;
+}
+
+bool UDSTargetableComponent::IsFlyMarked() const
+{
+    return bIsFlyMarked;
+}
+
+FString UDSTargetableComponent::GetFlyPrompt() const
+{
+    if (!bCanFlyMark)
+    {
+        return FString::Printf(TEXT("%s: no Fly mark"), *DisplayName.ToString());
+    }
+
+    const FString MarkState = bIsFlyMarked ? TEXT("MARKED") : TEXT("UNMARKED");
+    switch (TargetType)
+    {
+    case EDSTargetType::Hazard:
+        return FString::Printf(TEXT("%s: Sonar tag toxic hazard"), *MarkState);
+    case EDSTargetType::Enemy:
+        return FString::Printf(TEXT("%s: Mark enemy patrol"), *MarkState);
+    case EDSTargetType::WeakPoint:
+        return FString::Printf(TEXT("%s: Mark weak point"), *MarkState);
+    case EDSTargetType::Civilian:
+        return FString::Printf(TEXT("%s: Locate rescue target"), *MarkState);
+    case EDSTargetType::Boat:
+        return FString::Printf(TEXT("%s: Track extraction boat"), *MarkState);
+    default:
+        return FString::Printf(TEXT("%s: Fly Sense mark %s"), *MarkState, *DisplayName.ToString());
     }
 }
