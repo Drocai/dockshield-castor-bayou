@@ -2,11 +2,11 @@
 
 ## What This Is
 
-This is a mechanics test for the shared hero loop, not the full DockShield look.
+This is a styled mechanics test for the shared hero loop, not the full DockShield look.
 
 You should expect:
 
-- graybox test arena
+- styled graybox test arena with prototype bayou materials, storm lighting/fog, toxic glow, wet dock planks, reeds, and backdrop dressing
 - placeholder Unreal mannequin
 - simple HUD and reticle
 - target lock, distance, line tension state, snap count, and action counters
@@ -23,9 +23,9 @@ You should expect:
 
 You should not expect:
 
-- the canon Castor Bayou visuals yet
+- the final canon Castor Bayou visuals yet
 - final character models
-- storm/rain/water art
+- final storm/rain/water art
 - command mode, boss combat, or full mission flow
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
@@ -106,6 +106,7 @@ Lilly controls after pressing `3` or `Tab`:
 - `1`, `2`, `3`, and `Tab` switch between The Reel, The Fly, and Lilly Loch.
 - The HUD changes to the active hero.
 - The Reel, The Fly, and Lilly Loch have visibly different prototype silhouettes.
+- The test map has visible wet dock surfaces, toxic green water/glow, reed silhouettes, storm/fog lighting, and neon/backdrop markers.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation
@@ -114,6 +115,12 @@ Codex can validate the current prototype without manual PIE:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
+```
+
+To reapply the current visual style pass:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_visual_style_pass.py' -unattended -nop4 -nosplash
 ```
 
 For the narrow Reel action smoke test only:

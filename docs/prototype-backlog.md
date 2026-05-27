@@ -117,6 +117,8 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Basic prototype HUD
 - [x] Current prototype audit and play guide
 - [x] Test-map lighting/fog pass v0
+- [x] Test-map visual style pass v1
+- [x] Generated prototype bayou material set
 - [ ] Basic SFX
 - [ ] Basic VFX
 - [x] Prototype Reel feedback VFX v0
@@ -133,4 +135,4 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes, but still needs real MetaHuman/custom character assets and environment art before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, and backdrop dressing. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.

@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, and three-hero switching v0.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, and visual style pass v1.
 
 ## Current Repo State
 
@@ -24,7 +24,8 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - Lilly Loch placeholder C++ pawn now supports swamp pulse, bind target selection, shared target bind state, and a Lilly-specific prototype HUD path.
 - `DSPrototypePlayerController` supports `1` for The Reel, `2` for The Fly, `3` for Lilly Loch, and `Tab` to cycle through all three in normal play.
 - The Reel, The Fly, and Lilly Loch have first-pass in-engine prototype visual kits so they no longer read as identical mannequins.
-- Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
+- `M_Test_Targeting` now has generated prototype bayou materials, wet dock planks, reed silhouettes, toxic water/glow planes, storm moon key light, amber rescue light, red neon sign light, fog, and a storm-grade post-process marker.
+- Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
 
@@ -39,7 +40,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Manual editor feel test for The Fly sonar/mark v0 | D RoC or Codex with editor session | Press `2` or `Tab` to switch to The Fly, press `Q` for sonar, aim with RMB, press LMB or `E` to mark a target, confirm teal HUD and prompt state |
 | Manual editor feel test for Lilly bind v0 | D RoC or Codex with editor session | Press `3` or `Tab` to switch to Lilly, press `Q` for swamp pulse, aim with RMB, press LMB or `E` to bind a target, confirm swamp HUD and prompt state |
 | Manual editor feel test for switching v0 | D RoC or Codex with editor session | Press `1`, `2`, `3`, and `Tab`; confirm possession swaps, HUD changes, and each hero keeps their own ability controls |
-| Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry, debug feedback, and mannequin; do not judge final graphics from this test map |
+| Visual expectation gap | Codex / art pipeline | Current build now has styled prototype materials/lighting, but still uses placeholder geometry, debug feedback, and mannequin bodies; do not judge final character fidelity from this test map |
 
 ## Current Agent Lane
 
@@ -56,14 +57,14 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 1. Optional: open `DockShield/DockShield.uproject` in Unreal.
 2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, hold right mouse button to aim, press left mouse button or `E` to cast, then hold `R` to reel.
-3. Optional: judge only controls, targeting clarity, tension readability, flood/current readability, and feedback timing. The cinematic Castor Bayou graphics are not in this graybox map yet.
+3. Optional: judge controls, targeting clarity, tension readability, flood/current readability, feedback timing, and whether the new storm/fog/toxic/wet-dock pass is moving toward the references. Final cinematic Castor Bayou assets are not in this test map yet.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next pass should add a simple enemy threat now that Reel/Fly/Lilly switching is playable.
+4. Next pass should either add a simple enemy threat or start replacing prototype hero mannequins with imported/custom character assets.
 
 ## Current Implementation Plan
 

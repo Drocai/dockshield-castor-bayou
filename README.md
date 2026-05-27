@@ -6,9 +6,9 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 ## Current Status
 
-This repo is in **Phase 2: shared targeting v0, continuous Reel feedback, water pressure, boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, and three-hero character switching v0**.
+This repo is in **Phase 2: shared targeting v0, continuous Reel feedback, water pressure, boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero character switching v0, and first visual style pass v1**.
 
-The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, cast/hold/release Reel line loop, headless Reel interaction smoke test, prototype water-depth/current/flood pressure zone, boat drifting/towing, boat boarding, prototype boat piloting foundations, shared Fly mark state, shared Lilly bind state, Fly sonar/mark placeholder foundations, Lilly swamp pulse/bind placeholder foundations, three-hero switching controls, and first prototype hero visual kits are implemented.
+The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, cast/hold/release Reel line loop, headless Reel interaction smoke test, prototype water-depth/current/flood pressure zone, boat drifting/towing, boat boarding, prototype boat piloting foundations, shared Fly mark state, shared Lilly bind state, Fly sonar/mark placeholder foundations, Lilly swamp pulse/bind placeholder foundations, three-hero switching controls, first prototype hero visual kits, generated bayou prototype materials, storm lighting/fog, toxic glow, and wet dock dressing are implemented.
 
 ## Working Title Structure
 
@@ -68,7 +68,7 @@ Run the current one-command validation pass from the repo root:
 powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
 ```
 
-This runs the toolchain check, C++ editor build, Unreal commandlet smoke tests, DataValidation, Git status, and Git LFS status.
+This runs the toolchain check, C++ editor build, Unreal commandlet smoke tests, visual style validation, DataValidation, Git status, and Git LFS status.
 
 ## Remote
 

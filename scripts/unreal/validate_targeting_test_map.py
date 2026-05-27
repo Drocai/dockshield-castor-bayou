@@ -30,10 +30,12 @@ REQUIRED_ACTORS = {
     "Target_CivilianRescue_Debug": ["DockShieldTarget", "Civilian"],
     "Hazard_ToxicWater_Debug": ["DockShieldTarget", "Hazard"],
     "Light_Test_Targeting": [],
-    "DS_Light_Key_Storm": [],
-    "DS_Light_Toxic_Hazard": [],
-    "DS_Light_Rescue_Warm": [],
-    "DS_Fog_Bayou_Test": [],
+    "DS_Light_Moon_Key": [],
+    "DS_Light_Toxic_Glow": [],
+    "DS_Light_Rescue_Amber": [],
+    "DS_Light_Depth_Neon": [],
+    "DS_Fog_Bayou_Visual": [],
+    "DS_PostProcess_StormGrade": [],
     "DS_Water_Depth_Test": [],
     "DS_Boat_Prototype_Tow": ["DockShieldTarget", "Boat"],
 }
@@ -75,7 +77,8 @@ def main():
             and label != "Light_Test_Targeting"
             and not label.startswith("DS_Light_")
             and not label.startswith("DS_Water_")
-            and label != "DS_Fog_Bayou_Test"
+            and not label.startswith("DS_Fog_")
+            and not label.startswith("DS_PostProcess_")
         ):
             mesh_component = actor.get_component_by_class(unreal.StaticMeshComponent)
             if mesh_component is None or mesh_component.static_mesh is None:

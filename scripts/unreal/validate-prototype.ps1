@@ -16,6 +16,7 @@ $ToolchainScript = Join-Path $RepoRoot "scripts\check-toolchain.ps1"
 
 $PythonValidations = @(
     "validate_targeting_test_map.py",
+    "validate_visual_style_pass.py",
     "validate_prototype_runtime.py",
     "validate_reel_interaction_smoke.py",
     "validate_water_boat_reel_smoke.py",
