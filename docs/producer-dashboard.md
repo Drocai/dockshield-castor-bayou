@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, and first Fly recon foundations.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, and Reel/Fly switching v0.
 
 ## Current Repo State
 
@@ -21,6 +21,8 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `M_Test_Targeting` now contains `DS_Water_Depth_Test` and `DS_Boat_Prototype_Tow` for the first boat tow pass.
 - Private canon visual target pack is stored in `docs/reference/gameplay-ui/`.
 - The Fly placeholder C++ pawn now supports sonar pulse, recon target selection, shared target mark state, and a Fly-specific prototype HUD path for future character switching.
+- `DSPrototypePlayerController` supports `1` for The Reel, `2` for The Fly, and `Tab` to cycle between them in normal play.
+- The Reel and The Fly have first-pass in-engine prototype visual kits so they no longer read as identical mannequins.
 - Current playable graphics are graybox prototype quality with a first lighting/fog pass, not the canon Castor Bayou look yet.
 
 ## Current Blockers
@@ -33,7 +35,8 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | --- | --- | --- |
 | Manual editor feel test for The Reel continuous line v0 | D RoC or Codex with editor session | Open `M_Test_Targeting`, press Play, confirm target lock/tension HUD, hold RMB to aim, press LMB or `E` to cast, hold `R` to reel, release `R` to ease |
 | Manual editor feel test for water/boat pressure v0 | D RoC or Codex with editor session | Face `DS_Boat_Prototype_Tow`, confirm HUD pressure/current readout, cast with LMB or `E`, hold `R` to tow, confirm boat feedback and HUD boat count, then press `F` or `B` to board/exit and use `WASD` to pilot |
-| Manual editor feel test for The Fly sonar/mark v0 | Codex with editor session after switching support | Spawn or possess `DSFlyPrototypeCharacter`, press `Q` for sonar, aim with RMB, press LMB or `E` to mark a target, confirm teal HUD and prompt state |
+| Manual editor feel test for The Fly sonar/mark v0 | D RoC or Codex with editor session | Press `2` or `Tab` to switch to The Fly, press `Q` for sonar, aim with RMB, press LMB or `E` to mark a target, confirm teal HUD and prompt state |
+| Manual editor feel test for switching v0 | D RoC or Codex with editor session | Press `1`, `2`, and `Tab`; confirm possession swaps, HUD changes, and each hero keeps their own ability controls |
 | Visual expectation gap | Codex / art pipeline | Current build uses placeholder geometry, debug feedback, and mannequin; do not judge final graphics from this test map |
 
 ## Current Agent Lane
@@ -58,7 +61,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next pass should add controlled character switching or a simple enemy threat so The Fly sonar/mark can be tested in normal PIE instead of only by commandlet.
+4. Next pass should add Lilly bind v0 or a simple enemy threat now that Reel/Fly switching is playable.
 
 ## Current Implementation Plan
 

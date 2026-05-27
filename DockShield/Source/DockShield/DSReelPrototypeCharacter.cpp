@@ -1,12 +1,14 @@
 #include "DSReelPrototypeCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "DSPrototypeBoatActor.h"
 #include "DSTargetableComponent.h"
 #include "DSWaterZoneActor.h"
 #include "Engine/Engine.h"
 #include "Engine/SkeletalMesh.h"
+#include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
@@ -16,6 +18,47 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+
+namespace
+{
+void ConfigurePrototypeMesh(UStaticMeshComponent* Component, UStaticMesh* Mesh, const FVector& Location, const FRotator& Rotation, const FVector& Scale)
+{
+    if (!Component)
+    {
+        return;
+    }
+
+    Component->SetStaticMesh(Mesh);
+    Component->SetRelativeLocation(Location);
+    Component->SetRelativeRotation(Rotation);
+    Component->SetRelativeScale3D(Scale);
+    Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Component->SetCastShadow(true);
+    Component->SetRenderCustomDepth(true);
+    Component->SetCustomDepthStencilValue(2);
+}
+
+void ApplyPrototypeColor(UStaticMeshComponent* Component, UObject* Owner, const FLinearColor& Color, float Metallic, float Roughness)
+{
+    if (!Component)
+    {
+        return;
+    }
+
+    if (UMaterialInterface* BaseMaterial = Component->GetMaterial(0))
+    {
+        UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, Owner);
+        DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+        DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), Color);
+        DynamicMaterial->SetVectorParameterValue(TEXT("Tint"), Color);
+        DynamicMaterial->SetScalarParameterValue(TEXT("Metallic"), Metallic);
+        DynamicMaterial->SetScalarParameterValue(TEXT("Roughness"), Roughness);
+        Component->SetMaterial(0, DynamicMaterial);
+    }
+}
+}
 
 ADSReelPrototypeCharacter::ADSReelPrototypeCharacter()
 {
@@ -83,6 +126,26 @@ ADSReelPrototypeCharacter::ADSReelPrototypeCharacter()
     {
         GetMesh()->SetAnimInstanceClass(AnimFinder.Class);
     }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshFinder(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMeshFinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+
+    ReelGauntletMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReelGauntletMesh"));
+    ReelGauntletMesh->SetupAttachment(RootComponent);
+    ConfigurePrototypeMesh(ReelGauntletMesh, SphereMeshFinder.Object, FVector(34.0f, 45.0f, 68.0f), FRotator::ZeroRotator, FVector(0.18f, 0.18f, 0.18f));
+
+    ReelBeltSpoolMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReelBeltSpoolMesh"));
+    ReelBeltSpoolMesh->SetupAttachment(RootComponent);
+    ConfigurePrototypeMesh(ReelBeltSpoolMesh, CylinderMeshFinder.Object, FVector(36.0f, 0.0f, 45.0f), FRotator(90.0f, 0.0f, 0.0f), FVector(0.18f, 0.18f, 0.08f));
+
+    ReelBackRigMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReelBackRigMesh"));
+    ReelBackRigMesh->SetupAttachment(RootComponent);
+    ConfigurePrototypeMesh(ReelBackRigMesh, CubeMeshFinder.Object, FVector(-28.0f, -38.0f, 84.0f), FRotator(0.0f, 0.0f, -8.0f), FVector(0.16f, 0.08f, 0.34f));
+
+    ReelHatMarkerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReelHatMarkerMesh"));
+    ReelHatMarkerMesh->SetupAttachment(RootComponent);
+    ConfigurePrototypeMesh(ReelHatMarkerMesh, CylinderMeshFinder.Object, FVector(0.0f, 0.0f, 112.0f), FRotator(90.0f, 0.0f, 0.0f), FVector(0.32f, 0.32f, 0.025f));
 }
 
 void ADSReelPrototypeCharacter::BeginPlay()
@@ -102,6 +165,8 @@ void ADSReelPrototypeCharacter::BeginPlay()
             }
         }
     }
+
+    ApplyPrototypeVisualStyle();
 }
 
 void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
@@ -352,6 +417,21 @@ FString ADSReelPrototypeCharacter::GetBoatStatusText() const
     }
 
     return bInBoatableWater ? TEXT("BOATABLE WATER") : TEXT("NO BOAT TARGET");
+}
+
+int32 ADSReelPrototypeCharacter::GetPrototypeVisualKitComponentCount() const
+{
+    int32 Count = 0;
+    Count += ReelGauntletMesh && ReelGauntletMesh->GetStaticMesh() ? 1 : 0;
+    Count += ReelBeltSpoolMesh && ReelBeltSpoolMesh->GetStaticMesh() ? 1 : 0;
+    Count += ReelBackRigMesh && ReelBackRigMesh->GetStaticMesh() ? 1 : 0;
+    Count += ReelHatMarkerMesh && ReelHatMarkerMesh->GetStaticMesh() ? 1 : 0;
+    return Count;
+}
+
+FString ADSReelPrototypeCharacter::GetPrototypeVisualProfile() const
+{
+    return TEXT("THE REEL: red-black rescue bruiser, visible reel gauntlet, belt spool, back rig, hat marker");
 }
 
 void ADSReelPrototypeCharacter::Move(const FInputActionValue& Value)
@@ -983,6 +1063,14 @@ void ADSReelPrototypeCharacter::ExitBoardedBoat()
 
     LastReelResult = TEXT("EXITED BOAT");
     ShowDebugMessage(TEXT("Exited rescue boat"), FColor::Cyan);
+}
+
+void ADSReelPrototypeCharacter::ApplyPrototypeVisualStyle()
+{
+    ApplyPrototypeColor(ReelGauntletMesh, this, FLinearColor(0.95f, 0.10f, 0.04f, 1.0f), 0.85f, 0.22f);
+    ApplyPrototypeColor(ReelBeltSpoolMesh, this, FLinearColor(0.95f, 0.70f, 0.18f, 1.0f), 0.9f, 0.18f);
+    ApplyPrototypeColor(ReelBackRigMesh, this, FLinearColor(0.02f, 0.04f, 0.055f, 1.0f), 0.7f, 0.28f);
+    ApplyPrototypeColor(ReelHatMarkerMesh, this, FLinearColor(0.02f, 0.075f, 0.14f, 1.0f), 0.6f, 0.32f);
 }
 
 void ADSReelPrototypeCharacter::StartReelFeedback(AActor* Target, const FColor& Color)

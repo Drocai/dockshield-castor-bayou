@@ -75,6 +75,15 @@ Locked concept:
 - boss silhouette concept
 - command HUD style reference
 
+## Current Prototype Visual Layer
+
+The current C++ build uses runtime prototype visual kits, not final character assets.
+
+- The Reel has visible red/black/gold reel gear markers: gauntlet, belt spool, back rig, and hat marker.
+- The Fly has black/teal recon markers: wing pack silhouette, visor beacon, and probe rod.
+- These are silhouette/readability placeholders only. Final photographic-quality characters require imported MetaHuman/custom character assets and licensed/custom materials.
+- Unreal 5.7 has MetaHuman plugin files installed locally, but DockShield does not yet contain imported MetaHuman hero assets or enabled project-specific MetaHuman setup.
+
 ## Gameplay UI Reference Direction
 
 Private references live in `docs/reference/gameplay-ui/`. They are direction notes, not production assets.

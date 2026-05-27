@@ -1,10 +1,12 @@
 #include "DSFlyPrototypeCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "DSTargetableComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/SkeletalMesh.h"
+#include "Engine/StaticMesh.h"
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -13,6 +15,47 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+
+namespace
+{
+void ConfigureFlyPrototypeMesh(UStaticMeshComponent* Component, UStaticMesh* Mesh, const FVector& Location, const FRotator& Rotation, const FVector& Scale)
+{
+    if (!Component)
+    {
+        return;
+    }
+
+    Component->SetStaticMesh(Mesh);
+    Component->SetRelativeLocation(Location);
+    Component->SetRelativeRotation(Rotation);
+    Component->SetRelativeScale3D(Scale);
+    Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Component->SetCastShadow(true);
+    Component->SetRenderCustomDepth(true);
+    Component->SetCustomDepthStencilValue(4);
+}
+
+void ApplyFlyPrototypeColor(UStaticMeshComponent* Component, UObject* Owner, const FLinearColor& Color, float Metallic, float Roughness)
+{
+    if (!Component)
+    {
+        return;
+    }
+
+    if (UMaterialInterface* BaseMaterial = Component->GetMaterial(0))
+    {
+        UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, Owner);
+        DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+        DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), Color);
+        DynamicMaterial->SetVectorParameterValue(TEXT("Tint"), Color);
+        DynamicMaterial->SetScalarParameterValue(TEXT("Metallic"), Metallic);
+        DynamicMaterial->SetScalarParameterValue(TEXT("Roughness"), Roughness);
+        Component->SetMaterial(0, DynamicMaterial);
+    }
+}
+}
 
 ADSFlyPrototypeCharacter::ADSFlyPrototypeCharacter()
 {
@@ -80,6 +123,26 @@ ADSFlyPrototypeCharacter::ADSFlyPrototypeCharacter()
     {
         GetMesh()->SetAnimInstanceClass(AnimFinder.Class);
     }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshFinder(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CylinderMeshFinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+
+    FlyLeftWingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlyLeftWingMesh"));
+    FlyLeftWingMesh->SetupAttachment(RootComponent);
+    ConfigureFlyPrototypeMesh(FlyLeftWingMesh, CubeMeshFinder.Object, FVector(-30.0f, -42.0f, 84.0f), FRotator(0.0f, -28.0f, 16.0f), FVector(0.035f, 0.42f, 0.24f));
+
+    FlyRightWingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlyRightWingMesh"));
+    FlyRightWingMesh->SetupAttachment(RootComponent);
+    ConfigureFlyPrototypeMesh(FlyRightWingMesh, CubeMeshFinder.Object, FVector(-30.0f, 42.0f, 84.0f), FRotator(0.0f, 28.0f, -16.0f), FVector(0.035f, 0.42f, 0.24f));
+
+    FlyVisorBeaconMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlyVisorBeaconMesh"));
+    FlyVisorBeaconMesh->SetupAttachment(RootComponent);
+    ConfigureFlyPrototypeMesh(FlyVisorBeaconMesh, SphereMeshFinder.Object, FVector(42.0f, 0.0f, 104.0f), FRotator::ZeroRotator, FVector(0.075f, 0.18f, 0.075f));
+
+    FlyProbeRodMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlyProbeRodMesh"));
+    FlyProbeRodMesh->SetupAttachment(RootComponent);
+    ConfigureFlyPrototypeMesh(FlyProbeRodMesh, CylinderMeshFinder.Object, FVector(12.0f, 54.0f, 58.0f), FRotator(0.0f, 0.0f, 28.0f), FVector(0.035f, 0.035f, 0.48f));
 }
 
 void ADSFlyPrototypeCharacter::BeginPlay()
@@ -99,6 +162,8 @@ void ADSFlyPrototypeCharacter::BeginPlay()
             }
         }
     }
+
+    ApplyPrototypeVisualStyle();
 }
 
 void ADSFlyPrototypeCharacter::Tick(float DeltaSeconds)
@@ -273,6 +338,21 @@ FString ADSFlyPrototypeCharacter::GetLastReconResult() const
     return LastReconResult;
 }
 
+int32 ADSFlyPrototypeCharacter::GetPrototypeVisualKitComponentCount() const
+{
+    int32 Count = 0;
+    Count += FlyLeftWingMesh && FlyLeftWingMesh->GetStaticMesh() ? 1 : 0;
+    Count += FlyRightWingMesh && FlyRightWingMesh->GetStaticMesh() ? 1 : 0;
+    Count += FlyVisorBeaconMesh && FlyVisorBeaconMesh->GetStaticMesh() ? 1 : 0;
+    Count += FlyProbeRodMesh && FlyProbeRodMesh->GetStaticMesh() ? 1 : 0;
+    return Count;
+}
+
+FString ADSFlyPrototypeCharacter::GetPrototypeVisualProfile() const
+{
+    return TEXT("THE FLY: black stealth recon, teal visor beacon, wing pack silhouette, probe rod");
+}
+
 void ADSFlyPrototypeCharacter::Move(const FInputActionValue& Value)
 {
     const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -386,6 +466,14 @@ bool ADSFlyPrototypeCharacter::IsInsideSonarCone(AActor* Actor, float MinDot) co
     const FVector ViewForward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
     const FVector ToActor = (Actor->GetActorLocation() - ViewLocation).GetSafeNormal();
     return FVector::DotProduct(ViewForward, ToActor) >= MinDot;
+}
+
+void ADSFlyPrototypeCharacter::ApplyPrototypeVisualStyle()
+{
+    ApplyFlyPrototypeColor(FlyLeftWingMesh, this, FLinearColor(0.015f, 0.035f, 0.04f, 1.0f), 0.75f, 0.22f);
+    ApplyFlyPrototypeColor(FlyRightWingMesh, this, FLinearColor(0.015f, 0.035f, 0.04f, 1.0f), 0.75f, 0.22f);
+    ApplyFlyPrototypeColor(FlyVisorBeaconMesh, this, FLinearColor(0.0f, 0.95f, 0.78f, 1.0f), 0.25f, 0.1f);
+    ApplyFlyPrototypeColor(FlyProbeRodMesh, this, FLinearColor(0.0f, 0.55f, 0.48f, 1.0f), 0.8f, 0.16f);
 }
 
 void ADSFlyPrototypeCharacter::DrawSonarDebug() const

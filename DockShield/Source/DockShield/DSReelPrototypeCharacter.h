@@ -7,6 +7,7 @@
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UStaticMeshComponent;
 class USpringArmComponent;
 class UDSTargetableComponent;
 class ADSPrototypeBoatActor;
@@ -121,6 +122,12 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Boat")
     FString GetBoatStatusText() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Visual")
+    int32 GetPrototypeVisualKitComponentCount() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Visual")
+    FString GetPrototypeVisualProfile() const;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -142,6 +149,18 @@ private:
 
     UPROPERTY()
     TObjectPtr<UInputAction> JumpAction;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> ReelGauntletMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> ReelBeltSpoolMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> ReelBackRigMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> ReelHatMarkerMesh;
 
     UPROPERTY()
     TWeakObjectPtr<AActor> CurrentTarget;
@@ -204,6 +223,7 @@ private:
     void RefreshReelLineState();
     FColor GetReelLineStateColor() const;
     void ExitBoardedBoat();
+    void ApplyPrototypeVisualStyle();
     void StartReelFeedback(AActor* Target, const FColor& Color);
     void DrawReelFeedback(float DeltaSeconds);
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;

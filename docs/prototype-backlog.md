@@ -67,7 +67,7 @@ Content/DockShield/
 - [x] Add one-command prototype validation runner
 - [ ] Verify one target works for all three heroes
 
-Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. The Fly mark state is implemented against the same component; full three-hero verification still waits for Lilly.
+Current note: shared targeting v0 is implemented in C++ and validated against the targeting test map. The Reel and The Fly now use the shared target system through normal switching; full three-hero verification still waits for Lilly.
 
 ## Phase 3 - Heroes
 
@@ -83,9 +83,9 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Fly mark ability
 - [ ] Lilly placeholder character
 - [ ] Lilly bind ability
-- [ ] Character switching
+- [x] Character switching
 
-Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. The Fly sonar/mark v0 is implemented as a C++ pawn and commandlet smoke target, but still needs character switching or a dedicated map setup before normal PIE testing.
+Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. The Fly sonar/mark v0 is implemented as a C++ pawn and can now be reached in normal play through `1`/`2`/`Tab` switching.
 
 ## Phase 4 - Mission Objects
 
@@ -125,9 +125,11 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Placed water/boat debug visualization v0
 - [x] Prototype boat control HUD state v0
 - [x] Fly sonar/mark prototype HUD path v0
+- [x] Reel/Fly switching HUD prompt v0
+- [x] Reel/Fly prototype visual identity kit v0
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build is still a graybox mechanics prototype and does not recreate the full cinematic look yet.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes, but still needs real MetaHuman/custom character assets and environment art before it matches the cinematic reference.

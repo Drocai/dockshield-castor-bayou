@@ -7,6 +7,7 @@
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UStaticMeshComponent;
 class USpringArmComponent;
 class UDSTargetableComponent;
 struct FInputActionValue;
@@ -58,6 +59,12 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Fly")
     FString GetLastReconResult() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Visual")
+    int32 GetPrototypeVisualKitComponentCount() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Visual")
+    FString GetPrototypeVisualProfile() const;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -80,6 +87,18 @@ private:
     UPROPERTY()
     TObjectPtr<UInputAction> JumpAction;
 
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> FlyLeftWingMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> FlyRightWingMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> FlyVisorBeaconMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Prototype Visuals")
+    TObjectPtr<UStaticMeshComponent> FlyProbeRodMesh;
+
     UPROPERTY()
     TWeakObjectPtr<AActor> CurrentReconTarget;
 
@@ -99,6 +118,7 @@ private:
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     bool CanFlyMark(AActor* Actor) const;
     bool IsInsideSonarCone(AActor* Actor, float MinDot) const;
+    void ApplyPrototypeVisualStyle();
     void DrawSonarDebug() const;
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;
 };

@@ -36,11 +36,13 @@ def validate_classes():
     game_mode_cls = require_class("DSPrototypeGameMode")
     reel_cls = require_class("DSReelPrototypeCharacter")
     hud_cls = require_class("DSPrototypeHUD")
+    player_controller_cls = require_class("DSPrototypePlayerController")
     require_class("DSTargetableComponent")
 
     cdo = unreal.get_default_object(game_mode_cls)
     default_pawn_class = require_property(cdo, "default_pawn_class")
     hud_class = require_property(cdo, "hud_class")
+    player_controller_class = require_property(cdo, "player_controller_class")
 
     if "DSReelPrototypeCharacter" not in reflected_text(default_pawn_class):
         fail(
@@ -52,6 +54,12 @@ def validate_classes():
         fail(
             "DSPrototypeGameMode HUD mismatch: "
             f"{reflected_text(hud_class)} does not contain DSPrototypeHUD"
+        )
+
+    if "DSPrototypePlayerController" not in reflected_text(player_controller_class):
+        fail(
+            "DSPrototypeGameMode player controller mismatch: "
+            f"{reflected_text(player_controller_class)} does not contain DSPrototypePlayerController"
         )
 
 

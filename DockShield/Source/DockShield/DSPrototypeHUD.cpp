@@ -1,5 +1,6 @@
 #include "DSPrototypeHUD.h"
 #include "DSFlyPrototypeCharacter.h"
+#include "DSPrototypePlayerController.h"
 #include "DSReelPrototypeCharacter.h"
 #include "Engine/Canvas.h"
 #include "GameFramework/PlayerController.h"
@@ -20,8 +21,10 @@ void ADSPrototypeHUD::DrawHUD()
 
     const ADSReelPrototypeCharacter* ReelCharacter = nullptr;
     const ADSFlyPrototypeCharacter* FlyCharacter = nullptr;
+    const ADSPrototypePlayerController* PrototypeController = nullptr;
     if (APlayerController* PlayerController = GetOwningPlayerController())
     {
+        PrototypeController = Cast<ADSPrototypePlayerController>(PlayerController);
         APawn* ControlledPawn = PlayerController->GetPawn();
         ReelCharacter = Cast<ADSReelPrototypeCharacter>(ControlledPawn);
         FlyCharacter = Cast<ADSFlyPrototypeCharacter>(ControlledPawn);
@@ -57,6 +60,7 @@ void ADSPrototypeHUD::DrawHUD()
     FString ReelLineState = TEXT("IDLE");
     FString ObjectiveText = TEXT("OBJECTIVE: Test Cast / Rescue / Tow");
     FString WaterState = TEXT("DRY");
+    FString SwitchStatus = PrototypeController ? PrototypeController->GetSwitchStatusText() : TEXT("1 REEL  2 FLY  TAB CYCLE");
     if (ReelCharacter)
     {
         Prompt = ReelCharacter->GetCurrentTargetPrompt();
@@ -115,11 +119,17 @@ void ADSPrototypeHUD::DrawHUD()
 
     DrawReticle(CenterX, CenterY, bLineAttached ? LineStateColor : HudColor);
 
-    DrawPanel(28.0f, 28.0f, 300.0f, 118.0f, PanelColor);
+    if (SwitchStatus.Len() > 40)
+    {
+        SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
+    }
+
+    DrawPanel(28.0f, 28.0f, 324.0f, 144.0f, PanelColor);
     DrawText(TEXT("THE REEL"), FLinearColor(0.85f, 0.95f, 1.0f, 1.0f), 44.0f, 42.0f, nullptr, 1.45f);
     DrawText(TEXT("PUBLIC HERO"), FLinearColor(0.2f, 0.7f, 1.0f, 1.0f), 46.0f, 74.0f, nullptr, 0.82f);
     DrawText(bBoardedBoat ? TEXT("BOAT CONTROL") : (bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE")), bBoardedBoat ? ValidColor : (bAiming ? ValidColor : NeutralColor), 188.0f, 74.0f, nullptr, 0.72f);
     DrawText(ObjectiveText, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
+    DrawText(SwitchStatus, NeutralColor, 44.0f, 132.0f, nullptr, 0.56f);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
@@ -160,6 +170,11 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
     const float SonarRange = FlyCharacter ? FlyCharacter->GetSonarRange() : 0.0f;
     FString Prompt = FlyCharacter ? FlyCharacter->GetCurrentReconPrompt() : TEXT("No Fly pawn");
     FString LastReconResult = FlyCharacter ? FlyCharacter->GetLastReconResult() : TEXT("NO RECON");
+    FString SwitchStatus = TEXT("1 REEL  2 FLY  TAB CYCLE");
+    if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(GetOwningPlayerController()))
+    {
+        SwitchStatus = PrototypeController->GetSwitchStatusText();
+    }
 
     if (Prompt.Len() > 72)
     {
@@ -178,12 +193,18 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
 
     DrawReticle(CenterX, CenterY, HudColor);
 
-    DrawPanel(28.0f, 28.0f, 312.0f, 150.0f, PanelColor);
+    if (SwitchStatus.Len() > 40)
+    {
+        SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
+    }
+
+    DrawPanel(28.0f, 28.0f, 332.0f, 172.0f, PanelColor);
     DrawText(TEXT("THE FLY"), FLinearColor(0.72f, 1.0f, 0.88f, 1.0f), 44.0f, 42.0f, nullptr, 1.42f);
     DrawText(TEXT("COVERT HUNTER"), FLinearColor(0.0f, 0.86f, 0.62f, 1.0f), 46.0f, 74.0f, nullptr, 0.80f);
     DrawText(bAiming ? TEXT("SONAR AIM") : TEXT("STEALTH MOVE"), bAiming ? ValidColor : NeutralColor, 188.0f, 74.0f, nullptr, 0.72f);
     DrawText(TEXT("OBJECTIVE: Mark Targets"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
     DrawText(FString::Printf(TEXT("SONAR %.0fm   MARKS %d"), SonarRange / 100.0f, MarkedTargets), NeutralColor, 44.0f, 132.0f, nullptr, 0.62f);
+    DrawText(SwitchStatus, NeutralColor, 44.0f, 156.0f, nullptr, 0.56f);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);

@@ -12,6 +12,7 @@ You should expect:
 - target lock, distance, line tension state, snap count, and action counters
 - debug target visuals
 - temporary debug Reel cast/reel feedback
+- first-pass prototype visual identity kits for The Reel and The Fly
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
@@ -23,8 +24,9 @@ You should not expect:
 - the canon Castor Bayou visuals yet
 - final character models
 - storm/rain/water art
-- normal playable character switching, Lilly, command mode, boss combat, or full mission flow
+- Lilly, command mode, boss combat, or full mission flow
 - final rescue raft art, water simulation, or finished boat handling
+- final MetaHuman/custom hero models or photoreal bayou production art
 
 ## Launch
 
@@ -38,13 +40,16 @@ You should not expect:
 - Look: mouse
 - Jump: `Space`
 - Aim lock: hold right mouse button
+- Switch to The Reel: `1`
+- Switch to The Fly: `2`
+- Cycle hero: `Tab`
 - Cast / detach Reel line: left mouse button or `E`
 - Reel attached line: hold `R`
 - Ease line tension: release `R`
 - Board / Exit prototype boat: `F` or `B`
 - Pilot boarded prototype boat: `WASD`
 
-The Fly sonar/mark controls exist in C++ for the placeholder `DSFlyPrototypeCharacter`, but the default playable pawn is still The Reel until character switching is added:
+The Fly controls after pressing `2` or `Tab`:
 
 - Sonar pulse: `Q`
 - Mark recon target: left mouse button or `E`
@@ -68,6 +73,10 @@ The Fly sonar/mark controls exist in C++ for the placeholder `DSFlyPrototypeChar
 14. Move close to `DS_Boat_Prototype_Tow`, then press `F` or `B`.
 15. Confirm the HUD switches to boat control, then use `WASD` to pilot the boat.
 16. Press `F` or `B` again and confirm the player exits back to foot movement.
+17. Press `2` or `Tab` to switch to The Fly.
+18. Press `Q` and confirm sonar debug feedback appears.
+19. Face a target and press left mouse button or `E` to mark it.
+20. Press `1` or `Tab` to return to The Reel.
 
 ## Pass Criteria
 
@@ -82,6 +91,9 @@ The Fly sonar/mark controls exist in C++ for the placeholder `DSFlyPrototypeChar
 - Lower-left HUD reports flood pressure and current speed.
 - Boat HUD state appears when the player targets, boards, pilots, and exits the prototype boat.
 - A floating prototype boat can drift under water current and is harder to tow/pilot under higher flood pressure.
+- `1`, `2`, and `Tab` switch between The Reel and The Fly.
+- The HUD changes to the active hero.
+- The Reel and The Fly have visibly different prototype silhouettes.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation
