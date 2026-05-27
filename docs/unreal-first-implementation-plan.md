@@ -108,7 +108,7 @@ Scope:
 
 - one line trace or overlap target selection
 - one valid target
-- one Pull input
+- one cast/hold/release Reel input loop
 - one movement or target reaction
 - one UI/debug prompt
 
@@ -136,4 +136,3 @@ Deliverables:
 - verification output
 - remaining blockers
 - next recommended pass
-

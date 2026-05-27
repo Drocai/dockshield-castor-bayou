@@ -80,6 +80,8 @@ Findings:
 5. Add a lightweight objective manager for rescue count, evidence count, boat state, and boss placeholder state.
 6. Add The Fly placeholder next using the PWA sonar/mark/stun behavior as the first translated non-Reel hero mechanic.
 
+Current translation note: items 1 and 2 are now represented in C++ as The Reel continuous line v0: LMB/`E` casts or detaches, `R` reels while held, release eases tension, and sustained strain can snap the line.
+
 ## Bottom Line
 
 Use this PWA as a playable design notebook. It contains strong gameplay DNA for DockShield, especially reeling, hero roles, storm pressure, airboat behavior, HUD density, and mission-loop structure. Do not import it wholesale into Unreal. Translate its best ideas into small, validated UE systems.

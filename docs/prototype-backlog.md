@@ -74,6 +74,7 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [x] The Reel placeholder character
 - [x] The Reel pull/grapple ability v0
 - [x] The Reel aim mode v0
+- [x] The Reel cast/hold/release line tension loop v0
 - [x] The Reel headless interaction smoke test
 - [x] The Reel prototype boat tow action v0
 - [x] The Reel prototype boat board/exit controls v0
@@ -84,7 +85,7 @@ Current note: shared targeting v0 is implemented in C++ and validated against th
 - [ ] Lilly bind ability
 - [ ] Character switching
 
-Current note: The Reel Pull v0 is implemented in C++, builds, and passes a headless commandlet smoke test. It still needs a manual in-editor feel test before closing the gameplay task.
+Current note: The Reel continuous line v0 is implemented in C++, builds, and has headless commandlet coverage for one-shot and sustained tension behavior. It still needs a manual in-editor feel test before closing the gameplay task.
 
 ## Phase 4 - Mission Objects
 

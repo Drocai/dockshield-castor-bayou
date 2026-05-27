@@ -34,6 +34,24 @@ public:
     UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
     void TryReelPull();
 
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void TryCastReelLine();
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    bool CastReelLineAtTarget(AActor* Target);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void StartReelHold();
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void StopReelHold();
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void DetachReelLine();
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Reel")
+    void UpdateReelLine(float DeltaSeconds);
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
     float GetCurrentTargetDistance() const;
 
@@ -42,6 +60,21 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
     FString GetLastReelResult() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    bool IsReelLineAttached() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    bool IsReelHoldActive() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    FString GetReelLineStateText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    AActor* GetAttachedReelTarget() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
+    int32 GetReelSnapCount() const;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Reel")
     int32 GetGrapplePullCount() const;
@@ -96,16 +129,23 @@ private:
     TWeakObjectPtr<AActor> CurrentTarget;
 
     UPROPERTY()
+    TWeakObjectPtr<AActor> AttachedReelTarget;
+
+    UPROPERTY()
     TWeakObjectPtr<ADSPrototypeBoatActor> BoardedBoat;
 
     bool bIsAiming = false;
     bool bIsBoardedBoat = false;
+    bool bReelHoldActive = false;
     float CurrentTargetDistance = 0.0f;
     float LineTension = 0.0f;
+    float RawLineTension = 0.0f;
     FString LastReelResult = TEXT("READY");
+    FString ReelLineStateText = TEXT("IDLE");
     int32 GrapplePullCount = 0;
     int32 CivilianRescueCount = 0;
     int32 BoatTowCount = 0;
+    int32 ReelSnapCount = 0;
     bool bInWaterZone = false;
     bool bInBoatableWater = false;
     float CurrentWaterDepth = 0.0f;
@@ -115,6 +155,15 @@ private:
     FColor LastReelFeedbackColor = FColor::Cyan;
     float ReelFeedbackTimeRemaining = 0.0f;
     float BoardInteractionRange = 360.0f;
+    float ReelTensionBuildRate = 0.42f;
+    float ReelTensionReleaseRate = 0.28f;
+    float ReelStrainThreshold = 0.62f;
+    float ReelDangerThreshold = 0.88f;
+    float ReelSnapThreshold = 1.18f;
+    float ReelSelfPullAcceleration = 1550.0f;
+    float ReelTargetPullSpeed = 560.0f;
+    float ReelBoatTowSpeed = 640.0f;
+    float ReelRescueCompleteDistance = 220.0f;
 
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
@@ -128,6 +177,10 @@ private:
     void UpdateWaterState();
     void ApplyMovementSpeed();
     bool CanReelPull(AActor* Actor) const;
+    void ApplyContinuousReelPull(AActor* Target, float DeltaSeconds);
+    void DetachReelLineInternal(const FString& ResultText, bool bWasSnap);
+    void RefreshReelLineState();
+    FColor GetReelLineStateColor() const;
     void ExitBoardedBoat();
     void StartReelFeedback(AActor* Target, const FColor& Color);
     void DrawReelFeedback(float DeltaSeconds);

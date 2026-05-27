@@ -45,17 +45,30 @@ def main():
     LEVEL_EDITOR.load_level(MAP_PATH)
 
     reel_cls = require_class("DSReelPrototypeCharacter")
-    character = ACTOR_EDITOR.spawn_actor_from_class(
-        reel_cls,
-        unreal.Vector(0.0, -700.0, 120.0),
-        unreal.Rotator(0.0, 0.0, 0.0),
-    )
-    if character is None:
-        fail("could not spawn DSReelPrototypeCharacter")
+    boat_cls = require_class("DSPrototypeBoatActor")
+    spawned = []
 
     try:
+        character = ACTOR_EDITOR.spawn_actor_from_class(
+            reel_cls,
+            unreal.Vector(0.0, -700.0, 120.0),
+            unreal.Rotator(0.0, 0.0, 0.0),
+        )
+        spawned.append(character)
+        if character is None:
+            fail("could not spawn DSReelPrototypeCharacter")
+
         required_methods = [
             "execute_reel_action_on_target",
+            "cast_reel_line_at_target",
+            "start_reel_hold",
+            "stop_reel_hold",
+            "detach_reel_line",
+            "update_reel_line",
+            "is_reel_line_attached",
+            "is_reel_hold_active",
+            "get_reel_line_state_text",
+            "get_reel_snap_count",
             "get_grapple_pull_count",
             "get_civilian_rescue_count",
             "get_last_reel_result",
@@ -92,10 +105,76 @@ def main():
         if line_tension < 0.0 or line_tension > 1.0:
             fail(f"line tension outside 0..1: {line_tension}")
 
-    finally:
-        ACTOR_EDITOR.destroy_actor(character)
+        if not character.cast_reel_line_at_target(grapple):
+            fail("continuous Reel cast did not attach to grapple target")
+        if not character.is_reel_line_attached():
+            fail("continuous Reel line should be attached after cast")
 
-    unreal.log("DockShield Reel smoke validation passed: invalid target, grapple, and rescue actions executed.")
+        cast_state = character.get_reel_line_state_text()
+        if cast_state not in ["CAST", "STRAIN", "DANGER"]:
+            fail(f"unexpected line state after cast: {cast_state}")
+
+        tension_before_reel = character.get_line_tension()
+        character.start_reel_hold()
+        character.update_reel_line(0.25)
+        if not character.is_reel_hold_active():
+            fail("Reel hold should be active while holding R")
+        if character.get_line_tension() <= tension_before_reel:
+            fail("line tension should increase while reeling")
+
+        reel_state = character.get_reel_line_state_text()
+        if reel_state not in ["REELING", "STRAIN", "DANGER", "SNAPPED"]:
+            fail(f"unexpected line state while reeling: {reel_state}")
+
+        character.stop_reel_hold()
+        tension_before_ease = character.get_line_tension()
+        character.update_reel_line(0.5)
+        if character.get_line_tension() > tension_before_ease:
+            fail("line tension should not increase after releasing R")
+
+        character.detach_reel_line()
+        if character.is_reel_line_attached():
+            fail("line should detach after explicit detach")
+        if "LINE DETACHED" not in character.get_last_reel_result():
+            fail(f"unexpected detach result: {character.get_last_reel_result()}")
+
+        snap_boat = ACTOR_EDITOR.spawn_actor_from_class(
+            boat_cls,
+            unreal.Vector(1500.0, -700.0, 0.0),
+            unreal.Rotator(0.0, 0.0, 0.0),
+        )
+        spawned.append(snap_boat)
+        if snap_boat is None:
+            fail("could not spawn snap-test boat")
+        snap_boat.set_water_depth(30.0)
+
+        if not character.cast_reel_line_at_target(snap_boat):
+            fail("continuous Reel cast did not attach to snap-test boat")
+
+        snap_count_before = character.get_reel_snap_count()
+        character.start_reel_hold()
+        for _ in range(8):
+            character.update_reel_line(0.5)
+
+        if character.get_reel_snap_count() <= snap_count_before:
+            fail("line should snap after sustained over-tension")
+        if character.is_reel_line_attached():
+            fail("line should detach when snapped")
+        if "LINE SNAP" not in character.get_last_reel_result():
+            fail(f"unexpected snap result: {character.get_last_reel_result()}")
+        if "SNAPPED" not in character.get_reel_line_state_text():
+            fail(f"expected snapped line state, got {character.get_reel_line_state_text()}")
+
+        character.update_reel_line(4.0)
+        if character.get_reel_line_state_text() != "IDLE":
+            fail(f"line state should reset after snap tension eases, got {character.get_reel_line_state_text()}")
+
+    finally:
+        for actor in reversed(spawned):
+            if actor:
+                ACTOR_EDITOR.destroy_actor(actor)
+
+    unreal.log("DockShield Reel smoke validation passed: invalid target, grapple, rescue, continuous reel, and snap states executed.")
 
 
 main()

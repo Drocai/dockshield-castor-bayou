@@ -9,9 +9,9 @@ You should expect:
 - graybox test arena
 - placeholder Unreal mannequin
 - simple HUD and reticle
-- target lock, distance, line tension, and action counters
+- target lock, distance, line tension state, snap count, and action counters
 - debug target visuals
-- temporary debug Reel fire/pull feedback
+- temporary debug Reel cast/reel feedback
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
@@ -37,7 +37,9 @@ You should not expect:
 - Look: mouse
 - Jump: `Space`
 - Aim lock: hold right mouse button
-- Reel Pull / Rescue: left mouse button or `E`
+- Cast / detach Reel line: left mouse button or `E`
+- Reel attached line: hold `R`
+- Ease line tension: release `R`
 - Board / Exit prototype boat: `F` or `B`
 - Pilot boarded prototype boat: `WASD`
 
@@ -46,17 +48,18 @@ You should not expect:
 1. Face `Target_GrapplePull_Debug`.
 2. Confirm the reticle/prompt changes.
 3. Confirm `TARGET LOCK`, distance, and `LINE TENSION` appear in the lower-left HUD.
-4. Hold right mouse button to aim, then press left mouse button or `E`.
-5. Face `Target_CivilianRescue_Debug`.
-6. Confirm the reticle/prompt changes.
-7. Hold right mouse button to aim, then press left mouse button or `E`.
-8. Repeat both interactions and watch for crashes, stuck movement, bad prompts, or missing HUD updates.
-9. Face `DS_Boat_Prototype_Tow` near the water test area.
-10. Hold right mouse button to aim, then press left mouse button or `E`.
-11. Confirm the boat moves toward you, the Reel feedback line appears, and the boat tow count increases.
-12. Move close to `DS_Boat_Prototype_Tow`, then press `F` or `B`.
-13. Confirm the HUD switches to boat control, then use `WASD` to pilot the boat.
-14. Press `F` or `B` again and confirm the player exits back to foot movement.
+4. Hold right mouse button to aim, then press left mouse button or `E` to cast.
+5. Hold `R` to reel toward the target, then release `R` to ease tension.
+6. Face `Target_CivilianRescue_Debug`.
+7. Confirm the reticle/prompt changes.
+8. Press left mouse button or `E` to cast, then hold `R` until the rescue completes.
+9. Repeat both interactions and watch for crashes, stuck movement, bad prompts, or missing HUD updates.
+10. Face `DS_Boat_Prototype_Tow` near the water test area.
+11. Press left mouse button or `E` to cast, then hold `R` to tow.
+12. Confirm the boat moves toward you, the Reel feedback line appears, and the boat tow count increases.
+13. Move close to `DS_Boat_Prototype_Tow`, then press `F` or `B`.
+14. Confirm the HUD switches to boat control, then use `WASD` to pilot the boat.
+15. Press `F` or `B` again and confirm the player exits back to foot movement.
 
 ## Pass Criteria
 
@@ -64,8 +67,9 @@ You should not expect:
 - The player can move and look.
 - The HUD appears.
 - Valid target reticle/prompt appears.
-- Left mouse button or `E` triggers grapple/rescue behavior.
-- Lower-left HUD updates line tension, last result, pull count, and rescue count.
+- Left mouse button or `E` casts and detaches the Reel line.
+- Holding `R` pulls over time and releasing `R` eases line tension.
+- Lower-left HUD updates line state, tension, snap count, last result, pull count, and rescue count.
 - Lower-left HUD includes water depth, movement scale, and boat tow count when water/boat actors are present.
 - Boat HUD state appears when the player targets, boards, pilots, and exits the prototype boat.
 - Repeating interactions does not crash or break the map.

@@ -129,9 +129,10 @@ void ADSReelPrototypeCharacter::Tick(float DeltaSeconds)
     else
     {
         UpdateTargetMetrics(nullptr);
-        ShowDebugMessage(TEXT("DockShield Reel v0: face a target and press LMB or E"), FColor::White);
+        ShowDebugMessage(TEXT("DockShield Reel v0: face a target and press LMB/E to cast, hold R to reel"), FColor::White);
     }
 
+    UpdateReelLine(DeltaSeconds);
     DrawReelFeedback(DeltaSeconds);
 }
 
@@ -156,8 +157,10 @@ void ADSReelPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Playe
         }
     }
 
-    PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
-    PlayerInputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::TryReelPull);
+    PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &ADSReelPrototypeCharacter::TryCastReelLine);
+    PlayerInputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::TryCastReelLine);
+    PlayerInputComponent->BindKey(EKeys::R, IE_Pressed, this, &ADSReelPrototypeCharacter::StartReelHold);
+    PlayerInputComponent->BindKey(EKeys::R, IE_Released, this, &ADSReelPrototypeCharacter::StopReelHold);
     PlayerInputComponent->BindKey(EKeys::F, IE_Pressed, this, &ADSReelPrototypeCharacter::HandleBoardOrExitInput);
     PlayerInputComponent->BindKey(EKeys::B, IE_Pressed, this, &ADSReelPrototypeCharacter::HandleBoardOrExitInput);
     PlayerInputComponent->BindKey(EKeys::RightMouseButton, IE_Pressed, this, &ADSReelPrototypeCharacter::StartAim);
@@ -173,20 +176,25 @@ FString ADSReelPrototypeCharacter::GetCurrentTargetPrompt() const
 {
     if (bIsBoardedBoat)
     {
-        return TEXT("F/B: Exit boat | WASD: pilot rescue boat | LMB/E: fire Reel");
+        return TEXT("F/B: Exit boat | WASD: pilot rescue boat | LMB/E: cast | hold R: reel");
+    }
+
+    if (AActor* AttachedTarget = AttachedReelTarget.Get())
+    {
+        return FString::Printf(TEXT("LINE %s -> %s | Hold R to reel | Release R to ease"), *ReelLineStateText, *AttachedTarget->GetName());
     }
 
     AActor* Target = CurrentTarget.Get();
     if (!Target)
     {
-        return TEXT("Face a DockShield target and press E");
+        return TEXT("Face a DockShield target and press LMB/E to cast");
     }
 
     if (const ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(Target))
     {
         const bool bCloseEnough = FVector::Dist(GetActorLocation(), Boat->GetActorLocation()) <= BoardInteractionRange;
         const FString BoardPrompt = bCloseEnough ? TEXT("F/B: Board boat") : TEXT("Move closer to board");
-        return FString::Printf(TEXT("%s | Boat %s | LMB/E: Tow"), *BoardPrompt, *Boat->GetBoatStateText());
+        return FString::Printf(TEXT("%s | Boat %s | LMB/E: Cast tow line | R: Reel"), *BoardPrompt, *Boat->GetBoatStateText());
     }
 
     if (UDSTargetableComponent* Targetable = GetTargetableComponent(Target))
@@ -214,12 +222,37 @@ float ADSReelPrototypeCharacter::GetCurrentTargetDistance() const
 
 float ADSReelPrototypeCharacter::GetLineTension() const
 {
-    return LineTension;
+    return FMath::Clamp(LineTension, 0.0f, 1.0f);
 }
 
 FString ADSReelPrototypeCharacter::GetLastReelResult() const
 {
     return LastReelResult;
+}
+
+bool ADSReelPrototypeCharacter::IsReelLineAttached() const
+{
+    return AttachedReelTarget.IsValid();
+}
+
+bool ADSReelPrototypeCharacter::IsReelHoldActive() const
+{
+    return bReelHoldActive;
+}
+
+FString ADSReelPrototypeCharacter::GetReelLineStateText() const
+{
+    return ReelLineStateText;
+}
+
+AActor* ADSReelPrototypeCharacter::GetAttachedReelTarget() const
+{
+    return AttachedReelTarget.Get();
+}
+
+int32 ADSReelPrototypeCharacter::GetReelSnapCount() const
+{
+    return ReelSnapCount;
 }
 
 int32 ADSReelPrototypeCharacter::GetGrapplePullCount() const
@@ -318,7 +351,7 @@ void ADSReelPrototypeCharacter::StartAim()
             CameraBoom->TargetArmLength = 430.0f;
         }
 
-        ShowDebugMessage(TEXT("Boat aim: LMB or E to fire Reel"), FColor::Cyan);
+        ShowDebugMessage(TEXT("Boat aim: LMB/E casts tow line, hold R to reel"), FColor::Cyan);
         return;
     }
 
@@ -331,7 +364,7 @@ void ADSReelPrototypeCharacter::StartAim()
         CameraBoom->TargetArmLength = 360.0f;
     }
 
-    ShowDebugMessage(TEXT("Aim locked: Left Click or E to fire Reel Pull"), FColor::Cyan);
+    ShowDebugMessage(TEXT("Aim locked: LMB/E casts line, hold R to reel"), FColor::Cyan);
 }
 
 void ADSReelPrototypeCharacter::StopAim()
@@ -361,6 +394,67 @@ void ADSReelPrototypeCharacter::StopAim()
 void ADSReelPrototypeCharacter::TryReelPull()
 {
     ExecuteReelActionOnTarget(CurrentTarget.Get());
+}
+
+void ADSReelPrototypeCharacter::TryCastReelLine()
+{
+    if (AttachedReelTarget.IsValid())
+    {
+        DetachReelLineInternal(TEXT("LINE DETACHED"), false);
+        return;
+    }
+
+    CastReelLineAtTarget(CurrentTarget.Get());
+}
+
+bool ADSReelPrototypeCharacter::CastReelLineAtTarget(AActor* Target)
+{
+    if (!Target || !CanReelPull(Target))
+    {
+        StartReelFeedback(Target, FColor::Red);
+        LastReelResult = TEXT("NO VALID TARGET");
+        ReelLineStateText = TEXT("IDLE");
+        ShowDebugMessage(TEXT("Cast Reel: no valid target"), FColor::Red);
+        return false;
+    }
+
+    AttachedReelTarget = Target;
+    bReelHoldActive = false;
+    UpdateTargetMetrics(Target);
+    RawLineTension = FMath::Clamp(LineTension * 0.72f, 0.08f, 0.72f);
+    LineTension = RawLineTension;
+    RefreshReelLineState();
+
+    StartReelFeedback(Target, FColor::Cyan);
+    LastReelResult = TEXT("LINE CAST");
+    ShowDebugMessage(TEXT("Reel Line cast: hold R to reel, release to ease tension"), FColor::Cyan);
+    return true;
+}
+
+void ADSReelPrototypeCharacter::StartReelHold()
+{
+    if (!AttachedReelTarget.IsValid())
+    {
+        if (!CastReelLineAtTarget(CurrentTarget.Get()))
+        {
+            return;
+        }
+    }
+
+    bReelHoldActive = true;
+    RefreshReelLineState();
+    LastReelResult = TEXT("REELING");
+}
+
+void ADSReelPrototypeCharacter::StopReelHold()
+{
+    bReelHoldActive = false;
+    RefreshReelLineState();
+}
+
+void ADSReelPrototypeCharacter::DetachReelLine()
+{
+    DetachReelLineInternal(TEXT("LINE DETACHED"), false);
 }
 
 void ADSReelPrototypeCharacter::HandleBoardOrExitInput()
@@ -474,6 +568,53 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
     LastReelResult = FString::Printf(TEXT("GRAPPLE CAST %d"), GrapplePullCount);
     ShowDebugMessage(TEXT("Grapple Cast: pulling to target"), FColor::Green);
     return true;
+}
+
+void ADSReelPrototypeCharacter::UpdateReelLine(float DeltaSeconds)
+{
+    AActor* Target = AttachedReelTarget.Get();
+    if (!Target)
+    {
+        bReelHoldActive = false;
+        RawLineTension = FMath::Max(0.0f, RawLineTension - (ReelTensionReleaseRate * DeltaSeconds));
+        LineTension = RawLineTension;
+        RefreshReelLineState();
+        return;
+    }
+
+    UpdateTargetMetrics(Target);
+
+    const float Range = GetTargetInteractionRange(Target);
+    const float DistanceRatio = Range > 0.0f ? FMath::Clamp(CurrentTargetDistance / Range, 0.0f, 1.45f) : 0.0f;
+    const float WaterPressure = bInWaterZone ? FMath::Clamp(1.0f - WaterMovementScale, 0.0f, 0.75f) : 0.0f;
+
+    if (bReelHoldActive)
+    {
+        RawLineTension += DeltaSeconds * (ReelTensionBuildRate + (DistanceRatio * 0.34f) + (WaterPressure * 0.22f));
+        ApplyContinuousReelPull(Target, DeltaSeconds);
+    }
+    else
+    {
+        RawLineTension -= DeltaSeconds * ReelTensionReleaseRate;
+    }
+
+    RawLineTension = FMath::Clamp(RawLineTension, 0.0f, 1.5f);
+    LineTension = FMath::Clamp(RawLineTension, 0.0f, 1.0f);
+    RefreshReelLineState();
+
+    if (GetWorld())
+    {
+        const FVector Start = FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation() + FVector(0.0f, 0.0f, 64.0f);
+        DrawDebugLine(GetWorld(), Start, Target->GetActorLocation(), GetReelLineStateColor(), false, 0.0f, 0, bReelHoldActive ? 7.0f : 4.0f);
+        DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 64.0f, 16, GetReelLineStateColor(), false, 0.0f, 0, 3.0f);
+    }
+
+    if (RawLineTension >= ReelSnapThreshold)
+    {
+        ++ReelSnapCount;
+        StartReelFeedback(Target, FColor::Red);
+        DetachReelLineInternal(TEXT("LINE SNAP"), true);
+    }
 }
 
 AActor* ADSReelPrototypeCharacter::FindBestTarget() const
@@ -605,6 +746,145 @@ bool ADSReelPrototypeCharacter::CanReelPull(AActor* Actor) const
     }
 
     return Actor->ActorHasTag(TEXT("GrapplePoint")) || Actor->ActorHasTag(TEXT("Civilian")) || Actor->ActorHasTag(TEXT("Boat"));
+}
+
+void ADSReelPrototypeCharacter::ApplyContinuousReelPull(AActor* Target, float DeltaSeconds)
+{
+    if (!Target || DeltaSeconds <= 0.0f)
+    {
+        return;
+    }
+
+    if (ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(Target))
+    {
+        if (Boat->ApplyReelTowFrom(GetActorLocation(), ReelBoatTowSpeed * DeltaSeconds))
+        {
+            LastReelResult = TEXT("BOAT REELING");
+        }
+        else
+        {
+            LastReelResult = FString::Printf(TEXT("BOAT %s"), *Boat->GetBoatStateText());
+        }
+        return;
+    }
+
+    if (Target->ActorHasTag(TEXT("Civilian")))
+    {
+        FVector PullDirection = GetActorLocation() - Target->GetActorLocation();
+        PullDirection.Z = 0.0f;
+
+        const float DistanceToCivilian = PullDirection.Size();
+        if (DistanceToCivilian <= ReelRescueCompleteDistance)
+        {
+            StartReelFeedback(Target, FColor::Green);
+            Target->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * 120.0f) + FVector(0.0f, 0.0f, 60.0f), false, nullptr, ETeleportType::TeleportPhysics);
+            ++CivilianRescueCount;
+            DetachReelLineInternal(FString::Printf(TEXT("RESCUE COMPLETE %d"), CivilianRescueCount), false);
+            ShowDebugMessage(TEXT("Rescue Reel: civilian pulled clear"), FColor::Green);
+            return;
+        }
+
+        if (PullDirection.Normalize())
+        {
+            const float PullStep = ReelTargetPullSpeed * DeltaSeconds * FMath::Clamp(1.0f - (RawLineTension * 0.28f), 0.45f, 1.0f);
+            Target->AddActorWorldOffset(PullDirection * PullStep, false, nullptr, ETeleportType::TeleportPhysics);
+            LastReelResult = TEXT("RESCUE REELING");
+        }
+        return;
+    }
+
+    FVector PullDirection = Target->GetActorLocation() - GetActorLocation();
+    PullDirection.Z = 0.0f;
+    if (!PullDirection.Normalize())
+    {
+        return;
+    }
+
+    if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+    {
+        const float TensionEfficiency = RawLineTension > ReelDangerThreshold ? 0.58f : (RawLineTension > ReelStrainThreshold ? 0.86f : 1.0f);
+        Movement->Velocity += PullDirection * ReelSelfPullAcceleration * TensionEfficiency * DeltaSeconds;
+        if (CurrentTargetDistance > 280.0f)
+        {
+            Movement->Velocity.Z = FMath::Max(Movement->Velocity.Z, 180.0f);
+        }
+    }
+
+    LastReelResult = RawLineTension > ReelDangerThreshold ? TEXT("REEL DANGER") : TEXT("GRAPPLE REELING");
+
+    if (CurrentTargetDistance <= 180.0f)
+    {
+        ++GrapplePullCount;
+        DetachReelLineInternal(FString::Printf(TEXT("GRAPPLE COMPLETE %d"), GrapplePullCount), false);
+    }
+}
+
+void ADSReelPrototypeCharacter::DetachReelLineInternal(const FString& ResultText, bool bWasSnap)
+{
+    AttachedReelTarget.Reset();
+    bReelHoldActive = false;
+    LastReelResult = ResultText;
+
+    if (bWasSnap)
+    {
+        RawLineTension = 1.0f;
+        LineTension = 1.0f;
+        ReelLineStateText = TEXT("SNAPPED");
+        ShowDebugMessage(TEXT("Line snapped under tension"), FColor::Red);
+        return;
+    }
+
+    RawLineTension = 0.0f;
+    LineTension = 0.0f;
+    ReelLineStateText = TEXT("IDLE");
+}
+
+void ADSReelPrototypeCharacter::RefreshReelLineState()
+{
+    if (!AttachedReelTarget.IsValid())
+    {
+        if (ReelLineStateText == TEXT("SNAPPED") && RawLineTension <= 0.02f)
+        {
+            ReelLineStateText = TEXT("IDLE");
+        }
+        else if (ReelLineStateText != TEXT("SNAPPED"))
+        {
+            ReelLineStateText = TEXT("IDLE");
+        }
+        return;
+    }
+
+    if (RawLineTension >= ReelDangerThreshold)
+    {
+        ReelLineStateText = TEXT("DANGER");
+    }
+    else if (RawLineTension >= ReelStrainThreshold)
+    {
+        ReelLineStateText = TEXT("STRAIN");
+    }
+    else if (bReelHoldActive)
+    {
+        ReelLineStateText = TEXT("REELING");
+    }
+    else
+    {
+        ReelLineStateText = TEXT("CAST");
+    }
+}
+
+FColor ADSReelPrototypeCharacter::GetReelLineStateColor() const
+{
+    if (ReelLineStateText == TEXT("DANGER") || ReelLineStateText == TEXT("SNAPPED"))
+    {
+        return FColor::Red;
+    }
+
+    if (ReelLineStateText == TEXT("STRAIN"))
+    {
+        return FColor::Yellow;
+    }
+
+    return bReelHoldActive ? FColor::Green : FColor::Cyan;
 }
 
 void ADSReelPrototypeCharacter::ExitBoardedBoat()

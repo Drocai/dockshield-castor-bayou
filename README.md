@@ -6,9 +6,9 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 ## Current Status
 
-This repo is in **Phase 2: shared targeting v0, Reel feedback, and water/boat prototype foundations**.
+This repo is in **Phase 2: shared targeting v0, continuous Reel feedback, and water/boat prototype foundations**.
 
-The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, headless Reel interaction smoke test, prototype water-depth zone, boat towing, boat boarding, and prototype boat piloting foundations are implemented.
+The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, cast/hold/release Reel line loop, headless Reel interaction smoke test, prototype water-depth zone, boat towing, boat boarding, and prototype boat piloting foundations are implemented.
 
 ## Working Title Structure
 
