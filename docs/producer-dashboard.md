@@ -26,6 +26,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - The Reel, The Fly, and Lilly Loch have first-pass in-engine prototype visual kits so they no longer read as identical mannequins.
 - `M_Test_Targeting` now has generated prototype bayou materials, wet dock planks, reed silhouettes, toxic water/glow planes, storm moon key light, amber rescue light, red neon sign light, fog, and a storm-grade post-process marker.
 - User-provided Copilot3D character mesh candidates have been inspected in Blender and documented at `docs/reference/candidate-3d-assets/copilot3d-2026-05-27/`.
+- Reel-first character production research and generation prompts are documented in `docs/research/character-asset-pipeline-research-2026-05-27.md` and `docs/prompts/the-reel-asset-generation-prompts.md`.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -66,7 +67,8 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next visual pass should import the best Reel GLB as a static scale/lighting proxy only after license confirmation, then evaluate retopo/rigging path before replacing playable mannequins.
+4. Next visual pass should either generate a riggable Reel A-pose source from the prompt pack or import the best current Reel GLB as a static scale/lighting proxy only after license confirmation.
+5. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
 
 ## Current Implementation Plan
 

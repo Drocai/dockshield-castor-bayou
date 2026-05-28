@@ -115,6 +115,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 
 - [x] Private gameplay UI reference set
 - [x] Private Copilot3D candidate asset audit
+- [x] Reel-first character asset research and generation prompt pack
 - [x] Basic prototype HUD
 - [x] Current prototype audit and play guide
 - [x] Test-map lighting/fog pass v0
@@ -132,6 +133,9 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Reel/Fly/Lilly switching HUD prompt v0
 - [x] Reel/Fly/Lilly prototype visual identity kit v0
 - [ ] Import best Reel GLB as static scale/lighting proxy after license confirmation
+- [ ] Generate or source riggable The Reel A-pose body
+- [ ] Generate or source separate Reel gear prop pack
+- [ ] Decide Reel rigging route: MetaHuman, AccuRIG/Mixamo, or custom Blender rig
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
