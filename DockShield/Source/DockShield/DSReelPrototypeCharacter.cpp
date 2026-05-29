@@ -556,6 +556,25 @@ bool ADSReelPrototypeCharacter::CastReelLineAtTarget(AActor* Target)
     RefreshReelLineState();
 
     StartReelFeedback(Target, FColor::Cyan);
+    if (Target->ActorHasTag(TEXT("WeakPoint")))
+    {
+        if (UDSTargetableComponent* Targetable = Target->FindComponentByClass<UDSTargetableComponent>())
+        {
+            const bool bWasExposed = Targetable->IsReelExposed();
+            Targetable->ExposeForReel(1.0f);
+            LastReelResult = TEXT("WEAK POINT EXPOSED");
+            if (!bWasExposed)
+            {
+                if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+                {
+                    PrototypeController->NotifyPrototypeAction(FName(TEXT("BossWeakPointExposed")), 25, 30, 1);
+                }
+            }
+            ShowDebugMessage(Targetable->GetComboStateText(), FColor::Orange);
+            return true;
+        }
+    }
+
     LastReelResult = TEXT("LINE CAST");
     if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
     {
@@ -662,6 +681,27 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
     }
 
     UpdateTargetMetrics(Target);
+
+    if (Target->ActorHasTag(TEXT("WeakPoint")))
+    {
+        UDSTargetableComponent* Targetable = Target->FindComponentByClass<UDSTargetableComponent>();
+        if (Targetable)
+        {
+            StartReelFeedback(Target, FColor::Orange);
+            const bool bWasExposed = Targetable->IsReelExposed();
+            Targetable->ExposeForReel(1.0f);
+            LastReelResult = TEXT("WEAK POINT EXPOSED");
+            if (!bWasExposed)
+            {
+                if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+                {
+                    PrototypeController->NotifyPrototypeAction(FName(TEXT("BossWeakPointExposed")), 25, 30, 1);
+                }
+            }
+            ShowDebugMessage(Targetable->GetComboStateText(), FColor::Orange);
+            return true;
+        }
+    }
 
     if (ADSPrototypeBoatActor* Boat = Cast<ADSPrototypeBoatActor>(Target))
     {

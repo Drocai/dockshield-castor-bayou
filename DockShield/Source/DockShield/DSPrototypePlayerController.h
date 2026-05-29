@@ -158,6 +158,8 @@ private:
     FString LastAchievementText = TEXT("None unlocked");
     FString LastBossArenaStatus = TEXT("DEEP DOCK: NOT DEPLOYED");
     bool bDeepDockDiscovered = false;
+    bool bBossDefeatRewarded = false;
+    int32 LastKnownBossComboCount = 0;
 
     bool bSettingsPanelOpen = false;
     float HudScale = 1.0f;

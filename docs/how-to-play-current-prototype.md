@@ -23,6 +23,7 @@ You should expect:
 - C++ foundation for Lilly swamp pulse and bind state
 - prototype beta economy, achievements, and settings HUD panels
 - prototype Deep Dock boss arena dressing with a toxic core and weak-point targets
+- prototype Hook, Line & Sinker weak-point combo damage: Reel expose, Fly mark, Lilly bind
 
 You should not expect:
 
@@ -30,7 +31,7 @@ You should not expect:
 - final character models
 - final storm/rain/water art
 - command mode, boss combat, or full mission flow
-- real boss AI, damage phases, or win/fail encounter rules
+- real boss AI, timed damage windows, cinematic finisher VFX, or win/fail encounter rules
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
 - the static Reel proxy to be playable, animated, licensed for public use, or final
@@ -103,6 +104,11 @@ Lilly controls after pressing `3` or `Tab`:
 26. Move toward the `DS_DeepDock_*` arena area and confirm the toxic core, red warning lights, and three weak-point targets are readable.
 27. Complete one rescue, one Fly mark, and one Lilly bind; confirm credits, XP, samples, and achievement text update in the HUD.
 28. Press `P` or `Esc` and confirm the settings panel opens; use `[`/`]`, `-`/`=`, and `O` to review readability controls.
+29. At a Deep Dock weak point, use The Reel to expose it.
+30. Switch to The Fly and mark the same weak point.
+31. Switch to Lilly and bind the same weak point.
+32. Confirm the boss HUD status advances and the combo reward appears.
+33. Repeat the combo on all three weak points to push the boss arena into defeated state.
 
 ## Pass Criteria
 
@@ -124,6 +130,8 @@ Lilly controls after pressing `3` or `Tab`:
 - The test map has visible wet dock surfaces, toxic green water/glow, reed silhouettes, storm/fog lighting, and neon/backdrop markers.
 - Beta economy, achievement, boss arena, and settings HUD panels appear without hiding the core targeting prompt.
 - Deep Dock boss core and weak-point targets are present in the map and remain targetable through the shared target system.
+- Hook, Line & Sinker damage applies once per weak point after Reel exposure, Fly mark, and Lilly bind are all active.
+- The boss arena advances through exposed/enraged/defeated states after repeated weak-point combos.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation

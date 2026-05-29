@@ -109,9 +109,10 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Deep Dock boss arena state actor v0
 - [x] Deep Dock boss arena map dressing v0
 - [x] Boss weak-point target placeholders v0
+- [x] Boss weak-point phase with damage/state changes v0
+- [x] Hook, Line & Sinker combo trigger v0
 - [ ] One mini boss
-- [ ] Boss weak-point phase with damage/state changes
-- [ ] Hook, Line & Sinker finisher beat
+- [ ] Hook, Line & Sinker finisher beat with readable VFX/SFX
 - [ ] Win/fail conditions
 
 ## Phase 6 - Presentation
@@ -143,6 +144,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Add prototype achievements HUD v0
 - [x] Add prototype settings panel v0
 - [x] Add Deep Dock boss arena validation pass
+- [x] Add Hook, Line & Sinker boss combo smoke test
 - [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Review Deep Dock boss arena lighting/readability in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
@@ -169,8 +171,10 @@ Current note: the image pack is the private canon visual target for the intended
 - [ ] Convert beta economy rewards into data-driven mission reward rows
 - [ ] Add achievement save/load only after a real profile/save slot exists
 - [ ] Wire settings panel to actual scalability/post-process settings after visual baseline is stable
-- [ ] Add boss arena state machine: dormant, exposed, enraged, defeated
-- [ ] Add boss weak-point damage windows and Hook, Line & Sinker combo trigger
+- [x] Add boss arena state machine: dormant, exposed, enraged, defeated
+- [x] Add boss weak-point damage and Hook, Line & Sinker combo trigger
+- [ ] Add timed boss weak-point damage windows
+- [ ] Add combo impact VFX/SFX and camera feedback
 - [ ] Add packaged Windows build validation script
 - [ ] Add OBS capture checklist for a 60-90 second prototype reel
 - [ ] Add asset-performance budget targets for triangles, materials, textures, and draw calls

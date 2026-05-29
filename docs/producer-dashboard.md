@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, and Deep Dock boss arena foundation.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, Deep Dock boss arena foundation, and Hook, Line & Sinker weak-point combo damage v0.
 
 ## Current Repo State
 
@@ -32,6 +32,8 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - Prototype beta economy state is implemented in `DSPrototypePlayerController`: credits, XP, Depth samples, one-time achievements, and HUD display.
 - Prototype settings state is implemented in `DSPrototypePlayerController`: `P`/`Esc` settings panel, HUD scale, gamma value, and visual-quality mode selection for readability review.
 - Deep Dock boss arena state actor and commandlet map pass are implemented for `M_Test_Targeting`; the pass places a toxic core, weak-point targets, warning pylons, service decks, and boss lighting.
+- Deep Dock weak points now track Reel exposure, Fly marks, and Lilly binds. When all three are present on one weak point, `DSDeepDockBossArenaActor` applies Hook, Line & Sinker combo damage and advances boss phase from dormant to exposed, enraged, then defeated.
+- `validate_boss_combo_smoke.py` verifies all three weak-point combos and boss defeat headlessly.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -52,6 +54,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Reel proxy visual review | D RoC or Codex with editor session | Open `M_Test_Targeting`, compare `DS_Reel_Proxy_Copilot3D_Static` against the playable pawn under storm fog, toxic glow, amber rescue light, and wet dock lighting |
 | Riggable Reel source gap | Codex / art pipeline | Generate or source the next A-pose/T-pose Reel body and separate gear props; inspect in Blender before any playable replacement work |
 | Deep Dock boss arena feel test | D RoC or Codex with editor session | Open `M_Test_Targeting`, approach the Deep Dock area, confirm boss core/weak-point targets read clearly under toxic green and warning red lighting |
+| Deep Dock boss combo feel test | D RoC or Codex with editor session | Expose a Deep Dock weak point with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm HUD boss status advances and economy rewards trigger |
 | Beta economy/settings feel test | D RoC or Codex with editor session | Press `P` or `Esc`, adjust HUD scale with `[`/`]`, adjust gamma value with `-`/`=`, cycle quality with `O`, then complete one rescue/mark/bind to confirm HUD feedback |
 
 ## Current Agent Lane
@@ -70,17 +73,18 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Optional: open `DockShield/DockShield.uproject` in Unreal.
 2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, hold right mouse button to aim, press left mouse button or `E` to cast, then hold `R` to reel.
 3. Optional: review the static Reel proxy beside the playable pawn for silhouette, size, material read, and camera-distance clarity. Final cinematic Castor Bayou assets are not in this test map yet.
-4. Optional: review the Deep Dock prototype arena in `M_Test_Targeting` for boss-core readability, weak-point clarity, and lighting contrast.
+4. Optional: review the Deep Dock prototype arena in `M_Test_Targeting` for boss-core readability, weak-point clarity, lighting contrast, and the Reel/Fly/Lilly combo loop.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Keep beta economy/settings/achievement work prototype-only until the first encounter loop has real win/fail conditions.
-5. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
-6. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
-7. Use `scripts\unreal\validate-prototype.ps1 -RequireCleanGit` after committed checkpoints when a clean-release handoff is needed.
+4. Add readable in-world VFX/SFX hooks for Reel exposure, Fly mark, Lilly bind, and combo impact.
+5. Keep beta economy/settings/achievement work prototype-only until the first encounter loop has real win/fail conditions.
+6. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
+7. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
+8. Use `scripts\unreal\validate-prototype.ps1 -RequireCleanGit` after committed checkpoints when a clean-release handoff is needed.
 
 ## Current Implementation Plan
 

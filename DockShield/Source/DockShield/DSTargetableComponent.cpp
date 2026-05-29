@@ -102,9 +102,38 @@ FString UDSTargetableComponent::GetReelPrompt() const
         return FString::Printf(TEXT("Press E: Rescue Reel %s"), *DisplayName.ToString());
     case EDSTargetType::Boat:
         return FString::Printf(TEXT("Press E: Tow / Reel %s"), *DisplayName.ToString());
+    case EDSTargetType::WeakPoint:
+        return bIsReelExposed
+            ? FString::Printf(TEXT("REEL EXPOSED: %s"), *GetComboStateText())
+            : FString::Printf(TEXT("Press E: Reel expose %s"), *DisplayName.ToString());
     default:
         return FString::Printf(TEXT("Press E: Reel Pull %s"), *DisplayName.ToString());
     }
+}
+
+bool UDSTargetableComponent::ExposeForReel(float Strength)
+{
+    ConfigureFromOwnerTags();
+    if (!bCanReelPull)
+    {
+        return false;
+    }
+
+    bIsReelExposed = true;
+    ReelExposureStrength = FMath::Clamp(Strength, 0.0f, 1.0f);
+    ++ReelExposureCount;
+    return true;
+}
+
+void UDSTargetableComponent::ClearReelExposure()
+{
+    bIsReelExposed = false;
+    ReelExposureStrength = 0.0f;
+}
+
+bool UDSTargetableComponent::IsReelExposed() const
+{
+    return bIsReelExposed;
 }
 
 bool UDSTargetableComponent::MarkForFly(float Strength)
@@ -219,4 +248,18 @@ FString UDSTargetableComponent::GetLillyPrompt() const
     default:
         return FString::Printf(TEXT("%s: Lilly Bind %s"), *BindState, *DisplayName.ToString());
     }
+}
+
+bool UDSTargetableComponent::IsHookLineSinkerReady() const
+{
+    return bIsReelExposed && bIsFlyMarked && bIsLillyBound;
+}
+
+FString UDSTargetableComponent::GetComboStateText() const
+{
+    return FString::Printf(
+        TEXT("REEL %s | FLY %s | LILLY %s"),
+        bIsReelExposed ? TEXT("EXPOSED") : TEXT("NEEDED"),
+        bIsFlyMarked ? TEXT("MARKED") : TEXT("NEEDED"),
+        bIsLillyBound ? TEXT("BOUND") : TEXT("NEEDED"));
 }

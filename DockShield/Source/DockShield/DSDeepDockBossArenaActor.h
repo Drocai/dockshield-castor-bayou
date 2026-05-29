@@ -2,7 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UObject/ObjectKey.h"
 #include "DSDeepDockBossArenaActor.generated.h"
+
+UENUM(BlueprintType)
+enum class EDSDeepDockBossPhase : uint8
+{
+	Dormant UMETA(DisplayName = "Dormant"),
+	Exposed UMETA(DisplayName = "Exposed"),
+	Enraged UMETA(DisplayName = "Enraged"),
+	Defeated UMETA(DisplayName = "Defeated")
+};
 
 UCLASS()
 class DOCKSHIELD_API ADSDeepDockBossArenaActor : public AActor
@@ -27,6 +37,33 @@ public:
 	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
 	bool IsArenaArmed() const { return bArenaArmed; }
 
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	bool IsBossDefeated() const { return BossPhase == EDSDeepDockBossPhase::Defeated; }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	EDSDeepDockBossPhase GetBossPhase() const { return BossPhase; }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	FString GetBossPhaseText() const;
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	int32 GetResolvedWeakPointCount() const { return ResolvedWeakPointCount; }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	int32 GetComboTriggerCount() const { return ComboTriggerCount; }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	float GetHookLineSinkerReadiness() const;
+
+	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
+	int32 EvaluateBossWeakPointCombos();
+
+	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
+	bool ApplyHookLineSinkerCombo(AActor* WeakPointActor);
+
+	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
+	void ResetBossEncounter();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
 	FString ArenaName;
@@ -45,4 +82,28 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
 	bool bArenaArmed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena", meta = (ClampMin = "1"))
+	int32 WeakPointTargetCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float WeakPointDamagePerCombo;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
+	EDSDeepDockBossPhase BossPhase;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
+	int32 ResolvedWeakPointCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
+	int32 ComboTriggerCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
+	FString LastComboText;
+
+private:
+	TSet<FObjectKey> ResolvedWeakPoints;
+
+	bool IsBossWeakPointActor(const AActor* Actor) const;
+	void UpdateBossPhaseFromState();
 };

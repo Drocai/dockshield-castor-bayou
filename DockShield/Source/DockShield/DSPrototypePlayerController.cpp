@@ -190,6 +190,18 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
     {
         UnlockAchievement(FName(TEXT("FIRST_LILLY_BIND")));
     }
+    else if (ActionName == FName(TEXT("BossWeakPointExposed")))
+    {
+        UnlockAchievement(FName(TEXT("FIRST_BOSS_EXPOSE")));
+    }
+    else if (ActionName == FName(TEXT("HookLineSinker")))
+    {
+        UnlockAchievement(FName(TEXT("FIRST_HOOK_LINE_SINKER")));
+    }
+    else if (ActionName == FName(TEXT("BossDefeated")))
+    {
+        UnlockAchievement(FName(TEXT("BOSS_DEFEATED")));
+    }
 }
 
 bool ADSPrototypePlayerController::UnlockAchievement(FName AchievementId)
@@ -218,7 +230,7 @@ FString ADSPrototypePlayerController::GetEconomyStatusText() const
 FString ADSPrototypePlayerController::GetAchievementStatusText() const
 {
     return FString::Printf(
-        TEXT("ACHIEVEMENTS %d/7 | LAST: %s"),
+        TEXT("ACHIEVEMENTS %d/10 | LAST: %s"),
         UnlockedAchievements.Num(),
         *LastAchievementText);
 }
@@ -437,10 +449,25 @@ void ADSPrototypePlayerController::RefreshBossArenaAwareness()
 
     for (TActorIterator<ADSDeepDockBossArenaActor> It(World); It; ++It)
     {
-        const ADSDeepDockBossArenaActor* Arena = *It;
+        ADSDeepDockBossArenaActor* Arena = *It;
         if (!Arena)
         {
             continue;
+        }
+
+        Arena->EvaluateBossWeakPointCombos();
+        const int32 ComboCount = Arena->GetComboTriggerCount();
+        if (ComboCount > LastKnownBossComboCount)
+        {
+            const int32 NewComboCount = ComboCount - LastKnownBossComboCount;
+            LastKnownBossComboCount = ComboCount;
+            NotifyPrototypeAction(FName(TEXT("HookLineSinker")), 120 * NewComboCount, 120 * NewComboCount, 3 * NewComboCount);
+        }
+
+        if (Arena->IsBossDefeated() && !bBossDefeatRewarded)
+        {
+            bBossDefeatRewarded = true;
+            NotifyPrototypeAction(FName(TEXT("BossDefeated")), 500, 400, 5);
         }
 
         LastBossArenaStatus = Arena->GetArenaStatusText();
@@ -484,6 +511,18 @@ FString ADSPrototypePlayerController::GetAchievementLabel(FName AchievementId) c
     if (AchievementId == FName(TEXT("DEEP_DOCK_ONLINE")))
     {
         return TEXT("Deep Dock Online");
+    }
+    if (AchievementId == FName(TEXT("FIRST_BOSS_EXPOSE")))
+    {
+        return TEXT("First Boss Weak Point Exposed");
+    }
+    if (AchievementId == FName(TEXT("FIRST_HOOK_LINE_SINKER")))
+    {
+        return TEXT("First Hook, Line & Sinker");
+    }
+    if (AchievementId == FName(TEXT("BOSS_DEFEATED")))
+    {
+        return TEXT("Deep Dock Boss Defeated");
     }
 
     return AchievementId.ToString();

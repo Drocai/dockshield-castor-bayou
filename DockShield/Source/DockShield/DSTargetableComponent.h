@@ -43,6 +43,15 @@ public:
     int32 FlyMarkCount = 0;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    bool bIsReelExposed = false;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    float ReelExposureStrength = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
+    int32 ReelExposureCount = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
     bool bIsLillyBound = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Targeting")
@@ -56,6 +65,15 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     FString GetReelPrompt() const;
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    bool ExposeForReel(float Strength = 1.0f);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
+    void ClearReelExposure();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool IsReelExposed() const;
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     bool MarkForFly(float Strength = 1.0f);
@@ -86,4 +104,10 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
     FString GetLillyPrompt() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool IsHookLineSinkerReady() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    FString GetComboStateText() const;
 };

@@ -84,6 +84,7 @@ def validate_target(label, expected_tag, expected_prompt_fragment):
             str(component.get_reel_prompt()),
             str(component.get_fly_prompt()),
             str(component.get_lilly_prompt()),
+            str(component.get_combo_state_text()),
         ]
     )
     if expected_prompt_fragment not in prompts:

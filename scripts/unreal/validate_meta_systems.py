@@ -66,6 +66,14 @@ def validate_boss_arena_actor():
         "get_lab_core_integrity",
         "get_threat_level",
         "is_arena_armed",
+        "is_boss_defeated",
+        "get_boss_phase_text",
+        "get_resolved_weak_point_count",
+        "get_combo_trigger_count",
+        "get_hook_line_sinker_readiness",
+        "evaluate_boss_weak_point_combos",
+        "apply_hook_line_sinker_combo",
+        "reset_boss_encounter",
     ]:
         require_method(cdo, method_name)
 
@@ -76,6 +84,10 @@ def validate_boss_arena_actor():
         fail("boss integrity should start above zero")
     if not cdo.is_arena_armed():
         fail("boss arena should start armed")
+    if cdo.get_combo_trigger_count() != 0:
+        fail("boss combo count should start at zero")
+    if cdo.get_resolved_weak_point_count() != 0:
+        fail("resolved weak point count should start at zero")
 
 
 def main():
