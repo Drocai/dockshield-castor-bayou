@@ -62,10 +62,20 @@ The apply script is resumable: if Unreal has already imported the static mesh, i
 Validated checks:
 
 - controlled source GLB exists
+- controlled source GLB size is `8,387,188` bytes
+- controlled source GLB SHA256 matches `3DD8BCC8EDBC8D2EA769E74B4F5C414CC71BB29F933268CF0B0DD2E5B6D4691F`
 - imported Unreal static mesh exists
 - prototype Reel materials exist
 - proxy review actors exist in `M_Test_Targeting`
 - static proxy actor has the imported mesh and private reference tags
+
+## Review Checklist
+
+- The proxy reads as The Reel at third-person camera distance.
+- The hat, reel hardware, belt, and wet tactical silhouette are legible.
+- Toxic-green accent lighting is visible but not dominant.
+- The proxy scale is close enough to the playable pawn for future replacement planning.
+- The proxy remains labeled as private static reference, not final playable art.
 
 ## Next Required Asset Step
 

@@ -133,12 +133,31 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Reel/Fly/Lilly switching HUD prompt v0
 - [x] Reel/Fly/Lilly prototype visual identity kit v0
 - [x] Import best Reel GLB as private static scale/lighting proxy
+- [x] Add Reel proxy source checksum/size validation
+- [x] Add current 20-point prototype audit
+- [x] Add optional clean Git validation gate
+- [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
 - [ ] Generate or source separate Reel gear prop pack
 - [ ] Decide Reel rigging route: MetaHuman, AccuRIG/Mixamo, or custom Blender rig
+- [ ] Add Blender manifest for next Reel source package
+- [ ] Add in-map screenshot/review camera for visual evidence
 - [ ] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
 Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, and a private static Copilot3D Reel proxy for scale and lighting review. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
+
+## Phase 7 - Optimization And Upgrade Queue
+
+- [ ] Add automated screenshot/review camera for the Reel proxy area
+- [ ] Add weather state v0 that changes target visibility or interaction range
+- [ ] Add basic cast/latch/reel/rescue SFX event hooks
+- [ ] Add basic sonar pulse and root bind VFX placeholders
+- [ ] Add one mutation enemy with shared target weak-point support
+- [ ] Add extraction marker and success/fail counter
+- [ ] Add objective-state HUD card for the current mission step
+- [ ] Add packaged Windows build validation script
+- [ ] Add OBS capture checklist for a 60-90 second prototype reel
+- [ ] Add asset-performance budget targets for triangles, materials, textures, and draw calls

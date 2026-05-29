@@ -35,6 +35,7 @@ As of the current Unreal prototype setup:
 - Prototype water depth/current/flood pressure and boat towing/drift foundations are implemented in C++ and validated by commandlet smoke tests.
 - The Fly sonar/mark foundation, Lilly swamp pulse/bind foundation, and three-hero switching are implemented in C++ and validated by commandlet smoke tests.
 - A repeatable visual style pass now generates prototype bayou materials and applies wet dock, toxic water, reed, backdrop, storm lighting, fog, and post-process markers to `M_Test_Targeting`.
+- A private static Reel proxy is imported and placed in `M_Test_Targeting` for scale, silhouette, and lighting review; it is not playable or public-ready.
 
 ## Operating Model
 

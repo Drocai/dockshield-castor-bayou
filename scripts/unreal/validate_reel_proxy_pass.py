@@ -1,3 +1,4 @@
+import hashlib
 import os
 
 import unreal
@@ -7,6 +8,8 @@ MAP_PATH = "/Game/DockShield/Maps/M_Test_Targeting"
 DEST_DIR = "/Game/DockShield/Characters/Reel/Proxy/Copilot3D"
 MATERIAL_DIR = "/Game/DockShield/Characters/Reel/Materials"
 SOURCE_RELATIVE_PATH = os.path.join("SourceAssets", "Private", "Copilot3D", "SM_Reel_Copilot3D_Proxy.glb")
+EXPECTED_SOURCE_SHA256 = "3dd8bcc8edbc8d2ea769e74b4f5c414cc71bb29f933268cf0b0dd2e5b6d4691f"
+EXPECTED_SOURCE_BYTES = 8387188
 
 EXPECTED_MATERIALS = [
     "M_DS_ReelProxy_WetBlueBlack_Proto",
@@ -34,6 +37,33 @@ def repo_root():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
+def sha256_file(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as file_obj:
+        for chunk in iter(lambda: file_obj.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_source_file(source_path):
+    if not os.path.exists(source_path):
+        fail(f"missing private source GLB {source_path}")
+
+    source_size = os.path.getsize(source_path)
+    if source_size != EXPECTED_SOURCE_BYTES:
+        fail(
+            "private source GLB size mismatch: "
+            f"{source_size} bytes != {EXPECTED_SOURCE_BYTES} bytes"
+        )
+
+    source_hash = sha256_file(source_path)
+    if source_hash.lower() != EXPECTED_SOURCE_SHA256:
+        fail(
+            "private source GLB checksum mismatch: "
+            f"{source_hash} != {EXPECTED_SOURCE_SHA256}"
+        )
+
+
 def actor_by_label(label):
     return next((actor for actor in ACTOR_EDITOR.get_all_level_actors() if actor.get_actor_label() == label), None)
 
@@ -54,8 +84,7 @@ def find_imported_static_mesh():
 
 def main():
     source_path = os.path.join(repo_root(), SOURCE_RELATIVE_PATH)
-    if not os.path.exists(source_path):
-        fail(f"missing private source GLB {source_path}")
+    validate_source_file(source_path)
 
     if not unreal.EditorAssetLibrary.does_asset_exist(MAP_PATH):
         fail(f"missing map asset {MAP_PATH}")

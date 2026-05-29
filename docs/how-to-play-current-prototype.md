@@ -14,6 +14,7 @@ You should expect:
 - temporary debug Reel cast/reel feedback
 - first-pass prototype visual identity kits for The Reel and The Fly
 - first-pass prototype visual identity kit for Lilly Loch
+- a private static Reel proxy placed in the map for scale, silhouette, and storm-lighting review
 - one grapple target
 - one civilian rescue target
 - one toxic hazard placeholder
@@ -29,6 +30,7 @@ You should not expect:
 - command mode, boss combat, or full mission flow
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
+- the static Reel proxy to be playable, animated, licensed for public use, or final
 
 ## Launch
 
@@ -89,6 +91,8 @@ Lilly controls after pressing `3` or `Tab`:
 21. Press `Q` and confirm swamp pulse debug feedback appears.
 22. Face a bindable target and press left mouse button or `E` to bind it.
 23. Press `1` or `Tab` to return to The Reel.
+24. Find `DS_Reel_Proxy_Copilot3D_Static` in the proxy review area.
+25. Compare the static proxy against the playable pawn for scale, silhouette, wet material readability, toxic accent visibility, and storm/fog contrast.
 
 ## Pass Criteria
 
@@ -106,6 +110,7 @@ Lilly controls after pressing `3` or `Tab`:
 - `1`, `2`, `3`, and `Tab` switch between The Reel, The Fly, and Lilly Loch.
 - The HUD changes to the active hero.
 - The Reel, The Fly, and Lilly Loch have visibly different prototype silhouettes.
+- The static Reel proxy is visible in-map but does not replace the playable pawn.
 - The test map has visible wet dock surfaces, toxic green water/glow, reed silhouettes, storm/fog lighting, and neon/backdrop markers.
 - Repeating interactions does not crash or break the map.
 
@@ -115,6 +120,12 @@ Codex can validate the current prototype without manual PIE:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1
+```
+
+After a checkpoint is committed, require a clean Git worktree too:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\unreal\validate-prototype.ps1 -RequireCleanGit
 ```
 
 To reapply the current visual style pass:

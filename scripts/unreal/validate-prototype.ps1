@@ -2,7 +2,8 @@ param(
     [string]$UnrealRoot = "C:\Program Files\Epic Games\UE_5.7",
     [switch]$SkipBuild,
     [switch]$SkipToolchain,
-    [switch]$SkipDataValidation
+    [switch]$SkipDataValidation,
+    [switch]$RequireCleanGit
 )
 
 $ErrorActionPreference = "Stop"
@@ -98,6 +99,18 @@ if (-not $SkipDataValidation) {
 
 Invoke-Step "Git status" {
     Invoke-Native "git" @("-C", $RepoRoot, "status", "--short", "--branch", "--ignored")
+}
+
+if ($RequireCleanGit) {
+    Invoke-Step "Clean Git worktree check" {
+        $Status = & git -C $RepoRoot status --short
+        if ($LASTEXITCODE -ne 0) {
+            throw "git status failed with exit code $LASTEXITCODE"
+        }
+        if ($Status) {
+            throw "Git worktree is not clean:`n$($Status -join [Environment]::NewLine)"
+        }
+    }
 }
 
 Invoke-Step "Git LFS status" {

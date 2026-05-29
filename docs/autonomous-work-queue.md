@@ -18,6 +18,9 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 - create focused Unreal automation scripts
 - create or validate graybox test maps through Unreal commandlets
 - review diffs and catch scope creep
+- add source checksum/provenance checks for private visual proxies
+- prepare and validate Blender intake manifests for new character sources
+- continue headless smoke-test coverage while manual PIE review is pending
 
 ## Codex Should Not Do Yet
 
@@ -28,11 +31,12 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 - open external accounts
 - publish public pages
 - install large software silently without explicit approval
+- treat private static proxy assets as public, shippable, or playable character replacements
 
 ## Needs D RoC
 
 - sign in to Epic Games Launcher
-- run the manual editor smoke test for The Reel Pull v0
+- run or approve subjective editor review for gameplay feel, camera comfort, and final visual taste
 - approve paid asset purchases or contractors
 
 ## Needs Unreal Installed
@@ -45,6 +49,7 @@ This file separates what Codex can do without waiting from what requires D RoC, 
 
 ## Suggested Parallel Flow
 
-1. Codex commits the shared targetable interface and The Reel Pull v0 implementation after validation.
-2. D RoC opens the map in Unreal for a manual editor smoke test.
-3. Codex fixes any smoke-test issues before adding The Fly, Lilly, weather, or command mode.
+1. Codex keeps commandlet validation green after each mechanics or art-pipeline pass.
+2. Codex prepares the next Reel A-pose source intake and gear prop manifest.
+3. D RoC opens the map when useful for subjective feel and visual review.
+4. Codex fixes any confirmed smoke-test issues before broadening scope to enemies, weather, or command mode.

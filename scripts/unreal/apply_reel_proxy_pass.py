@@ -1,3 +1,4 @@
+import hashlib
 import os
 
 import unreal
@@ -8,6 +9,8 @@ DEST_DIR = "/Game/DockShield/Characters/Reel/Proxy/Copilot3D"
 MATERIAL_DIR = "/Game/DockShield/Characters/Reel/Materials"
 SOURCE_RELATIVE_PATH = os.path.join("SourceAssets", "Private", "Copilot3D", "SM_Reel_Copilot3D_Proxy.glb")
 STATIC_MESH_NAME = "SM_Reel_Copilot3D_Proxy"
+EXPECTED_SOURCE_SHA256 = "3dd8bcc8edbc8d2ea769e74b4f5c414cc71bb29f933268cf0b0dd2e5b6d4691f"
+EXPECTED_SOURCE_BYTES = 8387188
 
 PROXY_ACTOR_LABEL = "DS_Reel_Proxy_Copilot3D_Static"
 BASE_ACTOR_LABEL = "DS_Reel_Proxy_Review_Base"
@@ -54,6 +57,36 @@ def repo_root():
 
 def source_glb_path():
     return os.path.join(repo_root(), SOURCE_RELATIVE_PATH)
+
+
+def sha256_file(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as file_obj:
+        for chunk in iter(lambda: file_obj.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def verify_source_glb():
+    source_path = source_glb_path()
+    if not os.path.exists(source_path):
+        fail(f"missing source GLB: {source_path}")
+
+    source_size = os.path.getsize(source_path)
+    if source_size != EXPECTED_SOURCE_BYTES:
+        fail(
+            "source GLB size changed unexpectedly: "
+            f"{source_size} bytes != {EXPECTED_SOURCE_BYTES} bytes"
+        )
+
+    source_hash = sha256_file(source_path)
+    if source_hash.lower() != EXPECTED_SOURCE_SHA256:
+        fail(
+            "source GLB checksum changed unexpectedly: "
+            f"{source_hash} != {EXPECTED_SOURCE_SHA256}"
+        )
+
+    return source_path
 
 
 def get_class(name):
@@ -175,14 +208,12 @@ def find_imported_static_mesh():
 
 
 def import_proxy_static_mesh():
+    source_path = verify_source_glb()
+
     existing_mesh = find_imported_static_mesh()
     if existing_mesh is not None:
         unreal.log(f"Using existing Reel proxy static mesh: {existing_mesh.get_path_name()}")
         return existing_mesh
-
-    source_path = source_glb_path()
-    if not os.path.exists(source_path):
-        fail(f"missing source GLB: {source_path}")
 
     unreal.EditorAssetLibrary.make_directory(DEST_DIR)
 

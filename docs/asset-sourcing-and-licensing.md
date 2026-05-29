@@ -67,7 +67,8 @@ User-provided GLB, glTF, FBX, STL, OBJ, or Blender files may be inspected as pri
 
 Rules:
 
-- Do not import candidate 3D files into Unreal `Content/` until the license and technical fitness are recorded.
+- Do not import candidate 3D files into Unreal `Content/` for playable, public, trailer, or shipping use until the license and technical fitness are recorded.
+- A candidate may be imported into Unreal `Content/` as a **private static proxy only** when provenance, checksum, file size, technical verdict, and usage limits are documented before commit.
 - Do not use candidate 3D files in public marketing, trailers, store pages, contractor packets, or shipped builds until rights are cleared.
 - Record each candidate or candidate family in `docs/asset-register.csv`.
 - Include source path, checksum, duplicate status, mesh metrics, and import verdict in the relevant reference README or manifest.

@@ -28,6 +28,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - User-provided Copilot3D character mesh candidates have been inspected in Blender and documented at `docs/reference/candidate-3d-assets/copilot3d-2026-05-27/`.
 - Reel-first character production research and generation prompts are documented in `docs/research/character-asset-pipeline-research-2026-05-27.md` and `docs/prompts/the-reel-asset-generation-prompts.md`.
 - The best current Copilot3D Reel GLB is copied to `SourceAssets/Private/Copilot3D/SM_Reel_Copilot3D_Proxy.glb`, imported as a private static proxy under `/Game/DockShield/Characters/Reel/Proxy/Copilot3D`, and placed in `M_Test_Targeting` for scale, silhouette, and lighting review.
+- The Reel proxy source is now guarded by file-size and SHA256 validation in the apply/validate scripts.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -46,6 +47,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Visual expectation gap | Codex / art pipeline | Current build now has styled prototype materials/lighting, but still uses placeholder geometry, debug feedback, and mannequin bodies; do not judge final character fidelity from this test map |
 | Candidate 3D asset production gap | Codex / art pipeline | One Copilot3D Reel GLB is now in-engine as a private static proxy, but it has no armature/actions and still needs license confirmation, cleanup, retopology, and rigging before playable use |
 | Reel proxy visual review | D RoC or Codex with editor session | Open `M_Test_Targeting`, compare `DS_Reel_Proxy_Copilot3D_Static` against the playable pawn under storm fog, toxic glow, amber rescue light, and wet dock lighting |
+| Riggable Reel source gap | Codex / art pipeline | Generate or source the next A-pose/T-pose Reel body and separate gear props; inspect in Blender before any playable replacement work |
 
 ## Current Agent Lane
 
@@ -71,6 +73,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
 4. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
 5. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
+6. Use `scripts\unreal\validate-prototype.ps1 -RequireCleanGit` after committed checkpoints when a clean-release handoff is needed.
 
 ## Current Implementation Plan
 
