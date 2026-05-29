@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSPrototypePlayerController.h"
 #include "DSTargetableComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/SkeletalMesh.h"
@@ -272,6 +273,10 @@ bool ADSLillyPrototypeCharacter::ExecuteLillyBindOnTarget(AActor* Target)
     if (!bWasBound)
     {
         ++BoundTargetCount;
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("LillyBind")), 25, 30, 1);
+        }
     }
 
     LastBindResult = FString::Printf(TEXT("LILLY BIND %d"), BoundTargetCount);

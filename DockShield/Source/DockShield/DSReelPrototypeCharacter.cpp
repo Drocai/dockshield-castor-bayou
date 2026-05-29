@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSPrototypePlayerController.h"
 #include "DSPrototypeBoatActor.h"
 #include "DSTargetableComponent.h"
 #include "DSWaterZoneActor.h"
@@ -556,6 +557,10 @@ bool ADSReelPrototypeCharacter::CastReelLineAtTarget(AActor* Target)
 
     StartReelFeedback(Target, FColor::Cyan);
     LastReelResult = TEXT("LINE CAST");
+    if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+    {
+        PrototypeController->NotifyPrototypeAction(FName(TEXT("ReelCast")), 0, 0, 0);
+    }
     ShowDebugMessage(TEXT("Reel Line cast: hold R to reel, release to ease tension"), FColor::Cyan);
     return true;
 }
@@ -670,6 +675,10 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
 
         ++BoatTowCount;
         LastReelResult = FString::Printf(TEXT("BOAT TOW %d"), BoatTowCount);
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("BoatTow")), 35, 25, 0);
+        }
         ShowDebugMessage(TEXT("Boat Tow: reel line pulled the boat"), FColor::Cyan);
         return true;
     }
@@ -684,6 +693,10 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
         Target->SetActorLocation(RescueLocation, false, nullptr, ETeleportType::TeleportPhysics);
         ++CivilianRescueCount;
         LastReelResult = FString::Printf(TEXT("RESCUE COMPLETE %d"), CivilianRescueCount);
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("CivilianRescue")), 75, 50, 1);
+        }
         ShowDebugMessage(TEXT("Rescue Reel: civilian pulled clear"), FColor::Green);
         return true;
     }
@@ -695,6 +708,10 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
     LaunchCharacter(LaunchVelocity, true, true);
     ++GrapplePullCount;
     LastReelResult = FString::Printf(TEXT("GRAPPLE CAST %d"), GrapplePullCount);
+    if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+    {
+        PrototypeController->NotifyPrototypeAction(FName(TEXT("GrapplePull")), 10, 12, 0);
+    }
     ShowDebugMessage(TEXT("Grapple Cast: pulling to target"), FColor::Green);
     return true;
 }
@@ -930,6 +947,10 @@ void ADSReelPrototypeCharacter::ApplyContinuousReelPull(AActor* Target, float De
             Target->SetActorLocation(GetActorLocation() + (GetActorForwardVector() * 120.0f) + FVector(0.0f, 0.0f, 60.0f), false, nullptr, ETeleportType::TeleportPhysics);
             ++CivilianRescueCount;
             DetachReelLineInternal(FString::Printf(TEXT("RESCUE COMPLETE %d"), CivilianRescueCount), false);
+            if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+            {
+                PrototypeController->NotifyPrototypeAction(FName(TEXT("CivilianRescue")), 75, 50, 1);
+            }
             ShowDebugMessage(TEXT("Rescue Reel: civilian pulled clear"), FColor::Green);
             return;
         }
@@ -966,6 +987,10 @@ void ADSReelPrototypeCharacter::ApplyContinuousReelPull(AActor* Target, float De
     {
         ++GrapplePullCount;
         DetachReelLineInternal(FString::Printf(TEXT("GRAPPLE COMPLETE %d"), GrapplePullCount), false);
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("GrapplePull")), 10, 12, 0);
+        }
     }
 }
 

@@ -62,6 +62,13 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         bCanFlyMark = true;
         bCanLillyBind = true;
     }
+    else if (Owner->ActorHasTag(TEXT("Boss")))
+    {
+        TargetType = EDSTargetType::Boss;
+        DisplayName = FText::FromString(TEXT("Deep Dock Mutation"));
+        bCanFlyMark = true;
+        bCanLillyBind = true;
+    }
     else if (Owner->ActorHasTag(TEXT("WeakPoint")))
     {
         TargetType = EDSTargetType::WeakPoint;
@@ -144,6 +151,8 @@ FString UDSTargetableComponent::GetFlyPrompt() const
         return FString::Printf(TEXT("%s: Sonar tag toxic hazard"), *MarkState);
     case EDSTargetType::Enemy:
         return FString::Printf(TEXT("%s: Mark enemy patrol"), *MarkState);
+    case EDSTargetType::Boss:
+        return FString::Printf(TEXT("%s: Mark boss core"), *MarkState);
     case EDSTargetType::WeakPoint:
         return FString::Printf(TEXT("%s: Mark weak point"), *MarkState);
     case EDSTargetType::Civilian:
@@ -199,6 +208,8 @@ FString UDSTargetableComponent::GetLillyPrompt() const
         return FString::Printf(TEXT("%s: Root-suppress toxic hazard"), *BindState);
     case EDSTargetType::Enemy:
         return FString::Printf(TEXT("%s: Root snare enemy patrol"), *BindState);
+    case EDSTargetType::Boss:
+        return FString::Printf(TEXT("%s: Root-pressure boss core"), *BindState);
     case EDSTargetType::WeakPoint:
         return FString::Printf(TEXT("%s: Bind structural weak point"), *BindState);
     case EDSTargetType::Civilian:

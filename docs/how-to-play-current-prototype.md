@@ -21,6 +21,8 @@ You should expect:
 - C++ foundation for water depth, current/flood pressure, prototype boat drifting/towing, boat boarding, and boat piloting
 - C++ foundation for The Fly sonar pulse and mark state
 - C++ foundation for Lilly swamp pulse and bind state
+- prototype beta economy, achievements, and settings HUD panels
+- prototype Deep Dock boss arena dressing with a toxic core and weak-point targets
 
 You should not expect:
 
@@ -28,6 +30,7 @@ You should not expect:
 - final character models
 - final storm/rain/water art
 - command mode, boss combat, or full mission flow
+- real boss AI, damage phases, or win/fail encounter rules
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
 - the static Reel proxy to be playable, animated, licensed for public use, or final
@@ -53,6 +56,10 @@ You should not expect:
 - Ease line tension: release `R`
 - Board / Exit prototype boat: `F` or `B`
 - Pilot boarded prototype boat: `WASD`
+- Open/close prototype settings panel: `P` or `Esc`
+- HUD scale: `[` and `]`
+- Prototype gamma value: `-` and `=`
+- Cycle prototype visual quality label: `O`
 
 The Fly controls after pressing `2` or `Tab`:
 
@@ -93,6 +100,9 @@ Lilly controls after pressing `3` or `Tab`:
 23. Press `1` or `Tab` to return to The Reel.
 24. Find `DS_Reel_Proxy_Copilot3D_Static` in the proxy review area.
 25. Compare the static proxy against the playable pawn for scale, silhouette, wet material readability, toxic accent visibility, and storm/fog contrast.
+26. Move toward the `DS_DeepDock_*` arena area and confirm the toxic core, red warning lights, and three weak-point targets are readable.
+27. Complete one rescue, one Fly mark, and one Lilly bind; confirm credits, XP, samples, and achievement text update in the HUD.
+28. Press `P` or `Esc` and confirm the settings panel opens; use `[`/`]`, `-`/`=`, and `O` to review readability controls.
 
 ## Pass Criteria
 
@@ -112,6 +122,8 @@ Lilly controls after pressing `3` or `Tab`:
 - The Reel, The Fly, and Lilly Loch have visibly different prototype silhouettes.
 - The static Reel proxy is visible in-map but does not replace the playable pawn.
 - The test map has visible wet dock surfaces, toxic green water/glow, reed silhouettes, storm/fog lighting, and neon/backdrop markers.
+- Beta economy, achievement, boss arena, and settings HUD panels appear without hiding the core targeting prompt.
+- Deep Dock boss core and weak-point targets are present in the map and remain targetable through the shared target system.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation
@@ -132,6 +144,12 @@ To reapply the current visual style pass:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_visual_style_pass.py' -unattended -nop4 -nosplash
+```
+
+To reapply the Deep Dock boss arena pass:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_deep_dock_boss_arena_pass.py' -unattended -nop4 -nosplash
 ```
 
 For the narrow Reel action smoke test only:

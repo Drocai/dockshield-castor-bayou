@@ -12,5 +12,6 @@ enum class EDSTargetType : uint8
     Enemy UMETA(DisplayName = "Enemy"),
     WeakPoint UMETA(DisplayName = "Weak Point"),
     Object UMETA(DisplayName = "Object"),
-    Boat UMETA(DisplayName = "Boat")
+    Boat UMETA(DisplayName = "Boat"),
+    Boss UMETA(DisplayName = "Boss")
 };

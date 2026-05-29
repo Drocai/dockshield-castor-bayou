@@ -36,12 +36,20 @@ void ADSPrototypeHUD::DrawHUD()
     if (LillyCharacter)
     {
         DrawLillyHUD(LillyCharacter, ScreenWidth, ScreenHeight, CenterX, CenterY);
+        if (PrototypeController)
+        {
+            DrawMetaHUD(PrototypeController, ScreenWidth, ScreenHeight, CenterX);
+        }
         return;
     }
 
     if (FlyCharacter)
     {
         DrawFlyHUD(FlyCharacter, ScreenWidth, ScreenHeight, CenterX, CenterY);
+        if (PrototypeController)
+        {
+            DrawMetaHUD(PrototypeController, ScreenWidth, ScreenHeight, CenterX);
+        }
         return;
     }
 
@@ -167,6 +175,11 @@ void ADSPrototypeHUD::DrawHUD()
     DrawText(FString::Printf(TEXT("%s %.0fcm   MOVE %.0f%%   %s"), *WaterState, WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), WaterColor, 44.0f, ScreenHeight - 94.0f, nullptr, 0.6f);
     DrawText(FString::Printf(TEXT("PRESSURE %.0f%%   CURRENT %.0fcm/s"), WaterPressure * 100.0f, WaterCurrentSpeed), WaterColor, 44.0f, ScreenHeight - 83.0f, nullptr, 0.52f);
     DrawText(BoatStatus, bBoardedBoat ? ValidColor : NeutralColor, 44.0f, ScreenHeight - 72.0f, nullptr, 0.6f);
+
+    if (PrototypeController)
+    {
+        DrawMetaHUD(PrototypeController, ScreenWidth, ScreenHeight, CenterX);
+    }
 }
 
 void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY)
@@ -305,6 +318,89 @@ void ADSPrototypeHUD::DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharac
     DrawText(FString::Printf(TEXT("BOUND TARGETS %d"), BoundTargets), ValidColor, 44.0f, ScreenHeight - 116.0f, nullptr, 0.68f);
     DrawText(LastBindResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.68f);
     DrawText(TEXT("SQUAD STACK: REEL / FLY / LILLY"), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 68.0f, nullptr, 0.56f);
+}
+
+void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeController, float ScreenWidth, float ScreenHeight, float CenterX)
+{
+    if (!PrototypeController)
+    {
+        return;
+    }
+
+    const float Scale = FMath::Clamp(PrototypeController->GetHudScale(), 0.75f, 1.35f);
+    const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.50f);
+    const FLinearColor TextColor(0.82f, 0.92f, 0.86f, 1.0f);
+    const FLinearColor RewardColor(0.72f, 1.0f, 0.36f, 1.0f);
+    const FLinearColor WarningColor(1.0f, 0.42f, 0.30f, 1.0f);
+
+    FString Economy = PrototypeController->GetEconomyStatusText();
+    FString Achievement = PrototypeController->GetAchievementStatusText();
+    FString BossStatus = PrototypeController->GetBossArenaStatusText();
+    FString Settings = PrototypeController->GetSettingsStatusText();
+
+    if (Economy.Len() > 54)
+    {
+        Economy = Economy.Left(51) + TEXT("...");
+    }
+    if (Achievement.Len() > 48)
+    {
+        Achievement = Achievement.Left(45) + TEXT("...");
+    }
+    if (BossStatus.Len() > 64)
+    {
+        BossStatus = BossStatus.Left(61) + TEXT("...");
+    }
+    if (Settings.Len() > 58)
+    {
+        Settings = Settings.Left(55) + TEXT("...");
+    }
+
+    DrawPanel(ScreenWidth - 384.0f, 134.0f, 356.0f, 112.0f, PanelColor);
+    DrawText(TEXT("BETA ECONOMY"), RewardColor, ScreenWidth - 366.0f, 148.0f, nullptr, 0.78f * Scale);
+    DrawText(Economy, TextColor, ScreenWidth - 366.0f, 178.0f, nullptr, 0.56f * Scale);
+    DrawText(Achievement, RewardColor, ScreenWidth - 366.0f, 206.0f, nullptr, 0.56f * Scale);
+
+    DrawPanel(CenterX - 278.0f, 28.0f, 556.0f, 62.0f, PanelColor);
+    DrawText(TEXT("DEEP DOCK"), WarningColor, CenterX - 258.0f, 42.0f, nullptr, 0.78f * Scale);
+    DrawText(BossStatus, TextColor, CenterX - 146.0f, 42.0f, nullptr, 0.56f * Scale);
+    DrawText(TEXT("WEAK POINTS: REEL EXPOSES  FLY MARKS  LILLY BINDS"), FLinearColor(0.86f, 0.86f, 0.70f, 1.0f), CenterX - 258.0f, 66.0f, nullptr, 0.48f * Scale);
+
+    DrawPanel(ScreenWidth - 384.0f, 256.0f, 356.0f, 54.0f, PanelColor);
+    DrawText(Settings, FLinearColor(0.88f, 0.88f, 0.78f, 1.0f), ScreenWidth - 366.0f, 272.0f, nullptr, 0.54f * Scale);
+
+    if (PrototypeController->IsSettingsPanelOpen())
+    {
+        DrawSettingsPanel(PrototypeController, ScreenWidth, ScreenHeight);
+    }
+}
+
+void ADSPrototypeHUD::DrawSettingsPanel(const ADSPrototypePlayerController* PrototypeController, float ScreenWidth, float ScreenHeight)
+{
+    if (!PrototypeController)
+    {
+        return;
+    }
+
+    const float PanelWidth = 640.0f;
+    const float PanelHeight = 288.0f;
+    const float X = (ScreenWidth - PanelWidth) * 0.5f;
+    const float Y = (ScreenHeight - PanelHeight) * 0.5f;
+    const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.78f);
+    const FLinearColor HeadingColor(0.72f, 1.0f, 0.36f, 1.0f);
+    const FLinearColor TextColor(0.88f, 0.92f, 0.84f, 1.0f);
+
+    DrawPanel(X, Y, PanelWidth, PanelHeight, PanelColor);
+    DrawText(TEXT("SETTINGS PANEL"), HeadingColor, X + 28.0f, Y + 24.0f, nullptr, 1.12f);
+    DrawText(TEXT("Prototype-only controls for HUD readability and visual target review."), TextColor, X + 28.0f, Y + 64.0f, nullptr, 0.64f);
+
+    DrawText(FString::Printf(TEXT("HUD SCALE: %.0f%%     [ / ]"), PrototypeController->GetHudScale() * 100.0f), TextColor, X + 42.0f, Y + 112.0f, nullptr, 0.78f);
+    DrawBar(X + 300.0f, Y + 122.0f, 250.0f, 8.0f, (PrototypeController->GetHudScale() - 0.75f) / 0.60f, HeadingColor);
+
+    DrawText(FString::Printf(TEXT("GAMMA: %.2f          - / ="), PrototypeController->GetGamma()), TextColor, X + 42.0f, Y + 154.0f, nullptr, 0.78f);
+    DrawBar(X + 300.0f, Y + 164.0f, 250.0f, 8.0f, (PrototypeController->GetGamma() - 0.75f) / 0.60f, FLinearColor(0.48f, 0.82f, 1.0f, 1.0f));
+
+    DrawText(FString::Printf(TEXT("VISUAL QUALITY: %s      O"), *PrototypeController->GetVisualQualityLabel()), TextColor, X + 42.0f, Y + 196.0f, nullptr, 0.78f);
+    DrawText(TEXT("P / ESC CLOSE"), FLinearColor(1.0f, 0.42f, 0.30f, 1.0f), X + 42.0f, Y + 238.0f, nullptr, 0.78f);
 }
 
 void ADSPrototypeHUD::DrawReticle(float CenterX, float CenterY, const FLinearColor& Color)

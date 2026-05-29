@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSPrototypePlayerController.h"
 #include "DSTargetableComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/SkeletalMesh.h"
@@ -270,6 +271,10 @@ bool ADSFlyPrototypeCharacter::ExecuteFlyMarkOnTarget(AActor* Target)
     if (!bWasMarked)
     {
         ++MarkedTargetCount;
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("FlyMark")), 20, 25, 1);
+        }
     }
 
     LastReconResult = FString::Printf(TEXT("FLY MARK %d"), MarkedTargetCount);
