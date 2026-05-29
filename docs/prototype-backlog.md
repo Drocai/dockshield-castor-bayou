@@ -132,7 +132,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Lilly bind prototype HUD path v0
 - [x] Reel/Fly/Lilly switching HUD prompt v0
 - [x] Reel/Fly/Lilly prototype visual identity kit v0
-- [ ] Import best Reel GLB as static scale/lighting proxy after license confirmation
+- [x] Import best Reel GLB as private static scale/lighting proxy
 - [ ] Generate or source riggable The Reel A-pose body
 - [ ] Generate or source separate Reel gear prop pack
 - [ ] Decide Reel rigging route: MetaHuman, AccuRIG/Mixamo, or custom Blender rig
@@ -141,4 +141,4 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, and backdrop dressing. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, and a private static Copilot3D Reel proxy for scale and lighting review. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.

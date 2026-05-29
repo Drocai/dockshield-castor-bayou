@@ -31,13 +31,14 @@ They are **not cleared production assets yet**. Keep them in the private referen
 
 Do not replace the playable Manny/Quinn-derived pawns with these yet.
 
+2026-05-29 status: the best Reel GLB was copied into `SourceAssets/Private/Copilot3D/SM_Reel_Copilot3D_Proxy.glb`, imported into Unreal as a private static proxy under `/Game/DockShield/Characters/Reel/Proxy/Copilot3D`, and placed in `M_Test_Targeting` for scale, silhouette, and lighting review. It remains non-playable and uncleared for public shipping.
+
 Next production-safe pass:
 
-1. Copy only the best unique GLB candidate into a controlled `SourceAssets/Private/Copilot3D/` folder if the license is acceptable.
-2. Import it into Unreal as a **static visual proxy** under `/Game/DockShield/Characters/Reel/Proxy/`.
-3. Place it next to the current playable Reel pawn in `M_Test_Targeting` for scale and lighting review.
-4. Use Blender to extract usable accessories or silhouette guidance for the animated playable character.
-5. Retopologize, rig, and texture a proper playable character later; these files are not rigged for direct animation.
+1. Review the in-engine static Reel proxy under the current storm/fog/toxic lighting pass.
+2. Use Blender to extract usable accessories or silhouette guidance for the animated playable character.
+3. Generate or source a riggable Reel A-pose/T-pose source using the prompt pack.
+4. Retopologize, rig, and texture a proper playable character later; these files are not rigged for direct animation.
 
 ## Supporting Files
 

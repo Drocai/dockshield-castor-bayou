@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, and visual style pass v1.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, and Reel static proxy review.
 
 ## Current Repo State
 
@@ -27,6 +27,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `M_Test_Targeting` now has generated prototype bayou materials, wet dock planks, reed silhouettes, toxic water/glow planes, storm moon key light, amber rescue light, red neon sign light, fog, and a storm-grade post-process marker.
 - User-provided Copilot3D character mesh candidates have been inspected in Blender and documented at `docs/reference/candidate-3d-assets/copilot3d-2026-05-27/`.
 - Reel-first character production research and generation prompts are documented in `docs/research/character-asset-pipeline-research-2026-05-27.md` and `docs/prompts/the-reel-asset-generation-prompts.md`.
+- The best current Copilot3D Reel GLB is copied to `SourceAssets/Private/Copilot3D/SM_Reel_Copilot3D_Proxy.glb`, imported as a private static proxy under `/Game/DockShield/Characters/Reel/Proxy/Copilot3D`, and placed in `M_Test_Targeting` for scale, silhouette, and lighting review.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -43,7 +44,8 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Manual editor feel test for Lilly bind v0 | D RoC or Codex with editor session | Press `3` or `Tab` to switch to Lilly, press `Q` for swamp pulse, aim with RMB, press LMB or `E` to bind a target, confirm swamp HUD and prompt state |
 | Manual editor feel test for switching v0 | D RoC or Codex with editor session | Press `1`, `2`, `3`, and `Tab`; confirm possession swaps, HUD changes, and each hero keeps their own ability controls |
 | Visual expectation gap | Codex / art pipeline | Current build now has styled prototype materials/lighting, but still uses placeholder geometry, debug feedback, and mannequin bodies; do not judge final character fidelity from this test map |
-| Candidate 3D asset production gap | Codex / art pipeline | Copilot3D GLB/STL files are useful as static visual proxies or sculpt references, but they have no armatures/actions and need license confirmation, cleanup, retopology, and rigging before playable use |
+| Candidate 3D asset production gap | Codex / art pipeline | One Copilot3D Reel GLB is now in-engine as a private static proxy, but it has no armature/actions and still needs license confirmation, cleanup, retopology, and rigging before playable use |
+| Reel proxy visual review | D RoC or Codex with editor session | Open `M_Test_Targeting`, compare `DS_Reel_Proxy_Copilot3D_Static` against the playable pawn under storm fog, toxic glow, amber rescue light, and wet dock lighting |
 
 ## Current Agent Lane
 
@@ -60,14 +62,14 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 
 1. Optional: open `DockShield/DockShield.uproject` in Unreal.
 2. Optional: press Play in `M_Test_Targeting`, face the grapple/civilian placeholders, hold right mouse button to aim, press left mouse button or `E` to cast, then hold `R` to reel.
-3. Optional: judge controls, targeting clarity, tension readability, flood/current readability, feedback timing, and whether the new storm/fog/toxic/wet-dock pass is moving toward the references. Final cinematic Castor Bayou assets are not in this test map yet.
+3. Optional: review the static Reel proxy beside the playable pawn for silhouette, size, material read, and camera-distance clarity. Final cinematic Castor Bayou assets are not in this test map yet.
 
 ## Next Agent Actions
 
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Next visual pass should either generate a riggable Reel A-pose source from the prompt pack or import the best current Reel GLB as a static scale/lighting proxy only after license confirmation.
+4. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
 5. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
 
 ## Current Implementation Plan
