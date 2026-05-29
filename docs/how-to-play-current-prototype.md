@@ -24,6 +24,7 @@ You should expect:
 - prototype beta economy, achievements, and settings HUD panels
 - prototype Deep Dock boss arena dressing with a toxic core and weak-point targets
 - prototype Hook, Line & Sinker weak-point combo damage: Reel expose, Fly mark, Lilly bind
+- prototype Duct legendary sighting: latch, reel, near-catch, forced slip-away, and Trophy Case evidence
 
 You should not expect:
 
@@ -35,6 +36,7 @@ You should not expect:
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
 - the static Reel proxy to be playable, animated, licensed for public use, or final
+- Duct to be catchable in this version
 
 ## Launch
 
@@ -109,6 +111,10 @@ Lilly controls after pressing `3` or `Tab`:
 31. Switch to Lilly and bind the same weak point.
 32. Confirm the boss HUD status advances and the combo reward appears.
 33. Repeat the combo on all three weak points to push the boss arena into defeated state.
+34. Find `DS_Duct_Legendary_Sighting_Debug`.
+35. Aim at Duct and press left mouse button or `E` to latch.
+36. Hold `R` to build near-catch pressure.
+37. Confirm Duct slips away and the Trophy Case HUD still says `UNCAUGHT`.
 
 ## Pass Criteria
 
@@ -132,6 +138,7 @@ Lilly controls after pressing `3` or `Tab`:
 - Deep Dock boss core and weak-point targets are present in the map and remain targetable through the shared target system.
 - Hook, Line & Sinker damage applies once per weak point after Reel exposure, Fly mark, and Lilly bind are all active.
 - The boss arena advances through exposed/enraged/defeated states after repeated weak-point combos.
+- Duct can be latched and nearly caught, but always slips away and only records sighting/tape evidence.
 - Repeating interactions does not crash or break the map.
 
 ## Agent Validation
@@ -158,6 +165,12 @@ To reapply the Deep Dock boss arena pass:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_deep_dock_boss_arena_pass.py' -unattended -nop4 -nosplash
+```
+
+To reapply the Duct legendary encounter pass:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_duct_legendary_encounter_pass.py' -unattended -nop4 -nosplash
 ```
 
 For the narrow Reel action smoke test only:

@@ -202,6 +202,26 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
     {
         UnlockAchievement(FName(TEXT("BOSS_DEFEATED")));
     }
+    else if (ActionName == FName(TEXT("DuctSighting")))
+    {
+        ++DuctSightings;
+        UnlockAchievement(FName(TEXT("DUCT_FIRST_SIGHTING")));
+    }
+    else if (ActionName == FName(TEXT("DuctNearCatch")))
+    {
+        ++DuctNearCatchCount;
+        ++DuctTapeFragments;
+        UnlockAchievement(FName(TEXT("DUCT_ALMOST_HAD_HIM")));
+        if (DuctTapeFragments >= 3)
+        {
+            UnlockAchievement(FName(TEXT("DUCT_TAPE_EVIDENCE")));
+        }
+    }
+    else if (ActionName == FName(TEXT("DuctTrace")))
+    {
+        ++DuctTapeFragments;
+        UnlockAchievement(FName(TEXT("DUCT_TAPE_EVIDENCE")));
+    }
 }
 
 bool ADSPrototypePlayerController::UnlockAchievement(FName AchievementId)
@@ -230,7 +250,7 @@ FString ADSPrototypePlayerController::GetEconomyStatusText() const
 FString ADSPrototypePlayerController::GetAchievementStatusText() const
 {
     return FString::Printf(
-        TEXT("ACHIEVEMENTS %d/10 | LAST: %s"),
+        TEXT("ACHIEVEMENTS %d/13 | LAST: %s"),
         UnlockedAchievements.Num(),
         *LastAchievementText);
 }
@@ -238,6 +258,15 @@ FString ADSPrototypePlayerController::GetAchievementStatusText() const
 FString ADSPrototypePlayerController::GetBossArenaStatusText() const
 {
     return LastBossArenaStatus;
+}
+
+FString ADSPrototypePlayerController::GetDuctStatusText() const
+{
+    return FString::Printf(
+        TEXT("DUCT: UNCAUGHT | SIGHT %d | NEAR %d | TAPE %d"),
+        DuctSightings,
+        DuctNearCatchCount,
+        DuctTapeFragments);
 }
 
 FString ADSPrototypePlayerController::GetSettingsStatusText() const
@@ -523,6 +552,18 @@ FString ADSPrototypePlayerController::GetAchievementLabel(FName AchievementId) c
     if (AchievementId == FName(TEXT("BOSS_DEFEATED")))
     {
         return TEXT("Deep Dock Boss Defeated");
+    }
+    if (AchievementId == FName(TEXT("DUCT_FIRST_SIGHTING")))
+    {
+        return TEXT("First Duct Sighting");
+    }
+    if (AchievementId == FName(TEXT("DUCT_ALMOST_HAD_HIM")))
+    {
+        return TEXT("Almost Had Duct");
+    }
+    if (AchievementId == FName(TEXT("DUCT_TAPE_EVIDENCE")))
+    {
+        return TEXT("Duct Tape Evidence");
     }
 
     return AchievementId.ToString();

@@ -145,6 +145,10 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Add prototype settings panel v0
 - [x] Add Deep Dock boss arena validation pass
 - [x] Add Hook, Line & Sinker boss combo smoke test
+- [x] Add Duct legendary encounter design note
+- [x] Add Duct uncatchable target/state actor v0
+- [x] Add Duct Trophy Case HUD evidence v0
+- [x] Add Duct map pass and smoke validation
 - [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Review Deep Dock boss arena lighting/readability in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
@@ -157,7 +161,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, and a private static Copilot3D Reel proxy for scale and lighting review. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, and a Duct legendary near-catch debug encounter. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
 
 ## Phase 7 - Optimization And Upgrade Queue
 
@@ -175,6 +179,9 @@ Current note: the image pack is the private canon visual target for the intended
 - [x] Add boss weak-point damage and Hook, Line & Sinker combo trigger
 - [ ] Add timed boss weak-point damage windows
 - [ ] Add combo impact VFX/SFX and camera feedback
+- [ ] Add rare Duct spawn manager with weather/mission weighting
+- [ ] Add bait economy rows for Duct attempts without allowing capture
+- [ ] Add Duct VFX/SFX: golden wake, squeak ping, slip shimmer, tape trace
 - [ ] Add packaged Windows build validation script
 - [ ] Add OBS capture checklist for a 60-90 second prototype reel
 - [ ] Add asset-performance budget targets for triangles, materials, textures, and draw calls

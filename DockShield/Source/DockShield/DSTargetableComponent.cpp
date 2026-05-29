@@ -25,7 +25,15 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
     bCanFlyMark = false;
     bCanLillyBind = false;
 
-    if (Owner->ActorHasTag(TEXT("GrapplePoint")))
+    if (Owner->ActorHasTag(TEXT("LegendaryDuct")) || Owner->ActorHasTag(TEXT("Duct")))
+    {
+        TargetType = EDSTargetType::LegendaryDuct;
+        DisplayName = FText::FromString(TEXT("Duct - Legendary Rubber Duck"));
+        bCanReelPull = true;
+        bCanFlyMark = true;
+        bCanLillyBind = true;
+    }
+    else if (Owner->ActorHasTag(TEXT("GrapplePoint")))
     {
         TargetType = EDSTargetType::GrapplePoint;
         DisplayName = FText::FromString(TEXT("Grapple Pull Target"));
@@ -106,6 +114,8 @@ FString UDSTargetableComponent::GetReelPrompt() const
         return bIsReelExposed
             ? FString::Printf(TEXT("REEL EXPOSED: %s"), *GetComboStateText())
             : FString::Printf(TEXT("Press E: Reel expose %s"), *DisplayName.ToString());
+    case EDSTargetType::LegendaryDuct:
+        return TEXT("DUCT SIGHTING: LMB/E latch, hold R; capture protocol impossible");
     default:
         return FString::Printf(TEXT("Press E: Reel Pull %s"), *DisplayName.ToString());
     }
@@ -188,6 +198,8 @@ FString UDSTargetableComponent::GetFlyPrompt() const
         return FString::Printf(TEXT("%s: Locate rescue target"), *MarkState);
     case EDSTargetType::Boat:
         return FString::Printf(TEXT("%s: Track extraction boat"), *MarkState);
+    case EDSTargetType::LegendaryDuct:
+        return FString::Printf(TEXT("%s: Track Duct wake signature"), *MarkState);
     default:
         return FString::Printf(TEXT("%s: Fly Sense mark %s"), *MarkState, *DisplayName.ToString());
     }
@@ -245,6 +257,8 @@ FString UDSTargetableComponent::GetLillyPrompt() const
         return FString::Printf(TEXT("%s: Stabilize rescue target"), *BindState);
     case EDSTargetType::Object:
         return FString::Printf(TEXT("%s: Vine shift object"), *BindState);
+    case EDSTargetType::LegendaryDuct:
+        return FString::Printf(TEXT("%s: Root-read Duct ripple"), *BindState);
     default:
         return FString::Printf(TEXT("%s: Lilly Bind %s"), *BindState, *DisplayName.ToString());
     }

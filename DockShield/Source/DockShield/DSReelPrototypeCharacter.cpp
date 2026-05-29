@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSDuctLegendaryEncounterActor.h"
 #include "DSPrototypePlayerController.h"
 #include "DSPrototypeBoatActor.h"
 #include "DSTargetableComponent.h"
@@ -247,6 +248,10 @@ FString ADSReelPrototypeCharacter::GetCurrentTargetPrompt() const
 
     if (AActor* AttachedTarget = AttachedReelTarget.Get())
     {
+        if (const ADSDuctLegendaryEncounterActor* Duct = Cast<ADSDuctLegendaryEncounterActor>(AttachedTarget))
+        {
+            return FString::Printf(TEXT("%s | Hold R: near-catch pressure"), *Duct->GetDuctStatusText());
+        }
         return FString::Printf(TEXT("LINE %s -> %s | Hold R to reel | Release R to ease"), *ReelLineStateText, *AttachedTarget->GetName());
     }
 
@@ -556,6 +561,18 @@ bool ADSReelPrototypeCharacter::CastReelLineAtTarget(AActor* Target)
     RefreshReelLineState();
 
     StartReelFeedback(Target, FColor::Cyan);
+    if (ADSDuctLegendaryEncounterActor* Duct = Cast<ADSDuctLegendaryEncounterActor>(Target))
+    {
+        Duct->LatchWithReel(LineTension);
+        LastReelResult = TEXT("DUCT LATCHED");
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("DuctSighting")), 0, 0, 0);
+        }
+        ShowDebugMessage(Duct->GetDuctStatusText(), FColor::Yellow);
+        return true;
+    }
+
     if (Target->ActorHasTag(TEXT("WeakPoint")))
     {
         if (UDSTargetableComponent* Targetable = Target->FindComponentByClass<UDSTargetableComponent>())
@@ -681,6 +698,19 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
     }
 
     UpdateTargetMetrics(Target);
+
+    if (ADSDuctLegendaryEncounterActor* Duct = Cast<ADSDuctLegendaryEncounterActor>(Target))
+    {
+        Duct->LatchWithReel(LineTension);
+        StartReelFeedback(Target, FColor::Yellow);
+        LastReelResult = TEXT("DUCT LATCHED");
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("DuctSighting")), 0, 0, 0);
+        }
+        ShowDebugMessage(Duct->GetDuctStatusText(), FColor::Yellow);
+        return true;
+    }
 
     if (Target->ActorHasTag(TEXT("WeakPoint")))
     {
@@ -959,6 +989,34 @@ void ADSReelPrototypeCharacter::ApplyContinuousReelPull(AActor* Target, float De
 {
     if (!Target || DeltaSeconds <= 0.0f)
     {
+        return;
+    }
+
+    if (ADSDuctLegendaryEncounterActor* Duct = Cast<ADSDuctLegendaryEncounterActor>(Target))
+    {
+        const int32 PreviousNearCatchCount = Duct->GetNearCatchCount();
+        const int32 PreviousTraceCount = Duct->GetDuctTapeTraceCount();
+        const bool bStillActive = Duct->AdvanceReelBattle(DeltaSeconds, RawLineTension);
+        LastReelResult = Duct->GetDuctStatusText();
+
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            if (Duct->GetNearCatchCount() > PreviousNearCatchCount)
+            {
+                PrototypeController->NotifyPrototypeAction(FName(TEXT("DuctNearCatch")), 0, 40, 1);
+            }
+            else if (Duct->GetDuctTapeTraceCount() > PreviousTraceCount)
+            {
+                PrototypeController->NotifyPrototypeAction(FName(TEXT("DuctTrace")), 0, 20, 1);
+            }
+        }
+
+        if (!bStillActive && Duct->HasSlippedAway())
+        {
+            StartReelFeedback(Target, FColor::Yellow);
+            DetachReelLineInternal(TEXT("DUCT SLIPPED AWAY"), false);
+            ShowDebugMessage(TEXT("Duct slipped the line; only tape trace evidence remains"), FColor::Yellow);
+        }
         return;
     }
 

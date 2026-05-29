@@ -336,6 +336,7 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     FString Economy = PrototypeController->GetEconomyStatusText();
     FString Achievement = PrototypeController->GetAchievementStatusText();
     FString BossStatus = PrototypeController->GetBossArenaStatusText();
+    FString DuctStatus = PrototypeController->GetDuctStatusText();
     FString Settings = PrototypeController->GetSettingsStatusText();
 
     if (Economy.Len() > 54)
@@ -349,6 +350,10 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     if (BossStatus.Len() > 64)
     {
         BossStatus = BossStatus.Left(61) + TEXT("...");
+    }
+    if (DuctStatus.Len() > 48)
+    {
+        DuctStatus = DuctStatus.Left(45) + TEXT("...");
     }
     if (Settings.Len() > 58)
     {
@@ -367,6 +372,10 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
 
     DrawPanel(ScreenWidth - 384.0f, 256.0f, 356.0f, 54.0f, PanelColor);
     DrawText(Settings, FLinearColor(0.88f, 0.88f, 0.78f, 1.0f), ScreenWidth - 366.0f, 272.0f, nullptr, 0.54f * Scale);
+
+    DrawPanel(ScreenWidth - 384.0f, 320.0f, 356.0f, 54.0f, PanelColor);
+    DrawText(TEXT("TROPHY CASE"), FLinearColor(1.0f, 0.80f, 0.22f, 1.0f), ScreenWidth - 366.0f, 334.0f, nullptr, 0.66f * Scale);
+    DrawText(DuctStatus, TextColor, ScreenWidth - 366.0f, 354.0f, nullptr, 0.48f * Scale);
 
     if (PrototypeController->IsSettingsPanelOpen())
     {

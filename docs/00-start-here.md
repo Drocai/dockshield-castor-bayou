@@ -38,6 +38,7 @@ As of the current Unreal prototype setup:
 - A private static Reel proxy is imported and placed in `M_Test_Targeting` for scale, silhouette, and lighting review; it is not playable or public-ready.
 - Prototype beta economy, achievements, settings HUD, and Deep Dock boss arena foundations are implemented in C++ and Unreal commandlet automation.
 - Deep Dock weak points now support the first Hook, Line & Sinker combo loop: Reel exposes, Fly marks, Lilly binds, and the boss arena applies combo damage.
+- Duct legendary encounter v0 is implemented as an uncatchable debug sighting: The Reel can latch and drive a near-catch battle, but Duct always slips away and leaves Trophy Case evidence only.
 
 ## Operating Model
 

@@ -93,6 +93,9 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
     FString GetBossArenaStatusText() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetDuctStatusText() const;
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Settings")
     FString GetSettingsStatusText() const;
 
@@ -160,6 +163,9 @@ private:
     bool bDeepDockDiscovered = false;
     bool bBossDefeatRewarded = false;
     int32 LastKnownBossComboCount = 0;
+    int32 DuctSightings = 0;
+    int32 DuctNearCatchCount = 0;
+    int32 DuctTapeFragments = 0;
 
     bool bSettingsPanelOpen = false;
     float HudScale = 1.0f;

@@ -36,6 +36,7 @@ def validate_player_controller_meta():
         "get_hud_scale",
         "get_gamma",
         "get_boss_arena_status_text",
+        "get_duct_status_text",
     ]
     for method_name in required_methods:
         require_method(cdo, method_name)
@@ -54,6 +55,10 @@ def validate_player_controller_meta():
     economy_text = str(cdo.get_economy_status_text())
     if "CREDITS" not in economy_text or "XP" not in economy_text:
         fail(f"economy status text missing expected fragments: {economy_text}")
+
+    duct_text = str(cdo.get_duct_status_text())
+    if "DUCT" not in duct_text or "UNCAUGHT" not in duct_text:
+        fail(f"duct status text missing expected fragments: {duct_text}")
 
 
 def validate_boss_arena_actor():

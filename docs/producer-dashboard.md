@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, Deep Dock boss arena foundation, and Hook, Line & Sinker weak-point combo damage v0.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, Deep Dock boss arena foundation, Hook, Line & Sinker weak-point combo damage v0, and Duct legendary encounter v0.
 
 ## Current Repo State
 
@@ -34,6 +34,9 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - Deep Dock boss arena state actor and commandlet map pass are implemented for `M_Test_Targeting`; the pass places a toxic core, weak-point targets, warning pylons, service decks, and boss lighting.
 - Deep Dock weak points now track Reel exposure, Fly marks, and Lilly binds. When all three are present on one weak point, `DSDeepDockBossArenaActor` applies Hook, Line & Sinker combo damage and advances boss phase from dormant to exposed, enraged, then defeated.
 - `validate_boss_combo_smoke.py` verifies all three weak-point combos and boss defeat headlessly.
+- `DSDuctLegendaryEncounterActor` implements Duct as an uncatchable legendary sighting with sighted, latched, near-catch, and slipped-away states.
+- The Reel can latch Duct and build near-catch progress with held `R`; Duct always escapes and leaves Trophy Case evidence instead of becoming inventory loot.
+- `validate_duct_legendary_smoke.py` verifies the Duct sighting, bait, latch, near-catch, tape trace, and uncatchable outcome headlessly.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -56,6 +59,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Deep Dock boss arena feel test | D RoC or Codex with editor session | Open `M_Test_Targeting`, approach the Deep Dock area, confirm boss core/weak-point targets read clearly under toxic green and warning red lighting |
 | Deep Dock boss combo feel test | D RoC or Codex with editor session | Expose a Deep Dock weak point with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm HUD boss status advances and economy rewards trigger |
 | Beta economy/settings feel test | D RoC or Codex with editor session | Press `P` or `Esc`, adjust HUD scale with `[`/`]`, adjust gamma value with `-`/`=`, cycle quality with `O`, then complete one rescue/mark/bind to confirm HUD feedback |
+| Duct legendary encounter feel test | D RoC or Codex with editor session | Find `DS_Duct_Legendary_Sighting_Debug`, latch with LMB/E, hold `R`, confirm near-catch pressure builds, Duct slips away, and Trophy Case evidence shows `UNCAUGHT` |
 
 ## Current Agent Lane
 
@@ -82,9 +86,10 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
 4. Add readable in-world VFX/SFX hooks for Reel exposure, Fly mark, Lilly bind, and combo impact.
 5. Keep beta economy/settings/achievement work prototype-only until the first encounter loop has real win/fail conditions.
-6. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
-7. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
-8. Use `scripts\unreal\validate-prototype.ps1 -RequireCleanGit` after committed checkpoints when a clean-release handoff is needed.
+6. Keep Duct uncatchable in this version; expand only sightings, bait, evidence, VFX/SFX, and rarity logic until lore changes.
+7. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.
+8. Do not replace the playable mannequin until the Reel source has a rigging route and animation-compatible topology.
+9. Use `scripts\unreal\validate-prototype.ps1 -RequireCleanGit` after committed checkpoints when a clean-release handoff is needed.
 
 ## Current Implementation Plan
 
