@@ -159,6 +159,21 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
     int32 GetVisualCueEventCount() const { return VisualCueEventCount; }
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetCameraFeedbackStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    float GetCameraFeedbackFlash() const { return CameraFeedbackFlash; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetMissionOutcomeStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    bool IsMissionComplete() const { return bMissionComplete; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    bool IsMissionFailing() const { return bMissionFailing; }
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Settings")
     FString GetSettingsStatusText() const;
 
@@ -234,6 +249,13 @@ private:
     FName LastVisualCueId = FName(TEXT("VFX_READY"));
     float LastVisualCueIntensity = 0.0f;
     int32 VisualCueEventCount = 0;
+    FName LastCameraFeedbackId = FName(TEXT("CAM_READY"));
+    float LastCameraFeedbackStrength = 0.0f;
+    float CameraFeedbackFlash = 0.0f;
+    int32 CameraFeedbackEventCount = 0;
+    FString MissionOutcomeText = TEXT("OUTCOME: IN PROGRESS");
+    bool bMissionComplete = false;
+    bool bMissionFailing = false;
     FString LastBossArenaStatus = TEXT("DEEP DOCK: NOT DEPLOYED");
     FString LastMutationStatus = TEXT("MUTATION: NOT DEPLOYED");
     bool bDeepDockDiscovered = false;
@@ -273,6 +295,8 @@ private:
     void RoutePrototypeCuesForAction(FName ActionName);
     void SetAudioCue(FName CueId, float Intensity);
     void SetVisualCue(FName CueId, float Intensity);
+    void SetCameraFeedback(FName FeedbackId, float Strength, float FlashSeconds);
+    void UpdateMissionOutcomeFromState();
     void SetCombatFeedback(FName ActionName, const FString& FeedbackText, float FlashSeconds = 1.0f);
     FString GetAchievementLabel(FName AchievementId) const;
 };

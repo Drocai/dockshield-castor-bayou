@@ -48,10 +48,26 @@ bool ADSDuctLegendaryEncounterActor::ApplyBait(FName BaitId)
     ++BaitAttemptCount;
 
     const bool bPremiumBait = BaitId == FName(TEXT("DuctTapeBait")) || BaitId == FName(TEXT("BobberBouncer"));
+    LastBaitId = BaitId.IsNone() ? FName(TEXT("BasicBait")) : BaitId;
+    LastBaitTier = bPremiumBait ? 2 : 1;
+    LastBaitCost = bPremiumBait ? 3 : 1;
     EncounterProgress = FMath::Max(EncounterProgress, bPremiumBait ? 0.24f : 0.14f);
     BestNearCatchProgress = FMath::Max(BestNearCatchProgress, EncounterProgress);
     EncounterState = EDSDuctEncounterState::Lured;
     return true;
+}
+
+bool ADSDuctLegendaryEncounterActor::EvaluateRareSpawnForRoll(float Roll, float WeatherHazardScale, float MissionProgress, int32 BaitTier)
+{
+    LastSpawnRoll = FMath::Clamp(Roll, 0.0f, 1.0f);
+    LastSpawnChance = CalculateSpawnChance(WeatherHazardScale, MissionProgress, BaitTier);
+    const bool bShouldSpawn = LastSpawnRoll <= LastSpawnChance;
+    if (bShouldSpawn)
+    {
+        BeginSighting();
+    }
+
+    return bShouldSpawn;
 }
 
 bool ADSDuctLegendaryEncounterActor::LatchWithReel(float InitialTension)
@@ -146,6 +162,11 @@ void ADSDuctLegendaryEncounterActor::ResetDuctEncounter()
     BestNearCatchProgress = 0.0f;
     SightingCount = 0;
     BaitAttemptCount = 0;
+    LastBaitId = FName(TEXT("None"));
+    LastBaitTier = 0;
+    LastBaitCost = 0;
+    LastSpawnChance = 0.0f;
+    LastSpawnRoll = 1.0f;
     AttemptCount = 0;
     NearCatchCount = 0;
     DuctTapeTraceCount = 0;
@@ -155,12 +176,40 @@ void ADSDuctLegendaryEncounterActor::ResetDuctEncounter()
 FString ADSDuctLegendaryEncounterActor::GetDuctStatusText() const
 {
     return FString::Printf(
-        TEXT("DUCT %s | BEST %.0f%% | SIGHT %d | NEAR %d | TAPE %d | UNCAUGHT"),
+        TEXT("DUCT %s | BEST %.0f%% | SIGHT %d | BAIT %d | NEAR %d | TAPE %d | UNCAUGHT"),
         *GetEncounterStateText(),
         BestNearCatchProgress * 100.0f,
         SightingCount,
+        BaitAttemptCount,
         NearCatchCount,
         DuctTapeTraceCount);
+}
+
+FString ADSDuctLegendaryEncounterActor::GetRarityStatusText() const
+{
+    return FString::Printf(
+        TEXT("DUCT RARITY %.1f%% | ROLL %.1f%% | TIER %d | %s"),
+        LastSpawnChance * 100.0f,
+        LastSpawnRoll * 100.0f,
+        LastBaitTier,
+        EncounterState == EDSDuctEncounterState::Hidden ? TEXT("HIDDEN") : TEXT("ACTIVE"));
+}
+
+FString ADSDuctLegendaryEncounterActor::GetBaitEconomyStatusText() const
+{
+    return FString::Printf(
+        TEXT("DUCT BAIT %s | COST %d SAMPLE | ATTEMPTS %d | CANNOT CATCH"),
+        *LastBaitId.ToString(),
+        LastBaitCost,
+        BaitAttemptCount);
+}
+
+float ADSDuctLegendaryEncounterActor::CalculateSpawnChance(float WeatherHazardScale, float MissionProgress, int32 BaitTier) const
+{
+    const float HazardBonus = FMath::Max(0.0f, WeatherHazardScale - 1.0f) * WeatherHazardSpawnBonus;
+    const float ProgressBonus = FMath::Clamp(MissionProgress, 0.0f, 1.0f) * MissionProgressSpawnBonus;
+    const float BaitBonus = FMath::Clamp(static_cast<float>(BaitTier), 0.0f, 3.0f) * BaitTierSpawnBonus;
+    return FMath::Clamp(BaseRareSpawnChance + HazardBonus + ProgressBonus + BaitBonus, 0.0f, MaxRareSpawnChance);
 }
 
 FString ADSDuctLegendaryEncounterActor::GetEncounterStateText() const

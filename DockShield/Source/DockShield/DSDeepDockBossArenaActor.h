@@ -55,8 +55,29 @@ public:
 	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
 	float GetHookLineSinkerReadiness() const;
 
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	float GetWeakPointComboReadiness(AActor* WeakPointActor) const;
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	int32 GetActiveComboWindowCount() const { return WeakPointComboWindows.Num(); }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	int32 GetExpiredComboWindowCount() const { return ExpiredComboWindowCount; }
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	FString GetComboWindowStatusText() const;
+
+	UFUNCTION(BlueprintPure, Category = "DockShield|Boss Arena")
+	bool IsWeakPointWindowActive(AActor* WeakPointActor) const;
+
 	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
 	int32 EvaluateBossWeakPointCombos();
+
+	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
+	bool PrimeWeakPointDamageWindow(AActor* WeakPointActor);
+
+	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
+	void AdvanceBossWindowTimers(float DeltaSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "DockShield|Boss Arena")
 	bool ApplyHookLineSinkerCombo(AActor* WeakPointActor);
@@ -89,6 +110,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float WeakPointDamagePerCombo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena", meta = (ClampMin = "0.5", ClampMax = "30.0"))
+	float DefaultComboWindowSeconds;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boss Arena")
 	EDSDeepDockBossPhase BossPhase;
 
@@ -103,6 +127,9 @@ protected:
 
 private:
 	TSet<FObjectKey> ResolvedWeakPoints;
+	TMap<FObjectKey, float> WeakPointComboWindows;
+	int32 ExpiredComboWindowCount;
+	FString LastComboWindowText;
 
 	bool IsBossWeakPointActor(const AActor* Actor) const;
 	void UpdateBossPhaseFromState();

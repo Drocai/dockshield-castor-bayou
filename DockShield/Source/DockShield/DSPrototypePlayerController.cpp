@@ -45,6 +45,7 @@ void ADSPrototypePlayerController::Tick(float DeltaSeconds)
     }
 
     CombatFeedbackFlash = FMath::Max(0.0f, CombatFeedbackFlash - DeltaSeconds);
+    CameraFeedbackFlash = FMath::Max(0.0f, CameraFeedbackFlash - DeltaSeconds);
 }
 
 void ADSPrototypePlayerController::SetupInputComponent()
@@ -273,6 +274,8 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
     {
         SetCombatFeedback(ActionName, TEXT("LINE SNAP: extraction pressure rising"), 1.15f);
     }
+
+    UpdateMissionOutcomeFromState();
 }
 
 bool ADSPrototypePlayerController::UnlockAchievement(FName AchievementId)
@@ -355,6 +358,7 @@ void ADSPrototypePlayerController::CycleWeatherState()
     ++WeatherCycleCount;
     MissionObjectiveText = FString::Printf(TEXT("OBJECTIVE: Adapt to %s"), *GetWeatherStateLabel());
     SetVisualCue(FName(TEXT("VFX_WEATHER_SHIFT")), GetWeatherHazardPressureScale());
+    SetCameraFeedback(FName(TEXT("CAM_WEATHER_SHIFT")), 0.24f, 0.55f);
 
     if (GEngine)
     {
@@ -465,6 +469,20 @@ FString ADSPrototypePlayerController::GetVisualCueStatusText() const
         *LastVisualCueId.ToString(),
         LastVisualCueIntensity * 100.0f,
         VisualCueEventCount);
+}
+
+FString ADSPrototypePlayerController::GetCameraFeedbackStatusText() const
+{
+    return FString::Printf(
+        TEXT("CAM %s | STR %.0f%% | EVENTS %d"),
+        *LastCameraFeedbackId.ToString(),
+        LastCameraFeedbackStrength * 100.0f,
+        CameraFeedbackEventCount);
+}
+
+FString ADSPrototypePlayerController::GetMissionOutcomeStatusText() const
+{
+    return MissionOutcomeText;
 }
 
 FString ADSPrototypePlayerController::GetSettingsStatusText() const
@@ -812,6 +830,8 @@ void ADSPrototypePlayerController::AdvanceMissionFromAction(FName ActionName)
         MissionObjectiveText = TEXT("OBJECTIVE: Line snapped, recover target pressure");
         MissionObjectiveProgress = FMath::Max(MissionObjectiveProgress - 0.04f, 0.08f);
     }
+
+    UpdateMissionOutcomeFromState();
 }
 
 void ADSPrototypePlayerController::RoutePrototypeCuesForAction(FName ActionName)
@@ -820,81 +840,97 @@ void ADSPrototypePlayerController::RoutePrototypeCuesForAction(FName ActionName)
     {
         SetAudioCue(FName(TEXT("SFX_REEL_CAST")), 0.72f);
         SetVisualCue(FName(TEXT("VFX_REEL_LINE")), 0.8f);
+        SetCameraFeedback(FName(TEXT("CAM_REEL_CAST")), 0.18f, 0.35f);
     }
     else if (ActionName == FName(TEXT("CivilianRescue")))
     {
         SetAudioCue(FName(TEXT("SFX_RESCUE_SECURED")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_EXTRACTION_MARKER")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_RESCUE_CONFIRM")), 0.32f, 0.7f);
     }
     else if (ActionName == FName(TEXT("BoatTow")))
     {
         SetAudioCue(FName(TEXT("SFX_BOAT_TOW")), 0.9f);
         SetVisualCue(FName(TEXT("VFX_TOW_WAKE")), 0.85f);
+        SetCameraFeedback(FName(TEXT("CAM_BOAT_TENSION")), 0.25f, 0.55f);
     }
     else if (ActionName == FName(TEXT("GrapplePull")))
     {
         SetAudioCue(FName(TEXT("SFX_GRAPPLE_PULL")), 0.9f);
         SetVisualCue(FName(TEXT("VFX_GRAPPLE_STREAK")), 0.9f);
+        SetCameraFeedback(FName(TEXT("CAM_GRAPPLE_PULL")), 0.28f, 0.55f);
     }
     else if (ActionName == FName(TEXT("FlyMark")))
     {
         SetAudioCue(FName(TEXT("SFX_FLY_MARK")), 0.75f);
         SetVisualCue(FName(TEXT("VFX_SONAR_RING")), 0.85f);
+        SetCameraFeedback(FName(TEXT("CAM_SONAR_PULSE")), 0.16f, 0.35f);
     }
     else if (ActionName == FName(TEXT("LillyBind")))
     {
         SetAudioCue(FName(TEXT("SFX_LILLY_BIND")), 0.78f);
         SetVisualCue(FName(TEXT("VFX_ROOT_SNARE")), 0.9f);
+        SetCameraFeedback(FName(TEXT("CAM_ROOT_BIND")), 0.22f, 0.45f);
     }
     else if (ActionName == FName(TEXT("BossWeakPointExposed")))
     {
         SetAudioCue(FName(TEXT("SFX_WEAKPOINT_EXPOSE")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_WEAKPOINT_RETICLE")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_WEAKPOINT_EXPOSE")), 0.35f, 0.7f);
     }
     else if (ActionName == FName(TEXT("HookLineSinker")))
     {
         SetAudioCue(FName(TEXT("SFX_COMBO_IMPACT")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_COMBO_FLASH")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_COMBO_IMPACT")), 0.72f, 1.0f);
     }
     else if (ActionName == FName(TEXT("BossDefeated")))
     {
         SetAudioCue(FName(TEXT("SFX_BOSS_DOWN")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_BOSS_FALLOFF")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_BOSS_DOWN")), 0.85f, 1.2f);
     }
     else if (ActionName == FName(TEXT("MutationStagger")))
     {
         SetAudioCue(FName(TEXT("SFX_MUTATION_STAGGER")), 0.88f);
         SetVisualCue(FName(TEXT("VFX_MUTATION_SPARK")), 0.9f);
+        SetCameraFeedback(FName(TEXT("CAM_MUTATION_STAGGER")), 0.36f, 0.65f);
     }
     else if (ActionName == FName(TEXT("MutationCombo")))
     {
         SetAudioCue(FName(TEXT("SFX_MUTATION_COMBO")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_MUTATION_COMBO_FLASH")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_MUTATION_COMBO")), 0.64f, 0.95f);
     }
     else if (ActionName == FName(TEXT("MutationDefeated")))
     {
         SetAudioCue(FName(TEXT("SFX_MUTATION_DOWN")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_SAMPLE_SECURED")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_MUTATION_DOWN")), 0.58f, 0.9f);
     }
     else if (ActionName == FName(TEXT("DuctSighting")))
     {
         SetAudioCue(FName(TEXT("SFX_DUCT_PING")), 0.9f);
         SetVisualCue(FName(TEXT("VFX_DUCT_WAKE")), 0.95f);
+        SetCameraFeedback(FName(TEXT("CAM_DUCT_PING")), 0.2f, 0.45f);
     }
     else if (ActionName == FName(TEXT("DuctNearCatch")))
     {
         SetAudioCue(FName(TEXT("SFX_DUCT_SLIP")), 1.0f);
         SetVisualCue(FName(TEXT("VFX_DUCT_TENSION_SPIKE")), 1.0f);
+        SetCameraFeedback(FName(TEXT("CAM_DUCT_TENSION")), 0.48f, 0.8f);
     }
     else if (ActionName == FName(TEXT("DuctTrace")))
     {
         SetAudioCue(FName(TEXT("SFX_DUCT_TRACE")), 0.82f);
         SetVisualCue(FName(TEXT("VFX_DUCT_TAPE_FRAGMENT")), 0.86f);
+        SetCameraFeedback(FName(TEXT("CAM_DUCT_TRACE")), 0.18f, 0.4f);
     }
     else if (ActionName == FName(TEXT("LineSnap")))
     {
         SetAudioCue(FName(TEXT("SFX_LINE_SNAP")), 0.95f);
         SetVisualCue(FName(TEXT("VFX_LINE_SNAP")), 0.95f);
+        SetCameraFeedback(FName(TEXT("CAM_LINE_SNAP")), 0.62f, 0.9f);
     }
 }
 
@@ -920,6 +956,41 @@ void ADSPrototypePlayerController::SetVisualCue(FName CueId, float Intensity)
     LastVisualCueId = CueId;
     LastVisualCueIntensity = FMath::Clamp(Intensity, 0.0f, 1.0f);
     ++VisualCueEventCount;
+}
+
+void ADSPrototypePlayerController::SetCameraFeedback(FName FeedbackId, float Strength, float FlashSeconds)
+{
+    if (FeedbackId.IsNone())
+    {
+        return;
+    }
+
+    LastCameraFeedbackId = FeedbackId;
+    LastCameraFeedbackStrength = FMath::Clamp(Strength, 0.0f, 1.0f);
+    CameraFeedbackFlash = FMath::Max(0.1f, FlashSeconds);
+    ++CameraFeedbackEventCount;
+}
+
+void ADSPrototypePlayerController::UpdateMissionOutcomeFromState()
+{
+    bMissionComplete = MissionObjectiveProgress >= 0.88f && ExtractionSecuredCount > 0;
+    bMissionFailing = ExtractionFailureCount >= 3 && !bMissionComplete;
+
+    if (bMissionComplete)
+    {
+        MissionOutcomeText = TEXT("OUTCOME: EXTRACTION READY");
+    }
+    else if (bMissionFailing)
+    {
+        MissionOutcomeText = TEXT("OUTCOME: FAILING - LINE LOSSES HIGH");
+    }
+    else
+    {
+        MissionOutcomeText = FString::Printf(
+            TEXT("OUTCOME: IN PROGRESS | SECURE %d | FAIL %d"),
+            ExtractionSecuredCount,
+            ExtractionFailureCount);
+    }
 }
 
 void ADSPrototypePlayerController::SetCombatFeedback(FName ActionName, const FString& FeedbackText, float FlashSeconds)

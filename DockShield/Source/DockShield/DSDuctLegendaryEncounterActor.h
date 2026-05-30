@@ -32,6 +32,9 @@ public:
     bool ApplyBait(FName BaitId);
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Duct")
+    bool EvaluateRareSpawnForRoll(float Roll, float WeatherHazardScale, float MissionProgress, int32 BaitTier);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Duct")
     bool LatchWithReel(float InitialTension = 0.0f);
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Duct")
@@ -47,7 +50,16 @@ public:
     FString GetDuctStatusText() const;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    FString GetRarityStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    FString GetBaitEconomyStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
     FString GetEncounterStateText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    float CalculateSpawnChance(float WeatherHazardScale, float MissionProgress, int32 BaitTier) const;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
     EDSDuctEncounterState GetEncounterState() const { return EncounterState; }
@@ -71,6 +83,18 @@ public:
     int32 GetAttemptCount() const { return AttemptCount; }
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    int32 GetBaitAttemptCount() const { return BaitAttemptCount; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    FName GetLastBaitId() const { return LastBaitId; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    float GetLastSpawnChance() const { return LastSpawnChance; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
+    float GetLastSpawnRoll() const { return LastSpawnRoll; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
     int32 GetNearCatchCount() const { return NearCatchCount; }
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Duct")
@@ -89,6 +113,21 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct", meta = (ClampMin = "0.0"))
     float TensionProgressRate = 0.30f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct|Rarity", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float BaseRareSpawnChance = 0.025f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct|Rarity", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float WeatherHazardSpawnBonus = 0.035f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct|Rarity", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float MissionProgressSpawnBonus = 0.06f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct|Rarity", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float BaitTierSpawnBonus = 0.045f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Duct|Rarity", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+    float MaxRareSpawnChance = 0.18f;
+
 private:
     UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
     EDSDuctEncounterState EncounterState = EDSDuctEncounterState::Hidden;
@@ -104,6 +143,21 @@ private:
 
     UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
     int32 BaitAttemptCount = 0;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
+    FName LastBaitId = FName(TEXT("None"));
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
+    int32 LastBaitTier = 0;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
+    int32 LastBaitCost = 0;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
+    float LastSpawnChance = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
+    float LastSpawnRoll = 1.0f;
 
     UPROPERTY(VisibleAnywhere, Category = "DockShield|Duct")
     int32 AttemptCount = 0;

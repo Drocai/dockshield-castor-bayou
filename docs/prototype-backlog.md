@@ -112,6 +112,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Boss weak-point target placeholders v0
 - [x] Boss weak-point phase with damage/state changes v0
 - [x] Hook, Line & Sinker combo trigger v0
+- [x] Timed boss weak-point combo window state v0
 - [ ] One mini boss
 - [ ] Hook, Line & Sinker finisher beat with readable VFX/SFX
 - [ ] Win/fail conditions
@@ -152,6 +153,8 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Add Duct map pass and smoke validation
 - [x] Add Bayou Mutation enemy combat actor, map pass, HUD status, and smoke validation
 - [x] Add mutation combat feedback HUD/light/debug pulse hooks v0
+- [x] Add prototype camera feedback cue hooks v0
+- [x] Add mission outcome HUD/status v0
 - [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Review Deep Dock boss arena lighting/readability in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
@@ -164,7 +167,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, Bayou Mutation enemy combat v0, Duct legendary near-catch debug encounter, weather-driven target range pressure, objective/extraction HUD state, and named SFX/VFX hook IDs. It still needs real MetaHuman/custom character assets, production environment art, authored sound, and Niagara assets before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, Bayou Mutation enemy combat v0, Duct legendary near-catch debug encounter, weather-driven target range pressure, objective/extraction HUD state, named SFX/VFX/camera hook IDs, timed Deep Dock combo windows, and Duct rarity/bait chance logic. It still needs real MetaHuman/custom character assets, production environment art, authored sound, and Niagara assets before it matches the cinematic reference.
 
 ## Phase 7 - Optimization And Upgrade Queue
 
@@ -175,6 +178,7 @@ Current note: the image pack is the private canon visual target for the intended
 - [x] Add one mutation enemy with shared target weak-point support
 - [x] Add mutation stagger/combo impact feedback hooks v0
 - [ ] Replace mutation feedback hooks with first-pass Niagara/SFX assets and camera feedback
+- [x] Add prototype camera feedback hooks for combo, rescue, Duct, weather, and line-snap events
 - [x] Add extraction marker and success/fail counter
 - [x] Add objective-state HUD card for the current mission step
 - [ ] Convert beta economy rewards into data-driven mission reward rows
@@ -182,10 +186,11 @@ Current note: the image pack is the private canon visual target for the intended
 - [ ] Wire settings panel to actual scalability/post-process settings after visual baseline is stable
 - [x] Add boss arena state machine: dormant, exposed, enraged, defeated
 - [x] Add boss weak-point damage and Hook, Line & Sinker combo trigger
-- [ ] Add timed boss weak-point damage windows
-- [ ] Add combo impact VFX/SFX and camera feedback
+- [x] Add timed boss weak-point damage windows
+- [x] Add combo impact VFX/SFX/camera hook IDs
 - [ ] Add rare Duct spawn manager with weather/mission weighting
-- [ ] Add bait economy rows for Duct attempts without allowing capture
+- [x] Add Duct rare sighting chance logic with weather/mission/bait weighting
+- [x] Add bait economy scaffolding for Duct attempts without allowing capture
 - [ ] Add Duct VFX/SFX: golden wake, squeak ping, slip shimmer, tape trace
 - [ ] Add packaged Windows build validation script
 - [ ] Add OBS capture checklist for a 60-90 second prototype reel

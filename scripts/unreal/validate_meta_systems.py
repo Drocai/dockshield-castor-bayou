@@ -55,6 +55,11 @@ def validate_player_controller_meta():
         "get_audio_cue_event_count",
         "get_visual_cue_status_text",
         "get_visual_cue_event_count",
+        "get_camera_feedback_status_text",
+        "get_camera_feedback_flash",
+        "get_mission_outcome_status_text",
+        "is_mission_complete",
+        "is_mission_failing",
     ]
     for method_name in required_methods:
         require_method(cdo, method_name)
@@ -114,6 +119,12 @@ def validate_player_controller_meta():
     visual_text = str(cdo.get_visual_cue_status_text())
     if "VFX" not in visual_text or "EVENTS" not in visual_text:
         fail(f"visual cue status text missing expected fragments: {visual_text}")
+    camera_text = str(cdo.get_camera_feedback_status_text())
+    if "CAM" not in camera_text or "EVENTS" not in camera_text:
+        fail(f"camera feedback status text missing expected fragments: {camera_text}")
+    outcome_text = str(cdo.get_mission_outcome_status_text())
+    if "OUTCOME" not in outcome_text:
+        fail(f"mission outcome text missing expected fragment: {outcome_text}")
 
 
 def validate_boss_arena_actor():
@@ -131,6 +142,13 @@ def validate_boss_arena_actor():
         "get_resolved_weak_point_count",
         "get_combo_trigger_count",
         "get_hook_line_sinker_readiness",
+        "get_weak_point_combo_readiness",
+        "get_active_combo_window_count",
+        "get_expired_combo_window_count",
+        "get_combo_window_status_text",
+        "is_weak_point_window_active",
+        "prime_weak_point_damage_window",
+        "advance_boss_window_timers",
         "evaluate_boss_weak_point_combos",
         "apply_hook_line_sinker_combo",
         "reset_boss_encounter",
@@ -148,6 +166,9 @@ def validate_boss_arena_actor():
         fail("boss combo count should start at zero")
     if cdo.get_resolved_weak_point_count() != 0:
         fail("resolved weak point count should start at zero")
+    window_status = str(cdo.get_combo_window_status_text())
+    if "COMBO WINDOWS" not in window_status:
+        fail(f"boss combo window status missing expected fragment: {window_status}")
 
 
 def validate_mutation_enemy_actor():
@@ -179,7 +200,7 @@ def main():
     validate_player_controller_meta()
     validate_boss_arena_actor()
     validate_mutation_enemy_actor()
-    unreal.log("DockShield meta systems validation passed: economy, achievements, settings, weather, objective, extraction, audio/visual hooks, boss arena state, and mutation enemy status.")
+    unreal.log("DockShield meta systems validation passed: economy, achievements, settings, weather, objective, extraction, audio/visual/camera hooks, boss arena timing state, and mutation enemy status.")
 
 
 main()

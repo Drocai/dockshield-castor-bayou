@@ -49,18 +49,26 @@ def validate_duct_cdo():
     for method_name in [
         "begin_sighting",
         "apply_bait",
+        "evaluate_rare_spawn_for_roll",
         "latch_with_reel",
         "advance_reel_battle",
         "resolve_slip_away",
         "reset_duct_encounter",
         "get_duct_status_text",
+        "get_rarity_status_text",
+        "get_bait_economy_status_text",
         "get_encounter_state_text",
+        "calculate_spawn_chance",
         "is_catchable",
         "has_slipped_away",
         "get_encounter_progress",
         "get_best_near_catch_progress",
         "get_sighting_count",
         "get_attempt_count",
+        "get_bait_attempt_count",
+        "get_last_bait_id",
+        "get_last_spawn_chance",
+        "get_last_spawn_roll",
         "get_near_catch_count",
         "get_duct_tape_trace_count",
     ]:
@@ -92,12 +100,24 @@ def validate_duct_map_actor():
     duct.reset_duct_encounter()
     if duct.is_catchable():
         fail("Duct actor must not become catchable after reset")
-    if not duct.begin_sighting():
-        fail("Duct begin_sighting returned false")
+    low_chance = duct.calculate_spawn_chance(1.0, 0.0, 0)
+    high_chance = duct.calculate_spawn_chance(1.65, 0.85, 2)
+    if high_chance <= low_chance:
+        fail("Duct rare spawn chance should increase with weather, mission progress, and bait tier")
+    if not duct.evaluate_rare_spawn_for_roll(0.01, 1.65, 0.85, 2):
+        fail("Duct rare spawn roll should activate when roll is below calculated chance")
     if duct.get_sighting_count() != 1:
         fail(f"expected one sighting, got {duct.get_sighting_count()}")
+    rarity_status = str(duct.get_rarity_status_text())
+    if "DUCT RARITY" not in rarity_status:
+        fail(f"Duct rarity status missing expected fragment: {rarity_status}")
     if not duct.apply_bait(unreal.Name("BobberBouncer")):
         fail("Duct apply_bait returned false")
+    if duct.get_bait_attempt_count() != 1:
+        fail(f"expected one bait attempt, got {duct.get_bait_attempt_count()}")
+    bait_status = str(duct.get_bait_economy_status_text())
+    if "CANNOT CATCH" not in bait_status or "BobberBouncer" not in bait_status:
+        fail(f"Duct bait economy status missing expected fragments: {bait_status}")
     if not duct.latch_with_reel(0.4):
         fail("Duct latch_with_reel returned false")
 

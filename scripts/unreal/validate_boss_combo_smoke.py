@@ -72,6 +72,13 @@ def main():
             fail(f"{label} failed Reel exposure")
         if not targetable.mark_for_fly(1.0):
             fail(f"{label} failed Fly mark")
+        if index == 1:
+            if arena.evaluate_boss_weak_point_combos() != 0:
+                fail(f"{label} should not apply combo before Lilly bind")
+            if arena.get_active_combo_window_count() < 1:
+                fail(f"{label} did not open a timed combo window after two hero states")
+            if "COMBO WINDOWS" not in str(arena.get_combo_window_status_text()):
+                fail("combo window status text missing expected fragment")
         if not targetable.bind_for_lilly(1.0):
             fail(f"{label} failed Lilly bind")
         if not targetable.is_hook_line_sinker_ready():
@@ -88,6 +95,10 @@ def main():
             fail(f"{label} did not reduce boss integrity")
 
         previous_integrity = arena.get_boss_integrity()
+
+    arena.advance_boss_window_timers(99.0)
+    if arena.get_active_combo_window_count() != 0:
+        fail("all combo windows should be closed after boss defeat and timer advance")
 
     if not arena.is_boss_defeated():
         fail("boss should be defeated after all three weak-point combos")

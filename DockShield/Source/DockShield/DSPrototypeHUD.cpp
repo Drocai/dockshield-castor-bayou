@@ -344,6 +344,8 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     FString WeatherStatus = PrototypeController->GetWeatherStatusText();
     FString AudioCueStatus = PrototypeController->GetAudioCueStatusText();
     FString VisualCueStatus = PrototypeController->GetVisualCueStatusText();
+    FString CameraFeedback = PrototypeController->GetCameraFeedbackStatusText();
+    FString OutcomeStatus = PrototypeController->GetMissionOutcomeStatusText();
     FString Settings = PrototypeController->GetSettingsStatusText();
     const float FeedbackFlash = PrototypeController->GetCombatFeedbackFlash();
     const float MissionProgress = PrototypeController->GetMissionObjectiveProgress();
@@ -392,6 +394,14 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     {
         VisualCueStatus = VisualCueStatus.Left(43) + TEXT("...");
     }
+    if (CameraFeedback.Len() > 46)
+    {
+        CameraFeedback = CameraFeedback.Left(43) + TEXT("...");
+    }
+    if (OutcomeStatus.Len() > 46)
+    {
+        OutcomeStatus = OutcomeStatus.Left(43) + TEXT("...");
+    }
     if (Settings.Len() > 58)
     {
         Settings = Settings.Left(55) + TEXT("...");
@@ -421,20 +431,22 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     DrawText(TEXT("COMBAT FEEDBACK"), FeedbackColor, CenterX - 222.0f, 146.0f, nullptr, 0.54f * Scale);
     DrawText(CombatFeedback, TextColor, CenterX - 72.0f, 146.0f, nullptr, 0.44f * Scale);
 
-    DrawPanel(CenterX - 250.0f, 182.0f, 500.0f, 58.0f, PanelColor);
+    DrawPanel(CenterX - 250.0f, 182.0f, 500.0f, 66.0f, PanelColor);
     DrawText(TEXT("MISSION"), RewardColor, CenterX - 232.0f, 194.0f, nullptr, 0.6f * Scale);
     DrawText(MissionObjective, TextColor, CenterX - 132.0f, 194.0f, nullptr, 0.46f * Scale);
     DrawBar(CenterX - 232.0f, 222.0f, 316.0f, 7.0f, MissionProgress, RewardColor);
     DrawText(ExtractionStatus, FLinearColor(0.86f, 0.86f, 0.70f, 1.0f), CenterX + 94.0f, 216.0f, nullptr, 0.38f * Scale);
+    DrawText(OutcomeStatus, TextColor, CenterX - 232.0f, 232.0f, nullptr, 0.38f * Scale);
 
-    DrawPanel(CenterX - 250.0f, 248.0f, 500.0f, 38.0f, PanelColor);
-    DrawText(TEXT("WEATHER"), FLinearColor(0.48f, 0.82f, 1.0f, 1.0f), CenterX - 232.0f, 258.0f, nullptr, 0.54f * Scale);
-    DrawText(WeatherStatus, TextColor, CenterX - 132.0f, 258.0f, nullptr, 0.42f * Scale);
+    DrawPanel(CenterX - 250.0f, 256.0f, 500.0f, 38.0f, PanelColor);
+    DrawText(TEXT("WEATHER"), FLinearColor(0.48f, 0.82f, 1.0f, 1.0f), CenterX - 232.0f, 266.0f, nullptr, 0.54f * Scale);
+    DrawText(WeatherStatus, TextColor, CenterX - 132.0f, 266.0f, nullptr, 0.42f * Scale);
 
-    DrawPanel(CenterX - 250.0f, 294.0f, 500.0f, 46.0f, PanelColor);
-    DrawText(TEXT("A/V HOOKS"), FLinearColor(1.0f, 0.78f, 0.30f, 1.0f), CenterX - 232.0f, 305.0f, nullptr, 0.52f * Scale);
-    DrawText(AudioCueStatus, TextColor, CenterX - 122.0f, 302.0f, nullptr, 0.38f * Scale);
-    DrawText(VisualCueStatus, TextColor, CenterX - 122.0f, 321.0f, nullptr, 0.38f * Scale);
+    DrawPanel(CenterX - 250.0f, 302.0f, 500.0f, 64.0f, PanelColor);
+    DrawText(TEXT("A/V/CAM"), FLinearColor(1.0f, 0.78f, 0.30f, 1.0f), CenterX - 232.0f, 313.0f, nullptr, 0.52f * Scale);
+    DrawText(AudioCueStatus, TextColor, CenterX - 122.0f, 309.0f, nullptr, 0.36f * Scale);
+    DrawText(VisualCueStatus, TextColor, CenterX - 122.0f, 327.0f, nullptr, 0.36f * Scale);
+    DrawText(CameraFeedback, TextColor, CenterX - 122.0f, 345.0f, nullptr, 0.36f * Scale);
 
     DrawPanel(ScreenWidth - 384.0f, 256.0f, 356.0f, 54.0f, PanelColor);
     DrawText(Settings, FLinearColor(0.88f, 0.88f, 0.78f, 1.0f), ScreenWidth - 366.0f, 272.0f, nullptr, 0.54f * Scale);
