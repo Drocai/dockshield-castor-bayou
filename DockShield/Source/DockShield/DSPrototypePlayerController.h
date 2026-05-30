@@ -94,6 +94,9 @@ public:
     FString GetBossArenaStatusText() const;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetMutationStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
     FString GetDuctStatusText() const;
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Settings")
@@ -160,9 +163,13 @@ private:
     FString LastEconomyEvent = TEXT("No rewards yet");
     FString LastAchievementText = TEXT("None unlocked");
     FString LastBossArenaStatus = TEXT("DEEP DOCK: NOT DEPLOYED");
+    FString LastMutationStatus = TEXT("MUTATION: NOT DEPLOYED");
     bool bDeepDockDiscovered = false;
     bool bBossDefeatRewarded = false;
+    bool bMutationDiscovered = false;
+    bool bMutationDefeatRewarded = false;
     int32 LastKnownBossComboCount = 0;
+    int32 LastKnownMutationComboCount = 0;
     int32 DuctSightings = 0;
     int32 DuctNearCatchCount = 0;
     int32 DuctTapeFragments = 0;
@@ -172,6 +179,7 @@ private:
     float Gamma = 1.0f;
     EDSPrototypeVisualQuality VisualQuality = EDSPrototypeVisualQuality::Balanced;
     float BossArenaScanAccumulator = 0.0f;
+    float MutationScanAccumulator = 0.0f;
 
     void HandleSwitchToReelInput();
     void HandleSwitchToFlyInput();
@@ -184,5 +192,6 @@ private:
     FRotator GetSpawnRotationForRole() const;
     void ShowSwitchMessage() const;
     void RefreshBossArenaAwareness();
+    void RefreshMutationEncounterAwareness();
     FString GetAchievementLabel(FName AchievementId) const;
 };

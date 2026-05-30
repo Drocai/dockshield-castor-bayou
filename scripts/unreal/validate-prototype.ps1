@@ -23,6 +23,7 @@ $PythonValidations = @(
     "validate_meta_systems.py",
     "validate_deep_dock_boss_arena_pass.py",
     "validate_boss_combo_smoke.py",
+    "validate_mutation_enemy_smoke.py",
     "validate_duct_legendary_smoke.py",
     "validate_reel_interaction_smoke.py",
     "validate_water_boat_reel_smoke.py",

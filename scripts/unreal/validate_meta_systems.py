@@ -36,6 +36,7 @@ def validate_player_controller_meta():
         "get_hud_scale",
         "get_gamma",
         "get_boss_arena_status_text",
+        "get_mutation_status_text",
         "get_duct_status_text",
     ]
     for method_name in required_methods:
@@ -59,6 +60,10 @@ def validate_player_controller_meta():
     duct_text = str(cdo.get_duct_status_text())
     if "DUCT" not in duct_text or "UNCAUGHT" not in duct_text:
         fail(f"duct status text missing expected fragments: {duct_text}")
+
+    mutation_text = str(cdo.get_mutation_status_text())
+    if "MUTATION" not in mutation_text:
+        fail(f"mutation status text missing expected fragment: {mutation_text}")
 
 
 def validate_boss_arena_actor():
@@ -95,10 +100,36 @@ def validate_boss_arena_actor():
         fail("resolved weak point count should start at zero")
 
 
+def validate_mutation_enemy_actor():
+    mutation_cls = require_class("DSMutationEnemyActor")
+    cdo = unreal.get_default_object(mutation_cls)
+
+    for method_name in [
+        "get_mutation_status_text",
+        "get_health",
+        "get_aggression",
+        "get_vulnerability",
+        "get_combo_impact_count",
+        "apply_reel_impact",
+        "apply_fly_pressure",
+        "apply_lilly_pressure",
+        "evaluate_hero_combo",
+        "reset_mutation_encounter",
+    ]:
+        require_method(cdo, method_name)
+
+    status = str(cdo.get_mutation_status_text())
+    if "BAYOU MUTATION" not in status or "HEALTH" not in status:
+        fail(f"mutation status text missing expected fragments: {status}")
+    if cdo.get_health() <= 0.0:
+        fail("mutation CDO should start alive")
+
+
 def main():
     validate_player_controller_meta()
     validate_boss_arena_actor()
-    unreal.log("DockShield meta systems validation passed: economy, achievements, settings, and boss arena state.")
+    validate_mutation_enemy_actor()
+    unreal.log("DockShield meta systems validation passed: economy, achievements, settings, boss arena state, and mutation enemy status.")
 
 
 main()

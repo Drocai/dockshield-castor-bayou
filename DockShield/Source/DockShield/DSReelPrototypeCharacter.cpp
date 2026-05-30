@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "DSDuctLegendaryEncounterActor.h"
+#include "DSMutationEnemyActor.h"
 #include "DSPrototypePlayerController.h"
 #include "DSPrototypeBoatActor.h"
 #include "DSTargetableComponent.h"
@@ -573,6 +574,24 @@ bool ADSReelPrototypeCharacter::CastReelLineAtTarget(AActor* Target)
         return true;
     }
 
+    if (ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target))
+    {
+        if (!MutationEnemy->ApplyReelImpact(FMath::Max(0.72f, LineTension)))
+        {
+            LastReelResult = MutationEnemy->GetMutationStatusText();
+            ShowDebugMessage(LastReelResult, FColor::Orange);
+            return false;
+        }
+
+        LastReelResult = TEXT("MUTATION STAGGERED");
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("MutationStagger")), 30, 35, 1);
+        }
+        ShowDebugMessage(MutationEnemy->GetMutationStatusText(), FColor::Orange);
+        return true;
+    }
+
     if (Target->ActorHasTag(TEXT("WeakPoint")))
     {
         if (UDSTargetableComponent* Targetable = Target->FindComponentByClass<UDSTargetableComponent>())
@@ -709,6 +728,25 @@ bool ADSReelPrototypeCharacter::ExecuteReelActionOnTarget(AActor* Target)
             PrototypeController->NotifyPrototypeAction(FName(TEXT("DuctSighting")), 0, 0, 0);
         }
         ShowDebugMessage(Duct->GetDuctStatusText(), FColor::Yellow);
+        return true;
+    }
+
+    if (ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target))
+    {
+        StartReelFeedback(Target, FColor::Orange);
+        if (!MutationEnemy->ApplyReelImpact(1.0f))
+        {
+            LastReelResult = MutationEnemy->GetMutationStatusText();
+            ShowDebugMessage(LastReelResult, FColor::Orange);
+            return false;
+        }
+
+        LastReelResult = TEXT("MUTATION STAGGERED");
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("MutationStagger")), 30, 35, 1);
+        }
+        ShowDebugMessage(MutationEnemy->GetMutationStatusText(), FColor::Orange);
         return true;
     }
 
@@ -1029,6 +1067,24 @@ void ADSReelPrototypeCharacter::ApplyContinuousReelPull(AActor* Target, float De
         else
         {
             LastReelResult = FString::Printf(TEXT("BOAT %s"), *Boat->GetBoatStateText());
+        }
+        return;
+    }
+
+    if (ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target))
+    {
+        FVector PullDirection = GetActorLocation() - Target->GetActorLocation();
+        PullDirection.Z = 0.0f;
+        if (PullDirection.Normalize())
+        {
+            const float PullStep = ReelTargetPullSpeed * DeltaSeconds * FMath::Clamp(0.55f - (RawLineTension * 0.10f), 0.28f, 0.55f);
+            Target->AddActorWorldOffset(PullDirection * PullStep, false, nullptr, ETeleportType::TeleportPhysics);
+        }
+
+        LastReelResult = FString::Printf(TEXT("MUTATION REELING | %s"), *MutationEnemy->GetThreatStateText());
+        if (CurrentTargetDistance <= 260.0f || MutationEnemy->IsDefeated())
+        {
+            DetachReelLineInternal(MutationEnemy->IsDefeated() ? TEXT("MUTATION DOWN") : TEXT("MUTATION PULLED CLOSE"), false);
         }
         return;
     }

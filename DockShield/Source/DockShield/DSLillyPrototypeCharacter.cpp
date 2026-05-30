@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSMutationEnemyActor.h"
 #include "DSPrototypePlayerController.h"
 #include "DSTargetableComponent.h"
 #include "Engine/Engine.h"
@@ -264,7 +265,9 @@ bool ADSLillyPrototypeCharacter::ExecuteLillyBindOnTarget(AActor* Target)
     const bool bWasBound = Targetable->IsLillyBound();
     const float Distance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
     const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(BindRange, 1.0f), 0.0f, 0.68f);
-    if (!Targetable->BindForLilly(Strength))
+    ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target);
+    const bool bBindApplied = MutationEnemy ? MutationEnemy->ApplyLillyPressure(Strength) : Targetable->BindForLilly(Strength);
+    if (!bBindApplied)
     {
         LastBindResult = TEXT("BIND FAILED");
         return false;
@@ -279,7 +282,9 @@ bool ADSLillyPrototypeCharacter::ExecuteLillyBindOnTarget(AActor* Target)
         }
     }
 
-    LastBindResult = FString::Printf(TEXT("LILLY BIND %d"), BoundTargetCount);
+    LastBindResult = MutationEnemy
+        ? FString::Printf(TEXT("MUTATION BOUND | %s"), *MutationEnemy->GetThreatStateText())
+        : FString::Printf(TEXT("LILLY BIND %d"), BoundTargetCount);
     DrawDebugLine(GetWorld(), FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation(), Target->GetActorLocation(), FColor(120, 255, 70), false, 0.75f, 0, 5.0f);
     DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 98.0f, 24, FColor(160, 255, 90), false, 0.75f, 0, 4.0f);
     ShowDebugMessage(Targetable->GetLillyPrompt(), FColor(120, 255, 70));

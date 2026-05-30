@@ -69,6 +69,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     bool ExposeForReel(float Strength = 1.0f);
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Targeting")
+    bool CanReelPull() const;
+
     UFUNCTION(BlueprintCallable, Category = "DockShield|Targeting")
     void ClearReelExposure();
 

@@ -22,6 +22,7 @@ You should expect:
 - C++ foundation for The Fly sonar pulse and mark state
 - C++ foundation for Lilly swamp pulse and bind state
 - prototype beta economy, achievements, and settings HUD panels
+- prototype Bayou Mutation enemy combat: Reel stagger/pull, Fly mark, Lilly bind, combo damage, and defeat state
 - prototype Deep Dock boss arena dressing with a toxic core and weak-point targets
 - prototype Hook, Line & Sinker weak-point combo damage: Reel expose, Fly mark, Lilly bind
 - prototype Duct legendary sighting: latch, reel, near-catch, forced slip-away, and Trophy Case evidence
@@ -31,7 +32,8 @@ You should not expect:
 - the final canon Castor Bayou visuals yet
 - final character models
 - final storm/rain/water art
-- command mode, boss combat, or full mission flow
+- command mode or full mission flow
+- real enemy AI, melee attacks, navigation, or polished hit reactions
 - real boss AI, timed damage windows, cinematic finisher VFX, or win/fail encounter rules
 - final rescue raft art, water simulation, or finished boat handling
 - final MetaHuman/custom hero models or photoreal bayou production art
@@ -106,15 +108,21 @@ Lilly controls after pressing `3` or `Tab`:
 26. Move toward the `DS_DeepDock_*` arena area and confirm the toxic core, red warning lights, and three weak-point targets are readable.
 27. Complete one rescue, one Fly mark, and one Lilly bind; confirm credits, XP, samples, and achievement text update in the HUD.
 28. Press `P` or `Esc` and confirm the settings panel opens; use `[`/`]`, `-`/`=`, and `O` to review readability controls.
-29. At a Deep Dock weak point, use The Reel to expose it.
-30. Switch to The Fly and mark the same weak point.
-31. Switch to Lilly and bind the same weak point.
-32. Confirm the boss HUD status advances and the combo reward appears.
-33. Repeat the combo on all three weak points to push the boss arena into defeated state.
-34. Find `DS_Duct_Legendary_Sighting_Debug`.
-35. Aim at Duct and press left mouse button or `E` to latch.
-36. Hold `R` to build near-catch pressure.
-37. Confirm Duct slips away and the Trophy Case HUD still says `UNCAUGHT`.
+29. Find `DS_MutationEnemy_BayouBruiser_Debug`.
+30. Use The Reel to stagger it with left mouse button or `E`; hold `R` to pull it closer after latching.
+31. Switch to The Fly and mark the mutation.
+32. Switch to Lilly and bind the mutation.
+33. Confirm the mutation HUD status and reward text advance after Hook, Line & Sinker damage.
+34. Repeat the hero cycle until the mutation reaches defeated state.
+35. At a Deep Dock weak point, use The Reel to expose it.
+36. Switch to The Fly and mark the same weak point.
+37. Switch to Lilly and bind the same weak point.
+38. Confirm the boss HUD status advances and the combo reward appears.
+39. Repeat the combo on all three weak points to push the boss arena into defeated state.
+40. Find `DS_Duct_Legendary_Sighting_Debug`.
+41. Aim at Duct and press left mouse button or `E` to latch.
+42. Hold `R` to build near-catch pressure.
+43. Confirm Duct slips away and the Trophy Case HUD still says `UNCAUGHT`.
 
 ## Pass Criteria
 
@@ -135,6 +143,8 @@ Lilly controls after pressing `3` or `Tab`:
 - The static Reel proxy is visible in-map but does not replace the playable pawn.
 - The test map has visible wet dock surfaces, toxic green water/glow, reed silhouettes, storm/fog lighting, and neon/backdrop markers.
 - Beta economy, achievement, boss arena, and settings HUD panels appear without hiding the core targeting prompt.
+- Bayou Mutation enemy is present in-map, targetable by all three heroes, and reports health/state in the HUD.
+- The Reel stagger, Fly mark, Lilly bind cycle applies Hook, Line & Sinker combo damage to the mutation and can defeat it.
 - Deep Dock boss core and weak-point targets are present in the map and remain targetable through the shared target system.
 - Hook, Line & Sinker damage applies once per weak point after Reel exposure, Fly mark, and Lilly bind are all active.
 - The boss arena advances through exposed/enraged/defeated states after repeated weak-point combos.
@@ -171,6 +181,12 @@ To reapply the Duct legendary encounter pass:
 
 ```powershell
 & 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_duct_legendary_encounter_pass.py' -unattended -nop4 -nosplash
+```
+
+To reapply the Bayou Mutation enemy pass:
+
+```powershell
+& 'C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\DockShield\DockShield.uproject' -run=pythonscript -script='C:\Users\djmc1\Documents\Codex\2026-05-25\hello-i-have-this-new-project\scripts\unreal\apply_mutation_enemy_pass.py' -unattended -nop4 -nosplash
 ```
 
 For the narrow Reel action smoke test only:

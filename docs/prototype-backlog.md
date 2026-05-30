@@ -105,7 +105,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 
 ## Phase 5 - Encounter
 
-- [ ] One mutation enemy
+- [x] One mutation enemy
 - [x] Deep Dock boss arena state actor v0
 - [x] Deep Dock boss arena map dressing v0
 - [x] Boss weak-point target placeholders v0
@@ -149,6 +149,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Add Duct uncatchable target/state actor v0
 - [x] Add Duct Trophy Case HUD evidence v0
 - [x] Add Duct map pass and smoke validation
+- [x] Add Bayou Mutation enemy combat actor, map pass, HUD status, and smoke validation
 - [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Review Deep Dock boss arena lighting/readability in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
@@ -161,7 +162,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, and a Duct legendary near-catch debug encounter. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, Bayou Mutation enemy combat v0, and a Duct legendary near-catch debug encounter. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
 
 ## Phase 7 - Optimization And Upgrade Queue
 
@@ -169,7 +170,8 @@ Current note: the image pack is the private canon visual target for the intended
 - [ ] Add weather state v0 that changes target visibility or interaction range
 - [ ] Add basic cast/latch/reel/rescue SFX event hooks
 - [ ] Add basic sonar pulse and root bind VFX placeholders
-- [ ] Add one mutation enemy with shared target weak-point support
+- [x] Add one mutation enemy with shared target weak-point support
+- [ ] Add mutation stagger/combo impact VFX/SFX and camera feedback
 - [ ] Add extraction marker and success/fail counter
 - [ ] Add objective-state HUD card for the current mission step
 - [ ] Convert beta economy rewards into data-driven mission reward rows

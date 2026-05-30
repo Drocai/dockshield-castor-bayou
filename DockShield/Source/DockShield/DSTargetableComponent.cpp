@@ -63,6 +63,14 @@ void UDSTargetableComponent::ConfigureFromOwnerTags()
         bCanReelPull = true;
         bCanFlyMark = true;
     }
+    else if (Owner->ActorHasTag(TEXT("MutationEnemy")))
+    {
+        TargetType = EDSTargetType::Enemy;
+        DisplayName = FText::FromString(TEXT("Bayou Mutation Bruiser"));
+        bCanReelPull = true;
+        bCanFlyMark = true;
+        bCanLillyBind = true;
+    }
     else if (Owner->ActorHasTag(TEXT("Enemy")))
     {
         TargetType = EDSTargetType::Enemy;
@@ -114,6 +122,8 @@ FString UDSTargetableComponent::GetReelPrompt() const
         return bIsReelExposed
             ? FString::Printf(TEXT("REEL EXPOSED: %s"), *GetComboStateText())
             : FString::Printf(TEXT("Press E: Reel expose %s"), *DisplayName.ToString());
+    case EDSTargetType::Enemy:
+        return FString::Printf(TEXT("Press E/LMB: Reel-stagger %s"), *DisplayName.ToString());
     case EDSTargetType::LegendaryDuct:
         return TEXT("DUCT SIGHTING: LMB/E latch, hold R; capture protocol impossible");
     default:
@@ -133,6 +143,11 @@ bool UDSTargetableComponent::ExposeForReel(float Strength)
     ReelExposureStrength = FMath::Clamp(Strength, 0.0f, 1.0f);
     ++ReelExposureCount;
     return true;
+}
+
+bool UDSTargetableComponent::CanReelPull() const
+{
+    return bCanReelPull;
 }
 
 void UDSTargetableComponent::ClearReelExposure()

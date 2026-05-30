@@ -336,6 +336,7 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     FString Economy = PrototypeController->GetEconomyStatusText();
     FString Achievement = PrototypeController->GetAchievementStatusText();
     FString BossStatus = PrototypeController->GetBossArenaStatusText();
+    FString MutationStatus = PrototypeController->GetMutationStatusText();
     FString DuctStatus = PrototypeController->GetDuctStatusText();
     FString Settings = PrototypeController->GetSettingsStatusText();
 
@@ -350,6 +351,10 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     if (BossStatus.Len() > 64)
     {
         BossStatus = BossStatus.Left(61) + TEXT("...");
+    }
+    if (MutationStatus.Len() > 64)
+    {
+        MutationStatus = MutationStatus.Left(61) + TEXT("...");
     }
     if (DuctStatus.Len() > 48)
     {
@@ -369,6 +374,10 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     DrawText(TEXT("DEEP DOCK"), WarningColor, CenterX - 258.0f, 42.0f, nullptr, 0.78f * Scale);
     DrawText(BossStatus, TextColor, CenterX - 146.0f, 42.0f, nullptr, 0.56f * Scale);
     DrawText(TEXT("WEAK POINTS: REEL EXPOSES  FLY MARKS  LILLY BINDS"), FLinearColor(0.86f, 0.86f, 0.70f, 1.0f), CenterX - 258.0f, 66.0f, nullptr, 0.48f * Scale);
+
+    DrawPanel(CenterX - 278.0f, 96.0f, 556.0f, 34.0f, PanelColor);
+    DrawText(TEXT("MUTATION"), WarningColor, CenterX - 258.0f, 106.0f, nullptr, 0.58f * Scale);
+    DrawText(MutationStatus, TextColor, CenterX - 148.0f, 106.0f, nullptr, 0.46f * Scale);
 
     DrawPanel(ScreenWidth - 384.0f, 256.0f, 356.0f, 54.0f, PanelColor);
     DrawText(Settings, FLinearColor(0.88f, 0.88f, 0.78f, 1.0f), ScreenWidth - 366.0f, 272.0f, nullptr, 0.54f * Scale);

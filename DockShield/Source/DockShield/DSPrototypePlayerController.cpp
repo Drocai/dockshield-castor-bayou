@@ -2,6 +2,7 @@
 #include "DSDeepDockBossArenaActor.h"
 #include "DSFlyPrototypeCharacter.h"
 #include "DSLillyPrototypeCharacter.h"
+#include "DSMutationEnemyActor.h"
 #include "DSReelPrototypeCharacter.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
@@ -21,6 +22,7 @@ void ADSPrototypePlayerController::BeginPlay()
     Super::BeginPlay();
     RegisterCurrentPawn();
     RefreshBossArenaAwareness();
+    RefreshMutationEncounterAwareness();
     ShowSwitchMessage();
 }
 
@@ -33,6 +35,13 @@ void ADSPrototypePlayerController::Tick(float DeltaSeconds)
     {
         BossArenaScanAccumulator = 0.0f;
         RefreshBossArenaAwareness();
+    }
+
+    MutationScanAccumulator += DeltaSeconds;
+    if (MutationScanAccumulator >= 0.5f)
+    {
+        MutationScanAccumulator = 0.0f;
+        RefreshMutationEncounterAwareness();
     }
 }
 
@@ -202,6 +211,18 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
     {
         UnlockAchievement(FName(TEXT("BOSS_DEFEATED")));
     }
+    else if (ActionName == FName(TEXT("MutationStagger")))
+    {
+        UnlockAchievement(FName(TEXT("FIRST_MUTATION_STAGGER")));
+    }
+    else if (ActionName == FName(TEXT("MutationCombo")))
+    {
+        UnlockAchievement(FName(TEXT("FIRST_MUTATION_COMBO")));
+    }
+    else if (ActionName == FName(TEXT("MutationDefeated")))
+    {
+        UnlockAchievement(FName(TEXT("FIRST_MUTATION_DEFEATED")));
+    }
     else if (ActionName == FName(TEXT("DuctSighting")))
     {
         ++DuctSightings;
@@ -250,7 +271,7 @@ FString ADSPrototypePlayerController::GetEconomyStatusText() const
 FString ADSPrototypePlayerController::GetAchievementStatusText() const
 {
     return FString::Printf(
-        TEXT("ACHIEVEMENTS %d/13 | LAST: %s"),
+        TEXT("ACHIEVEMENTS %d/17 | LAST: %s"),
         UnlockedAchievements.Num(),
         *LastAchievementText);
 }
@@ -258,6 +279,11 @@ FString ADSPrototypePlayerController::GetAchievementStatusText() const
 FString ADSPrototypePlayerController::GetBossArenaStatusText() const
 {
     return LastBossArenaStatus;
+}
+
+FString ADSPrototypePlayerController::GetMutationStatusText() const
+{
+    return LastMutationStatus;
 }
 
 FString ADSPrototypePlayerController::GetDuctStatusText() const
@@ -511,6 +537,50 @@ void ADSPrototypePlayerController::RefreshBossArenaAwareness()
     LastBossArenaStatus = TEXT("DEEP DOCK: NOT DEPLOYED");
 }
 
+void ADSPrototypePlayerController::RefreshMutationEncounterAwareness()
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        LastMutationStatus = TEXT("MUTATION: NO WORLD");
+        return;
+    }
+
+    for (TActorIterator<ADSMutationEnemyActor> It(World); It; ++It)
+    {
+        ADSMutationEnemyActor* Mutation = *It;
+        if (!Mutation)
+        {
+            continue;
+        }
+
+        Mutation->EvaluateHeroCombo();
+        const int32 ComboCount = Mutation->GetComboImpactCount();
+        if (ComboCount > LastKnownMutationComboCount)
+        {
+            const int32 NewComboCount = ComboCount - LastKnownMutationComboCount;
+            LastKnownMutationComboCount = ComboCount;
+            NotifyPrototypeAction(FName(TEXT("MutationCombo")), 90 * NewComboCount, 95 * NewComboCount, 2 * NewComboCount);
+        }
+
+        if (Mutation->IsDefeated() && !bMutationDefeatRewarded)
+        {
+            bMutationDefeatRewarded = true;
+            NotifyPrototypeAction(FName(TEXT("MutationDefeated")), 160, 160, 4);
+        }
+
+        LastMutationStatus = Mutation->GetMutationStatusText();
+        if (!bMutationDiscovered)
+        {
+            bMutationDiscovered = true;
+            UnlockAchievement(FName(TEXT("MUTATION_CONTACT")));
+        }
+        return;
+    }
+
+    LastMutationStatus = TEXT("MUTATION: NOT DEPLOYED");
+}
+
 FString ADSPrototypePlayerController::GetAchievementLabel(FName AchievementId) const
 {
     if (AchievementId == FName(TEXT("FIRST_CAST")))
@@ -552,6 +622,22 @@ FString ADSPrototypePlayerController::GetAchievementLabel(FName AchievementId) c
     if (AchievementId == FName(TEXT("BOSS_DEFEATED")))
     {
         return TEXT("Deep Dock Boss Defeated");
+    }
+    if (AchievementId == FName(TEXT("MUTATION_CONTACT")))
+    {
+        return TEXT("Bayou Mutation Contact");
+    }
+    if (AchievementId == FName(TEXT("FIRST_MUTATION_STAGGER")))
+    {
+        return TEXT("First Mutation Stagger");
+    }
+    if (AchievementId == FName(TEXT("FIRST_MUTATION_COMBO")))
+    {
+        return TEXT("First Mutation Combo");
+    }
+    if (AchievementId == FName(TEXT("FIRST_MUTATION_DEFEATED")))
+    {
+        return TEXT("First Mutation Defeated");
     }
     if (AchievementId == FName(TEXT("DUCT_FIRST_SIGHTING")))
     {

@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "DSMutationEnemyActor.h"
 #include "DSPrototypePlayerController.h"
 #include "DSTargetableComponent.h"
 #include "Engine/Engine.h"
@@ -262,7 +263,9 @@ bool ADSFlyPrototypeCharacter::ExecuteFlyMarkOnTarget(AActor* Target)
     const bool bWasMarked = Targetable->IsFlyMarked();
     const float Distance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
     const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(SonarRange, 1.0f), 0.0f, 0.72f);
-    if (!Targetable->MarkForFly(Strength))
+    ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target);
+    const bool bMarkApplied = MutationEnemy ? MutationEnemy->ApplyFlyPressure(Strength) : Targetable->MarkForFly(Strength);
+    if (!bMarkApplied)
     {
         LastReconResult = TEXT("MARK FAILED");
         return false;
@@ -277,7 +280,9 @@ bool ADSFlyPrototypeCharacter::ExecuteFlyMarkOnTarget(AActor* Target)
         }
     }
 
-    LastReconResult = FString::Printf(TEXT("FLY MARK %d"), MarkedTargetCount);
+    LastReconResult = MutationEnemy
+        ? FString::Printf(TEXT("MUTATION MARKED | %s"), *MutationEnemy->GetThreatStateText())
+        : FString::Printf(TEXT("FLY MARK %d"), MarkedTargetCount);
     DrawDebugLine(GetWorld(), FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation(), Target->GetActorLocation(), FColor::Cyan, false, 0.75f, 0, 5.0f);
     DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 92.0f, 24, FColor(0, 220, 160), false, 0.75f, 0, 4.0f);
     ShowDebugMessage(Targetable->GetFlyPrompt(), FColor(0, 220, 160));
