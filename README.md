@@ -6,9 +6,9 @@ DockShield is a tactical supernatural rescue-action game platform where mutated 
 
 ## Current Status
 
-This repo is in **Phase 2: shared targeting v0, continuous Reel feedback, water pressure, boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero character switching v0, first visual style pass v1, Reel static proxy review, beta meta systems, Bayou Mutation enemy combat and combat feedback v0, Deep Dock boss combo foundations, Duct legendary encounter v0, weather/objective/audio-visual hook foundations, camera-feedback hooks, timed boss combo windows, and Duct rarity/bait scaffolding**.
+This repo is in **Phase 2: shared targeting v0, continuous Reel feedback, water pressure, boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero character switching v0, hero-specific HUD/boat theme identity v0, first visual style pass v1, Reel static proxy review, beta meta systems, Bayou Mutation enemy combat and combat feedback v0, Deep Dock boss combo foundations, Duct legendary encounter v0, weather/objective/audio-visual hook foundations, camera-feedback hooks, timed boss combo windows, and Duct rarity/bait scaffolding**.
 
-The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, cast/hold/release Reel line loop, headless Reel interaction smoke test, prototype water-depth/current/flood pressure zone, boat drifting/towing, boat boarding, prototype boat piloting foundations, shared Fly mark state, shared Lilly bind state, Fly sonar/mark placeholder foundations, Lilly swamp pulse/bind placeholder foundations, three-hero switching controls, first prototype hero visual kits, generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock dressing, private static Reel proxy for scale/lighting review, beta economy/achievements/settings HUD, Bayou Mutation enemy Reel/Fly/Lilly combat loop, Deep Dock Hook, Line & Sinker weak-point combo damage, prototype Duct legendary near-catch encounter, weather-driven targeting range pressure, objective/extraction HUD state, prototype SFX/VFX/camera cue hooks, mission outcome status, timed Deep Dock combo windows, and Duct rarity/bait chance logic are implemented.
+The planning/control layer exists, the production Unreal project is at `DockShield/DockShield.uproject`, and the first targeting test map exists at `/Game/DockShield/Maps/M_Test_Targeting`. The Reel placeholder character, target lock HUD, aim mode, cast/hold/release Reel line loop, headless Reel interaction smoke test, prototype water-depth/current/flood pressure zone, boat drifting/towing, boat boarding, prototype boat piloting foundations, shared Fly mark state, shared Lilly bind state, Fly sonar/mark placeholder foundations, Lilly swamp pulse/bind placeholder foundations, three-hero switching controls, hero-specific HUD color language, themed boat identity/emblem/loadout hooks, first prototype hero visual kits, generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock dressing, private static Reel proxy for scale/lighting review, beta economy/achievements/settings HUD, Bayou Mutation enemy Reel/Fly/Lilly combat loop, Deep Dock Hook, Line & Sinker weak-point combo damage, prototype Duct legendary near-catch encounter, weather-driven targeting range pressure, objective/extraction HUD state, prototype SFX/VFX/camera cue hooks, mission outcome status, timed Deep Dock combo windows, and Duct rarity/bait chance logic are implemented.
 
 ## Working Title Structure
 
@@ -42,7 +42,8 @@ Read these in order:
 5. [docs/prototype-backlog.md](docs/prototype-backlog.md)
 6. [docs/milestone-roadmap.md](docs/milestone-roadmap.md)
 7. [docs/unreal-architecture-plan.md](docs/unreal-architecture-plan.md)
-8. [docs/handoff-package.md](docs/handoff-package.md)
+8. [docs/hero-visual-identity.md](docs/hero-visual-identity.md)
+9. [docs/handoff-package.md](docs/handoff-package.md)
 
 ## Repo Rules
 

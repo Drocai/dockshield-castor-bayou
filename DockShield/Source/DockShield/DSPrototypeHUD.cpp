@@ -108,6 +108,9 @@ void ADSPrototypeHUD::DrawHUD()
         ObjectiveText = ObjectiveText.Left(39) + TEXT("...");
     }
 
+    const FLinearColor ReelRed(0.95f, 0.06f, 0.04f, 1.0f);
+    const FLinearColor ReelBlue(0.06f, 0.32f, 0.95f, 1.0f);
+    const FLinearColor ReelGold(1.0f, 0.70f, 0.10f, 1.0f);
     const FLinearColor ValidColor(0.05f, 0.95f, 0.35f, 1.0f);
     const FLinearColor InvalidColor(1.0f, 0.55f, 0.08f, 1.0f);
     const FLinearColor NeutralColor(0.84f, 0.92f, 1.0f, 1.0f);
@@ -141,12 +144,13 @@ void ADSPrototypeHUD::DrawHUD()
         SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
     }
 
-    DrawPanel(28.0f, 28.0f, 324.0f, 144.0f, PanelColor);
-    DrawText(TEXT("THE REEL"), FLinearColor(0.85f, 0.95f, 1.0f, 1.0f), 44.0f, 42.0f, nullptr, 1.45f);
-    DrawText(TEXT("PUBLIC HERO"), FLinearColor(0.2f, 0.7f, 1.0f, 1.0f), 46.0f, 74.0f, nullptr, 0.82f);
+    DrawPanel(28.0f, 28.0f, 342.0f, 220.0f, PanelColor);
+    DrawText(TEXT("THE REEL"), ReelGold, 44.0f, 42.0f, nullptr, 1.45f);
+    DrawText(TEXT("PUBLIC HERO"), ReelBlue, 46.0f, 74.0f, nullptr, 0.82f);
     DrawText(bBoardedBoat ? TEXT("BOAT CONTROL") : (bAiming ? TEXT("AIM MODE") : TEXT("MOVE MODE")), bBoardedBoat ? ValidColor : (bAiming ? ValidColor : NeutralColor), 188.0f, 74.0f, nullptr, 0.72f);
     DrawText(ObjectiveText, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
     DrawText(SwitchStatus, NeutralColor, 44.0f, 132.0f, nullptr, 0.56f);
+    DrawHeroThemeStrip(44.0f, 156.0f, 286.0f, TEXT("RED / BLUE / GOLD"), TEXT("REEL-GAUNTLET + RESCUE RAFT"), ReelRed, ReelGold);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
@@ -175,6 +179,7 @@ void ADSPrototypeHUD::DrawHUD()
     DrawText(FString::Printf(TEXT("%s %.0fcm   MOVE %.0f%%   %s"), *WaterState, WaterDepth, WaterMovementScale * 100.0f, bBoatableWater ? TEXT("BOATABLE") : TEXT("SHALLOW")), WaterColor, 44.0f, ScreenHeight - 94.0f, nullptr, 0.6f);
     DrawText(FString::Printf(TEXT("PRESSURE %.0f%%   CURRENT %.0fcm/s"), WaterPressure * 100.0f, WaterCurrentSpeed), WaterColor, 44.0f, ScreenHeight - 83.0f, nullptr, 0.52f);
     DrawText(BoatStatus, bBoardedBoat ? ValidColor : NeutralColor, 44.0f, ScreenHeight - 72.0f, nullptr, 0.6f);
+    DrawText(TEXT("BOAT THEME: FLASHY RESCUE COLORS"), ReelGold, 44.0f, ScreenHeight - 54.0f, nullptr, 0.52f);
 
     if (PrototypeController)
     {
@@ -207,11 +212,13 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
         LastReconResult = LastReconResult.Left(31) + TEXT("...");
     }
 
-    const FLinearColor ValidColor(0.0f, 0.86f, 0.62f, 1.0f);
+    const FLinearColor FlyBlack(0.008f, 0.018f, 0.018f, 1.0f);
+    const FLinearColor FlyTeal(0.0f, 0.86f, 0.70f, 1.0f);
+    const FLinearColor ValidColor = FlyTeal;
     const FLinearColor InvalidColor(1.0f, 0.55f, 0.08f, 1.0f);
     const FLinearColor NeutralColor(0.70f, 0.95f, 1.0f, 1.0f);
     const FLinearColor HudColor = bValidTarget ? ValidColor : (bHasTarget ? InvalidColor : NeutralColor);
-    const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.50f);
+    const FLinearColor PanelColor(0.0f, 0.025f, 0.028f, 0.62f);
 
     DrawReticle(CenterX, CenterY, HudColor);
 
@@ -220,13 +227,14 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
         SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
     }
 
-    DrawPanel(28.0f, 28.0f, 332.0f, 172.0f, PanelColor);
+    DrawPanel(28.0f, 28.0f, 332.0f, 220.0f, PanelColor);
     DrawText(TEXT("THE FLY"), FLinearColor(0.72f, 1.0f, 0.88f, 1.0f), 44.0f, 42.0f, nullptr, 1.42f);
     DrawText(TEXT("COVERT HUNTER"), FLinearColor(0.0f, 0.86f, 0.62f, 1.0f), 46.0f, 74.0f, nullptr, 0.80f);
     DrawText(bAiming ? TEXT("SONAR AIM") : TEXT("STEALTH MOVE"), bAiming ? ValidColor : NeutralColor, 188.0f, 74.0f, nullptr, 0.72f);
     DrawText(TEXT("OBJECTIVE: Mark Targets"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
     DrawText(FString::Printf(TEXT("SONAR %.0fm   MARKS %d"), SonarRange / 100.0f, MarkedTargets), NeutralColor, 44.0f, 132.0f, nullptr, 0.62f);
     DrawText(SwitchStatus, NeutralColor, 44.0f, 156.0f, nullptr, 0.56f);
+    DrawHeroThemeStrip(44.0f, 180.0f, 286.0f, TEXT("BLACK / TEAL STEALTH"), TEXT("FLY-LINE SNARE + SONAR PROBE"), FlyBlack, FlyTeal);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
@@ -243,12 +251,13 @@ void ADSPrototypeHUD::DrawFlyHUD(const ADSFlyPrototypeCharacter* FlyCharacter, f
     DrawText(TEXT("LMB / E MARK"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 124.0f, nullptr, 0.70f);
     DrawText(TEXT("RMB AIM"), bAiming ? ValidColor : NeutralColor, ScreenWidth - 232.0f, ScreenHeight - 100.0f, nullptr, 0.70f);
 
-    DrawPanel(28.0f, ScreenHeight - 186.0f, 364.0f, 140.0f, PanelColor);
+    DrawPanel(28.0f, ScreenHeight - 206.0f, 364.0f, 160.0f, PanelColor);
     DrawText(TEXT("FLY SENSE"), HudColor, 44.0f, ScreenHeight - 170.0f, nullptr, 0.82f);
     DrawText(FString::Printf(TEXT("SONAR HITS %d"), SonarHits), NeutralColor, 44.0f, ScreenHeight - 140.0f, nullptr, 0.68f);
     DrawText(FString::Printf(TEXT("MARKED TARGETS %d"), MarkedTargets), ValidColor, 44.0f, ScreenHeight - 116.0f, nullptr, 0.68f);
     DrawText(LastReconResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.68f);
     DrawText(TEXT("SQUAD STACK: REEL / FLY / LILLY"), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 68.0f, nullptr, 0.56f);
+    DrawText(TEXT("BOAT THEME: BLACKWATER SKIFF"), FlyTeal, 44.0f, ScreenHeight - 50.0f, nullptr, 0.52f);
 }
 
 void ADSPrototypeHUD::DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY)
@@ -281,21 +290,25 @@ void ADSPrototypeHUD::DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharac
         SwitchStatus = SwitchStatus.Left(37) + TEXT("...");
     }
 
-    const FLinearColor ValidColor(0.55f, 1.0f, 0.16f, 1.0f);
+    const FLinearColor LillyMud(0.12f, 0.18f, 0.055f, 1.0f);
+    const FLinearColor LillyLime(0.58f, 1.0f, 0.14f, 1.0f);
+    const FLinearColor LillyPink(1.0f, 0.18f, 0.52f, 1.0f);
+    const FLinearColor ValidColor = LillyLime;
     const FLinearColor InvalidColor(1.0f, 0.55f, 0.08f, 1.0f);
     const FLinearColor NeutralColor(0.82f, 0.94f, 0.72f, 1.0f);
     const FLinearColor HudColor = bValidTarget ? ValidColor : (bHasTarget ? InvalidColor : NeutralColor);
-    const FLinearColor PanelColor(0.0f, 0.0f, 0.0f, 0.52f);
+    const FLinearColor PanelColor(0.035f, 0.025f, 0.006f, 0.64f);
 
     DrawReticle(CenterX, CenterY, HudColor);
 
-    DrawPanel(28.0f, 28.0f, 332.0f, 172.0f, PanelColor);
-    DrawText(TEXT("LILLY LOCH"), FLinearColor(0.75f, 1.0f, 0.48f, 1.0f), 44.0f, 42.0f, nullptr, 1.32f);
-    DrawText(TEXT("SWAMP QUEEN"), FLinearColor(1.0f, 0.28f, 0.24f, 1.0f), 46.0f, 74.0f, nullptr, 0.80f);
+    DrawPanel(28.0f, 28.0f, 332.0f, 220.0f, PanelColor);
+    DrawText(TEXT("LILLY LOCH"), LillyLime, 44.0f, 42.0f, nullptr, 1.32f);
+    DrawText(TEXT("SWAMP QUEEN"), LillyPink, 46.0f, 74.0f, nullptr, 0.80f);
     DrawText(bAiming ? TEXT("ROOT AIM") : TEXT("SWAMP MOVE"), bAiming ? ValidColor : NeutralColor, 192.0f, 74.0f, nullptr, 0.72f);
     DrawText(TEXT("OBJECTIVE: Bind Targets"), FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, 106.0f, nullptr, 0.72f);
     DrawText(FString::Printf(TEXT("BIND %.0fm   ROOT %.0fm"), BindRange / 100.0f, RootRadius / 100.0f), NeutralColor, 44.0f, 132.0f, nullptr, 0.62f);
     DrawText(SwitchStatus, NeutralColor, 44.0f, 156.0f, nullptr, 0.56f);
+    DrawHeroThemeStrip(44.0f, 180.0f, 286.0f, TEXT("PINK / LIME / MUD CAMO"), TEXT("VINE REEL + HEALING MOSS"), LillyMud, LillyPink);
 
     DrawPanel(ScreenWidth - 336.0f, 28.0f, 308.0f, 96.0f, PanelColor);
     DrawText(TEXT("M_TEST_TARGETING"), FLinearColor(0.86f, 0.86f, 0.78f, 1.0f), ScreenWidth - 318.0f, 44.0f, nullptr, 0.82f);
@@ -312,12 +325,13 @@ void ADSPrototypeHUD::DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharac
     DrawText(TEXT("LMB / E BIND"), HudColor, ScreenWidth - 232.0f, ScreenHeight - 124.0f, nullptr, 0.70f);
     DrawText(TEXT("RMB AIM"), bAiming ? ValidColor : NeutralColor, ScreenWidth - 232.0f, ScreenHeight - 100.0f, nullptr, 0.70f);
 
-    DrawPanel(28.0f, ScreenHeight - 186.0f, 364.0f, 140.0f, PanelColor);
+    DrawPanel(28.0f, ScreenHeight - 206.0f, 364.0f, 160.0f, PanelColor);
     DrawText(TEXT("VINE REEL"), HudColor, 44.0f, ScreenHeight - 170.0f, nullptr, 0.82f);
     DrawText(FString::Printf(TEXT("PULSE HITS %d"), PulseHits), NeutralColor, 44.0f, ScreenHeight - 140.0f, nullptr, 0.68f);
     DrawText(FString::Printf(TEXT("BOUND TARGETS %d"), BoundTargets), ValidColor, 44.0f, ScreenHeight - 116.0f, nullptr, 0.68f);
     DrawText(LastBindResult, FLinearColor(0.75f, 1.0f, 0.78f, 1.0f), 44.0f, ScreenHeight - 92.0f, nullptr, 0.68f);
     DrawText(TEXT("SQUAD STACK: REEL / FLY / LILLY"), FLinearColor(0.84f, 0.92f, 1.0f, 1.0f), 44.0f, ScreenHeight - 68.0f, nullptr, 0.56f);
+    DrawText(TEXT("BOAT THEME: PINK/LIME MUD SKIFF"), LillyPink, 44.0f, ScreenHeight - 50.0f, nullptr, 0.52f);
 }
 
 void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeController, float ScreenWidth, float ScreenHeight, float CenterX)
@@ -488,6 +502,14 @@ void ADSPrototypeHUD::DrawSettingsPanel(const ADSPrototypePlayerController* Prot
 
     DrawText(FString::Printf(TEXT("VISUAL QUALITY: %s      O"), *PrototypeController->GetVisualQualityLabel()), TextColor, X + 42.0f, Y + 196.0f, nullptr, 0.78f);
     DrawText(TEXT("P / ESC CLOSE"), FLinearColor(1.0f, 0.42f, 0.30f, 1.0f), X + 42.0f, Y + 238.0f, nullptr, 0.78f);
+}
+
+void ADSPrototypeHUD::DrawHeroThemeStrip(float X, float Y, float Width, const FString& Label, const FString& Loadout, const FLinearColor& PrimaryColor, const FLinearColor& AccentColor)
+{
+    DrawRect(PrimaryColor.CopyWithNewOpacity(0.72f), X, Y, Width, 6.0f);
+    DrawRect(AccentColor.CopyWithNewOpacity(0.92f), X, Y + 6.0f, Width * 0.42f, 6.0f);
+    DrawText(Label, AccentColor, X, Y + 16.0f, nullptr, 0.46f);
+    DrawText(Loadout, FLinearColor(0.86f, 0.86f, 0.74f, 1.0f), X, Y + 32.0f, nullptr, 0.42f);
 }
 
 void ADSPrototypeHUD::DrawReticle(float CenterX, float CenterY, const FLinearColor& Color)

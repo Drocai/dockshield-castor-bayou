@@ -77,9 +77,39 @@ def main():
             "get_last_drift_distance",
             "get_flood_pressure",
             "get_water_current_speed",
+            "set_boat_theme_by_name",
+            "get_boat_theme_label",
+            "get_boat_emblem_text",
+            "get_boat_loadout_text",
+            "get_boat_primary_color",
+            "get_boat_accent_color",
         ]:
             if not hasattr(boat, method_name):
                 fail(f"DSPrototypeBoatActor missing Python method {method_name}")
+
+        expected_boat_themes = {
+            "Reel": ("REEL", "R // THE REEL", "REEL-GAUNTLET"),
+            "Fly": ("FLY", "FLY // COVERT", "STEALTH BLACK/TEAL"),
+            "Lilly": ("LILLY", "LILLY // SWAMP QUEEN", "PINK/LIME/MUD CAMO"),
+        }
+        for theme_name, (label_token, emblem_token, loadout_token) in expected_boat_themes.items():
+            boat.set_boat_theme_by_name(unreal.Name(theme_name))
+            label = boat.get_boat_theme_label()
+            emblem = boat.get_boat_emblem_text()
+            loadout = boat.get_boat_loadout_text()
+            primary = boat.get_boat_primary_color()
+            accent = boat.get_boat_accent_color()
+            if label_token not in label:
+                fail(f"expected {theme_name} label to contain {label_token}, got {label}")
+            if emblem_token != emblem:
+                fail(f"expected {theme_name} emblem {emblem_token}, got {emblem}")
+            if loadout_token not in loadout:
+                fail(f"expected {theme_name} loadout to contain {loadout_token}, got {loadout}")
+            color_delta = abs(primary.r - accent.r) + abs(primary.g - accent.g) + abs(primary.b - accent.b)
+            if color_delta < 0.05:
+                fail(f"expected {theme_name} boat primary/accent colors to differ")
+
+        boat.set_boat_theme_by_name(unreal.Name("Reel"))
 
         sample_point = unreal.Vector(0.0, -700.0, -160.0)
         depth = water.get_depth_at_location(sample_point)

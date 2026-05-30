@@ -21,6 +21,7 @@ private:
     void DrawLillyHUD(const ADSLillyPrototypeCharacter* LillyCharacter, float ScreenWidth, float ScreenHeight, float CenterX, float CenterY);
     void DrawMetaHUD(const ADSPrototypePlayerController* PrototypeController, float ScreenWidth, float ScreenHeight, float CenterX);
     void DrawSettingsPanel(const ADSPrototypePlayerController* PrototypeController, float ScreenWidth, float ScreenHeight);
+    void DrawHeroThemeStrip(float X, float Y, float Width, const FString& Label, const FString& Loadout, const FLinearColor& PrimaryColor, const FLinearColor& AccentColor);
     void DrawReticle(float CenterX, float CenterY, const FLinearColor& Color);
     void DrawPanel(float X, float Y, float Width, float Height, const FLinearColor& Color);
     void DrawBar(float X, float Y, float Width, float Height, float Value, const FLinearColor& FillColor);

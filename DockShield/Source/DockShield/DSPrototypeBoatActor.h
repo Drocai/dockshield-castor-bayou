@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DSHeroThemeTypes.h"
 #include "GameFramework/Actor.h"
 #include "DSPrototypeBoatActor.generated.h"
 
@@ -23,6 +24,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Boat")
     TObjectPtr<UDSTargetableComponent> TargetableComponent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Boat|Theme")
+    EDSHeroTheme BoatTheme = EDSHeroTheme::Reel;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DockShield|Boat")
     float CurrentWaterDepth = 0.0f;
@@ -87,6 +91,33 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Boat")
     FString GetBoatStateText() const;
 
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Boat|Theme")
+    void SetBoatTheme(EDSHeroTheme NewTheme);
+
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Boat|Theme")
+    void SetBoatThemeByName(FName ThemeName);
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    EDSHeroTheme GetBoatTheme() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FString GetBoatThemeLabel() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FString GetBoatEmblemText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FString GetBoatLoadoutText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FLinearColor GetBoatPrimaryColor() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FLinearColor GetBoatAccentColor() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Boat|Theme")
+    FLinearColor GetBoatPanelColor() const;
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Boat")
     float GetLastTowDistance() const;
 
@@ -123,4 +154,6 @@ private:
 
     void UpdateWaterZoneForces(float DeltaSeconds);
     float GetFloodDragMultiplier() const;
+    void ApplyBoatThemeVisuals();
+    void RefreshBoatThemeTags();
 };
