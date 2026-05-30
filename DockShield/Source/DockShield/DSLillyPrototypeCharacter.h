@@ -118,6 +118,7 @@ private:
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     bool CanLillyBind(AActor* Actor) const;
     bool IsInsideRootFocus(AActor* Actor, float MinDot) const;
+    float GetEffectiveBindRange() const;
     void ApplyPrototypeVisualStyle();
     void DrawRootDebug() const;
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;

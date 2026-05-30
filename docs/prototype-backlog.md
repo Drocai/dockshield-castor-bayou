@@ -95,6 +95,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] Grapple point
 - [ ] Enemy weak point
 - [ ] Extraction point
+- [x] Prototype extraction secured/failed counters
 - [x] Prototype water depth zone
 - [x] Prototype water current/flood pressure logic
 - [x] Prototype boat target
@@ -158,24 +159,24 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [ ] Decide Reel rigging route: MetaHuman, AccuRIG/Mixamo, or custom Blender rig
 - [ ] Add Blender manifest for next Reel source package
 - [ ] Add in-map screenshot/review camera for visual evidence
-- [ ] Weather state v0
+- [x] Weather state v0
 - [ ] Packaged Windows build
 - [ ] OBS capture
 - [ ] 60-90 second prototype video
 
-Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, Bayou Mutation enemy combat v0, and a Duct legendary near-catch debug encounter. It still needs real MetaHuman/custom character assets and production environment art before it matches the cinematic reference.
+Current note: the image pack is the private canon visual target for the intended movie/game look. The current Unreal build now has first-pass hero identity meshes plus generated bayou prototype materials, storm lighting/fog, toxic glow, wet dock planks, reed silhouettes, backdrop dressing, a private static Copilot3D Reel proxy for scale and lighting review, Bayou Mutation enemy combat v0, Duct legendary near-catch debug encounter, weather-driven target range pressure, objective/extraction HUD state, and named SFX/VFX hook IDs. It still needs real MetaHuman/custom character assets, production environment art, authored sound, and Niagara assets before it matches the cinematic reference.
 
 ## Phase 7 - Optimization And Upgrade Queue
 
 - [ ] Add automated screenshot/review camera for the Reel proxy area
-- [ ] Add weather state v0 that changes target visibility or interaction range
-- [ ] Add basic cast/latch/reel/rescue SFX event hooks
-- [ ] Add basic sonar pulse and root bind VFX placeholders
+- [x] Add weather state v0 that changes target visibility or interaction range
+- [x] Add basic cast/latch/reel/rescue SFX event hooks
+- [x] Add basic sonar pulse and root bind VFX placeholders
 - [x] Add one mutation enemy with shared target weak-point support
 - [x] Add mutation stagger/combo impact feedback hooks v0
 - [ ] Replace mutation feedback hooks with first-pass Niagara/SFX assets and camera feedback
-- [ ] Add extraction marker and success/fail counter
-- [ ] Add objective-state HUD card for the current mission step
+- [x] Add extraction marker and success/fail counter
+- [x] Add objective-state HUD card for the current mission step
 - [ ] Convert beta economy rewards into data-driven mission reward rows
 - [ ] Add achievement save/load only after a real profile/save slot exists
 - [ ] Wire settings panel to actual scalability/post-process settings after visual baseline is stable

@@ -24,6 +24,15 @@ enum class EDSPrototypeVisualQuality : uint8
     Cinematic UMETA(DisplayName = "Cinematic")
 };
 
+UENUM(BlueprintType)
+enum class EDSPrototypeWeatherState : uint8
+{
+    HeavyRain UMETA(DisplayName = "Heavy Rain"),
+    FogBank UMETA(DisplayName = "Fog Bank"),
+    ToxicRain UMETA(DisplayName = "Toxic Rain"),
+    FloodSurge UMETA(DisplayName = "Flood Surge")
+};
+
 UCLASS()
 class DOCKSHIELD_API ADSPrototypePlayerController : public APlayerController
 {
@@ -105,6 +114,51 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
     float GetCombatFeedbackFlash() const { return CombatFeedbackFlash; }
 
+    UFUNCTION(BlueprintCallable, Category = "DockShield|Weather")
+    void CycleWeatherState();
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Weather")
+    FString GetWeatherStateLabel() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Weather")
+    FString GetWeatherStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Weather")
+    float GetWeatherTargetRangeScale() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Weather")
+    float GetWeatherVisibilityScale() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Weather")
+    float GetWeatherHazardPressureScale() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetMissionObjectiveStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    float GetMissionObjectiveProgress() const { return MissionObjectiveProgress; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetExtractionStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    int32 GetExtractionSecuredCount() const { return ExtractionSecuredCount; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    int32 GetExtractionFailureCount() const { return ExtractionFailureCount; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetAudioCueStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    int32 GetAudioCueEventCount() const { return AudioCueEventCount; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetVisualCueStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    int32 GetVisualCueEventCount() const { return VisualCueEventCount; }
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Settings")
     FString GetSettingsStatusText() const;
 
@@ -168,6 +222,18 @@ private:
     TSet<FName> UnlockedAchievements;
     FString LastEconomyEvent = TEXT("No rewards yet");
     FString LastAchievementText = TEXT("None unlocked");
+    FString MissionObjectiveText = TEXT("OBJECTIVE: Rescue, contain, extract");
+    float MissionObjectiveProgress = 0.12f;
+    int32 ExtractionSecuredCount = 0;
+    int32 ExtractionFailureCount = 0;
+    EDSPrototypeWeatherState WeatherState = EDSPrototypeWeatherState::HeavyRain;
+    int32 WeatherCycleCount = 0;
+    FName LastAudioCueId = FName(TEXT("SFX_READY"));
+    float LastAudioCueIntensity = 0.0f;
+    int32 AudioCueEventCount = 0;
+    FName LastVisualCueId = FName(TEXT("VFX_READY"));
+    float LastVisualCueIntensity = 0.0f;
+    int32 VisualCueEventCount = 0;
     FString LastBossArenaStatus = TEXT("DEEP DOCK: NOT DEPLOYED");
     FString LastMutationStatus = TEXT("MUTATION: NOT DEPLOYED");
     bool bDeepDockDiscovered = false;
@@ -195,6 +261,7 @@ private:
     void HandleSwitchToLillyInput();
     void HandleCycleHeroInput();
     void HandleToggleSettingsInput();
+    void HandleCycleWeatherInput();
     void RegisterCurrentPawn();
     bool SwitchToRole(EDSPrototypeHeroRole TargetRole);
     FVector GetSpawnLocationForRole(EDSPrototypeHeroRole TargetRole) const;
@@ -202,6 +269,10 @@ private:
     void ShowSwitchMessage() const;
     void RefreshBossArenaAwareness();
     void RefreshMutationEncounterAwareness();
+    void AdvanceMissionFromAction(FName ActionName);
+    void RoutePrototypeCuesForAction(FName ActionName);
+    void SetAudioCue(FName CueId, float Intensity);
+    void SetVisualCue(FName CueId, float Intensity);
     void SetCombatFeedback(FName ActionName, const FString& FeedbackText, float FlashSeconds = 1.0f);
     FString GetAchievementLabel(FName AchievementId) const;
 };

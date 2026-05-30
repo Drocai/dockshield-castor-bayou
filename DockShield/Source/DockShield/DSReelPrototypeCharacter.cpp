@@ -924,12 +924,18 @@ UDSTargetableComponent* ADSReelPrototypeCharacter::GetTargetableComponent(AActor
 
 float ADSReelPrototypeCharacter::GetTargetInteractionRange(AActor* Actor) const
 {
+    float Range = 1200.0f;
     if (const UDSTargetableComponent* Targetable = GetTargetableComponent(Actor))
     {
-        return FMath::Max(Targetable->InteractionRange, 1.0f);
+        Range = Targetable->InteractionRange;
     }
 
-    return 1200.0f;
+    if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+    {
+        Range *= PrototypeController->GetWeatherTargetRangeScale();
+    }
+
+    return FMath::Max(Range, 1.0f);
 }
 
 void ADSReelPrototypeCharacter::UpdateTargetMetrics(AActor* Actor)
@@ -1159,6 +1165,10 @@ void ADSReelPrototypeCharacter::DetachReelLineInternal(const FString& ResultText
         RawLineTension = 1.0f;
         LineTension = 1.0f;
         ReelLineStateText = TEXT("SNAPPED");
+        if (ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+        {
+            PrototypeController->NotifyPrototypeAction(FName(TEXT("LineSnap")), 0, 0, 0);
+        }
         ShowDebugMessage(TEXT("Line snapped under tension"), FColor::Red);
         return;
     }

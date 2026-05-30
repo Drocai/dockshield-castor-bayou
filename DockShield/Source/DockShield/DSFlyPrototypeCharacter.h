@@ -118,6 +118,7 @@ private:
     UDSTargetableComponent* GetTargetableComponent(AActor* Actor) const;
     bool CanFlyMark(AActor* Actor) const;
     bool IsInsideSonarCone(AActor* Actor, float MinDot) const;
+    float GetEffectiveSonarRange() const;
     void ApplyPrototypeVisualStyle();
     void DrawSonarDebug() const;
     void ShowDebugMessage(const FString& Message, const FColor& Color) const;

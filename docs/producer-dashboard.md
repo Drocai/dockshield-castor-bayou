@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, Bayou Mutation enemy combat v0, Deep Dock boss arena foundation, Hook, Line & Sinker weak-point combo damage v0, and Duct legendary encounter v0.
+Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/boat prototype foundations, first Fly recon foundations, first Lilly bind foundations, three-hero switching v0, visual style pass v1, Reel static proxy review, beta economy/achievements/settings HUD v0, Bayou Mutation enemy combat v0, Deep Dock boss arena foundation, Hook, Line & Sinker weak-point combo damage v0, Duct legendary encounter v0, and weather/objective/audio-visual hook foundations.
 
 ## Current Repo State
 
@@ -41,6 +41,9 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `DSDuctLegendaryEncounterActor` implements Duct as an uncatchable legendary sighting with sighted, latched, near-catch, and slipped-away states.
 - The Reel can latch Duct and build near-catch progress with held `R`; Duct always escapes and leaves Trophy Case evidence instead of becoming inventory loot.
 - `validate_duct_legendary_smoke.py` verifies the Duct sighting, bait, latch, near-catch, tape trace, and uncatchable outcome headlessly.
+- Weather state v0 is implemented in `DSPrototypePlayerController`: press `K` to cycle heavy rain, fog bank, toxic rain, and flood surge. The current weather state changes prototype target acquisition ranges for The Reel, The Fly, and Lilly.
+- Objective/extraction HUD v0 is implemented: mission progress, secured extractions, failed line-snap pressure, and current weather status now render as prototype HUD cards.
+- Prototype SFX/VFX event hooks are implemented as named cue IDs for Reel casts, rescues, boat towing, Fly marks, Lilly binds, mutation/boss combos, Duct events, weather shifts, and line snaps. These are code/HUD hooks only until real sound/Niagara assets are authored.
 - Current playable graphics are styled prototype quality, not final canon Castor Bayou production art yet.
 
 ## Current Blockers
@@ -65,6 +68,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Bayou Mutation combat feel test | D RoC or Codex with editor session | Find `DS_MutationEnemy_BayouBruiser_Debug`, stagger it with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm the mutation HUD/combo reward/defeat state and combat feedback strip/pulse advance |
 | Beta economy/settings feel test | D RoC or Codex with editor session | Press `P` or `Esc`, adjust HUD scale with `[`/`]`, adjust gamma value with `-`/`=`, cycle quality with `O`, then complete one rescue/mark/bind to confirm HUD feedback |
 | Duct legendary encounter feel test | D RoC or Codex with editor session | Find `DS_Duct_Legendary_Sighting_Debug`, latch with LMB/E, hold `R`, confirm near-catch pressure builds, Duct slips away, and Trophy Case evidence shows `UNCAUGHT` |
+| Weather/objective hook feel test | D RoC or Codex with editor session | Press `K` to cycle weather, confirm range/weather HUD changes, then cast/rescue/snap a line to confirm objective, extraction, SFX, and VFX hook text updates |
 
 ## Current Agent Lane
 
@@ -89,7 +93,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Upgrade combat feedback from debug pulse/HUD hooks into first-pass Niagara/SFX assets for Reel exposure, Fly mark, Lilly bind, mutation stagger, Duct slip, and combo impact.
+4. Replace named SFX/VFX hooks with first-pass audio cues, Niagara placeholders, and camera feedback for Reel exposure, Fly mark, Lilly bind, mutation stagger, Duct slip, weather shifts, line snaps, and combo impact.
 5. Keep beta economy/settings/achievement work prototype-only until the first encounter loop has real win/fail conditions.
 6. Keep Duct uncatchable in this version; expand only sightings, bait, evidence, VFX/SFX, and rarity logic until lore changes.
 7. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.

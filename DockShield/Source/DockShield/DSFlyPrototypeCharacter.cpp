@@ -218,6 +218,7 @@ void ADSFlyPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Player
 int32 ADSFlyPrototypeCharacter::SonarPulse()
 {
     LastSonarHitCount = 0;
+    const float EffectiveSonarRange = GetEffectiveSonarRange();
 
     for (TActorIterator<AActor> It(GetWorld()); It; ++It)
     {
@@ -228,7 +229,7 @@ int32 ADSFlyPrototypeCharacter::SonarPulse()
         }
 
         const float Distance = FVector::Dist(GetActorLocation(), Actor->GetActorLocation());
-        if (Distance > SonarRange || !IsInsideSonarCone(Actor, -0.18f))
+        if (Distance > EffectiveSonarRange || !IsInsideSonarCone(Actor, -0.18f))
         {
             continue;
         }
@@ -262,7 +263,7 @@ bool ADSFlyPrototypeCharacter::ExecuteFlyMarkOnTarget(AActor* Target)
 
     const bool bWasMarked = Targetable->IsFlyMarked();
     const float Distance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
-    const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(SonarRange, 1.0f), 0.0f, 0.72f);
+    const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(GetEffectiveSonarRange(), 1.0f), 0.0f, 0.72f);
     ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target);
     const bool bMarkApplied = MutationEnemy ? MutationEnemy->ApplyFlyPressure(Strength) : Targetable->MarkForFly(Strength);
     if (!bMarkApplied)
@@ -325,7 +326,7 @@ bool ADSFlyPrototypeCharacter::IsAiming() const
 
 float ADSFlyPrototypeCharacter::GetSonarRange() const
 {
-    return SonarRange;
+    return GetEffectiveSonarRange();
 }
 
 float ADSFlyPrototypeCharacter::GetSonarConeDegrees() const
@@ -420,6 +421,7 @@ AActor* ADSFlyPrototypeCharacter::FindBestReconTarget() const
 {
     AActor* BestTarget = nullptr;
     float BestScore = TNumericLimits<float>::Max();
+    const float EffectiveSonarRange = GetEffectiveSonarRange();
 
     for (TActorIterator<AActor> It(GetWorld()); It; ++It)
     {
@@ -430,7 +432,7 @@ AActor* ADSFlyPrototypeCharacter::FindBestReconTarget() const
         }
 
         const float Distance = FVector::Dist(FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation(), Actor->GetActorLocation());
-        if (Distance > SonarRange || !IsInsideSonarCone(Actor, bIsAiming ? 0.34f : 0.12f))
+        if (Distance > EffectiveSonarRange || !IsInsideSonarCone(Actor, bIsAiming ? 0.34f : 0.12f))
         {
             continue;
         }
@@ -478,6 +480,17 @@ bool ADSFlyPrototypeCharacter::IsInsideSonarCone(AActor* Actor, float MinDot) co
     return FVector::DotProduct(ViewForward, ToActor) >= MinDot;
 }
 
+float ADSFlyPrototypeCharacter::GetEffectiveSonarRange() const
+{
+    float RangeScale = 1.0f;
+    if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+    {
+        RangeScale = FMath::Lerp(1.0f, PrototypeController->GetWeatherTargetRangeScale(), 0.45f);
+    }
+
+    return FMath::Max(SonarRange * RangeScale, 1.0f);
+}
+
 void ADSFlyPrototypeCharacter::ApplyPrototypeVisualStyle()
 {
     ApplyFlyPrototypeColor(FlyLeftWingMesh, this, FLinearColor(0.015f, 0.035f, 0.04f, 1.0f), 0.75f, 0.22f);
@@ -499,10 +512,11 @@ void ADSFlyPrototypeCharacter::DrawSonarDebug() const
     const FVector Left = (ForwardRotation + FRotator(0.0f, -SonarConeDegrees * 0.5f, 0.0f)).Vector();
     const FVector Right = (ForwardRotation + FRotator(0.0f, SonarConeDegrees * 0.5f, 0.0f)).Vector();
     const FColor SonarColor = bIsAiming ? FColor(0, 220, 160) : FColor::Cyan;
+    const float EffectiveSonarRange = GetEffectiveSonarRange();
 
-    DrawDebugLine(GetWorld(), Start, Start + (Forward * SonarRange), SonarColor, false, 0.0f, 0, 1.5f);
-    DrawDebugLine(GetWorld(), Start, Start + (Left * SonarRange * 0.78f), SonarColor, false, 0.0f, 0, 1.0f);
-    DrawDebugLine(GetWorld(), Start, Start + (Right * SonarRange * 0.78f), SonarColor, false, 0.0f, 0, 1.0f);
+    DrawDebugLine(GetWorld(), Start, Start + (Forward * EffectiveSonarRange), SonarColor, false, 0.0f, 0, 1.5f);
+    DrawDebugLine(GetWorld(), Start, Start + (Left * EffectiveSonarRange * 0.78f), SonarColor, false, 0.0f, 0, 1.0f);
+    DrawDebugLine(GetWorld(), Start, Start + (Right * EffectiveSonarRange * 0.78f), SonarColor, false, 0.0f, 0, 1.0f);
 }
 
 void ADSFlyPrototypeCharacter::ShowDebugMessage(const FString& Message, const FColor& Color) const

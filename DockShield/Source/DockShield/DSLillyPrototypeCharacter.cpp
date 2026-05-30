@@ -220,6 +220,7 @@ void ADSLillyPrototypeCharacter::SetupPlayerInputComponent(UInputComponent* Play
 int32 ADSLillyPrototypeCharacter::SwampPulse()
 {
     LastSwampPulseHitCount = 0;
+    const float EffectiveBindRange = GetEffectiveBindRange();
 
     for (TActorIterator<AActor> It(GetWorld()); It; ++It)
     {
@@ -230,7 +231,7 @@ int32 ADSLillyPrototypeCharacter::SwampPulse()
         }
 
         const float Distance = FVector::Dist(GetActorLocation(), Actor->GetActorLocation());
-        if (Distance > BindRange || !IsInsideRootFocus(Actor, -0.25f))
+        if (Distance > EffectiveBindRange || !IsInsideRootFocus(Actor, -0.25f))
         {
             continue;
         }
@@ -264,7 +265,7 @@ bool ADSLillyPrototypeCharacter::ExecuteLillyBindOnTarget(AActor* Target)
 
     const bool bWasBound = Targetable->IsLillyBound();
     const float Distance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
-    const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(BindRange, 1.0f), 0.0f, 0.68f);
+    const float Strength = 1.0f - FMath::Clamp(Distance / FMath::Max(GetEffectiveBindRange(), 1.0f), 0.0f, 0.68f);
     ADSMutationEnemyActor* MutationEnemy = Cast<ADSMutationEnemyActor>(Target);
     const bool bBindApplied = MutationEnemy ? MutationEnemy->ApplyLillyPressure(Strength) : Targetable->BindForLilly(Strength);
     if (!bBindApplied)
@@ -327,7 +328,7 @@ bool ADSLillyPrototypeCharacter::IsAiming() const
 
 float ADSLillyPrototypeCharacter::GetBindRange() const
 {
-    return BindRange;
+    return GetEffectiveBindRange();
 }
 
 float ADSLillyPrototypeCharacter::GetRootRadius() const
@@ -422,6 +423,7 @@ AActor* ADSLillyPrototypeCharacter::FindBestBindTarget() const
 {
     AActor* BestTarget = nullptr;
     float BestScore = TNumericLimits<float>::Max();
+    const float EffectiveBindRange = GetEffectiveBindRange();
 
     for (TActorIterator<AActor> It(GetWorld()); It; ++It)
     {
@@ -432,7 +434,7 @@ AActor* ADSLillyPrototypeCharacter::FindBestBindTarget() const
         }
 
         const float Distance = FVector::Dist(FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation(), Actor->GetActorLocation());
-        if (Distance > BindRange || !IsInsideRootFocus(Actor, bIsAiming ? 0.28f : 0.04f))
+        if (Distance > EffectiveBindRange || !IsInsideRootFocus(Actor, bIsAiming ? 0.28f : 0.04f))
         {
             continue;
         }
@@ -480,6 +482,17 @@ bool ADSLillyPrototypeCharacter::IsInsideRootFocus(AActor* Actor, float MinDot) 
     return FVector::DotProduct(ViewForward, ToActor) >= MinDot;
 }
 
+float ADSLillyPrototypeCharacter::GetEffectiveBindRange() const
+{
+    float RangeScale = 1.0f;
+    if (const ADSPrototypePlayerController* PrototypeController = Cast<ADSPrototypePlayerController>(Controller))
+    {
+        RangeScale = FMath::Lerp(1.0f, PrototypeController->GetWeatherTargetRangeScale(), 0.35f);
+    }
+
+    return FMath::Max(BindRange * RangeScale, 1.0f);
+}
+
 void ADSLillyPrototypeCharacter::ApplyPrototypeVisualStyle()
 {
     ApplyLillyPrototypeColor(LillyRootStaffMesh, this, FLinearColor(0.16f, 0.10f, 0.045f, 1.0f), 0.25f, 0.42f);
@@ -498,8 +511,9 @@ void ADSLillyPrototypeCharacter::DrawRootDebug() const
     const FVector Start = FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation() + FVector(0.0f, 0.0f, 64.0f);
     const FVector Forward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
     const FColor RootColor = bIsAiming ? FColor(120, 255, 70) : FColor(94, 170, 60);
+    const float EffectiveBindRange = GetEffectiveBindRange();
 
-    DrawDebugLine(GetWorld(), Start, Start + (Forward * BindRange), RootColor, false, 0.0f, 0, 1.5f);
+    DrawDebugLine(GetWorld(), Start, Start + (Forward * EffectiveBindRange), RootColor, false, 0.0f, 0, 1.5f);
     DrawDebugSphere(GetWorld(), GetActorLocation(), RootRadius, 24, FColor(64, 130, 46), false, 0.0f, 0, 1.0f);
 }
 
