@@ -16,6 +16,7 @@ class DOCKSHIELD_API ADSPrototypeBoatActor : public AActor
 public:
     ADSPrototypeBoatActor();
 
+    virtual void OnConstruction(const FTransform& Transform) override;
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
 

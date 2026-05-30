@@ -14,6 +14,7 @@ This is the current prototype source of truth for separating the three selectabl
 
 - Switching heroes must change the HUD color language immediately.
 - Boat debug identity must expose hero label, emblem text, and loadout text for validation.
+- `M_Test_Targeting` should contain a themed boat/gadget lineup for quick identity review: Reel rescue boat, Fly blackwater skiff, Lilly swamp skiff.
 - Themed boats must keep the shared water/boarding/towing mechanics unchanged.
 - Gadget names should read as character-specific even before final meshes are built.
 

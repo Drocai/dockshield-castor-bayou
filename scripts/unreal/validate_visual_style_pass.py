@@ -38,7 +38,10 @@ EXPECTED_EXISTING_ASSIGNMENTS = {
     "Target_GrapplePull_Debug": "M_DS_GrappleAnchor_Proto",
     "Target_CivilianRescue_Debug": "M_DS_CivilianMarker_Proto",
     "Hazard_ToxicWater_Debug": "M_DS_ToxicAlgaeWater_Proto",
-    "DS_Boat_Prototype_Tow": "M_DS_RescueBoat_Proto",
+}
+
+EXPECTED_COMPATIBLE_ASSIGNMENTS = {
+    "DS_Boat_Prototype_Tow": ["M_DS_RescueBoat_Proto", "M_DS_ReelTheme_Proto"],
 }
 
 LEVEL_EDITOR = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
@@ -87,6 +90,14 @@ def main():
         actual_material = material_name_for_actor(actor)
         if expected_material not in actual_material:
             fail(f"{label} expected material {expected_material}, got {actual_material}")
+
+    for label, expected_materials in EXPECTED_COMPATIBLE_ASSIGNMENTS.items():
+        actor = actor_by_label(label)
+        if actor is None:
+            fail(f"missing actor {label}")
+        actual_material = material_name_for_actor(actor)
+        if not any(expected_material in actual_material for expected_material in expected_materials):
+            fail(f"{label} expected one of {expected_materials}, got {actual_material}")
 
     water_surface = actor_by_label("DS_Visual_Water_Surface")
     water_material = material_name_for_actor(water_surface)

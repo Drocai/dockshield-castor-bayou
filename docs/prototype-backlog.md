@@ -140,6 +140,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Reel/Fly/Lilly prototype visual identity kit v0
 - [x] Hero-specific HUD color language v0
 - [x] Character-themed boat identity/emblem/loadout hooks v0
+- [x] Place Reel/Fly/Lilly themed boat actors and gadget markers in `M_Test_Targeting`
 - [x] Import best Reel GLB as private static scale/lighting proxy
 - [x] Add Reel proxy source checksum/size validation
 - [x] Add current 20-point prototype audit

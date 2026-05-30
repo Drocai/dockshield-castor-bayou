@@ -33,6 +33,13 @@ ADSPrototypeBoatActor::ADSPrototypeBoatActor()
     RefreshBoatThemeTags();
 }
 
+void ADSPrototypeBoatActor::OnConstruction(const FTransform& Transform)
+{
+    Super::OnConstruction(Transform);
+    RefreshBoatThemeTags();
+    ApplyBoatThemeVisuals();
+}
+
 void ADSPrototypeBoatActor::BeginPlay()
 {
     Super::BeginPlay();
@@ -430,14 +437,19 @@ void ADSPrototypeBoatActor::ApplyBoatThemeVisuals()
 
     if (UMaterialInterface* BaseMaterial = BoatMesh->GetMaterial(0))
     {
-        UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+        UMaterialInstanceDynamic* DynamicMaterial = Cast<UMaterialInstanceDynamic>(BaseMaterial);
+        if (!DynamicMaterial)
+        {
+            DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+            BoatMesh->SetMaterial(0, DynamicMaterial);
+        }
+
         DynamicMaterial->SetVectorParameterValue(TEXT("Color"), GetBoatPrimaryColor());
         DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), GetBoatPrimaryColor());
         DynamicMaterial->SetVectorParameterValue(TEXT("Tint"), GetBoatPrimaryColor());
         DynamicMaterial->SetVectorParameterValue(TEXT("AccentColor"), GetBoatAccentColor());
         DynamicMaterial->SetScalarParameterValue(TEXT("Metallic"), BoatTheme == EDSHeroTheme::Reel ? 0.55f : 0.35f);
         DynamicMaterial->SetScalarParameterValue(TEXT("Roughness"), BoatTheme == EDSHeroTheme::Fly ? 0.28f : 0.42f);
-        BoatMesh->SetMaterial(0, DynamicMaterial);
     }
 }
 

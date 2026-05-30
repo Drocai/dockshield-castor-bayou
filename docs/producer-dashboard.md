@@ -25,6 +25,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `DSPrototypePlayerController` supports `1` for The Reel, `2` for The Fly, `3` for Lilly Loch, and `Tab` to cycle through all three in normal play.
 - The HUD now has a distinct hero color language: The Reel uses red/blue/gold rescue energy, The Fly uses black/teal stealth sonar, and Lilly uses pink/lime/mud-camo swamp colors.
 - `DSPrototypeBoatActor` now exposes hero-specific theme, emblem, loadout, primary color, accent color, and panel color accessors so Reel/Fly/Lilly boats can separate visually while sharing boat physics.
+- `M_Test_Targeting` now contains themed Reel/Fly/Lilly boat actors plus first-pass gadget markers for Reel gauntlet, Fly sonar probe, and Lilly vine reel identity review.
 - The Reel, The Fly, and Lilly Loch have first-pass in-engine prototype visual kits so they no longer read as identical mannequins.
 - `M_Test_Targeting` now has generated prototype bayou materials, wet dock planks, reed silhouettes, toxic water/glow planes, storm moon key light, amber rescue light, red neon sign light, fog, and a storm-grade post-process marker.
 - User-provided Copilot3D character mesh candidates have been inspected in Blender and documented at `docs/reference/candidate-3d-assets/copilot3d-2026-05-27/`.
