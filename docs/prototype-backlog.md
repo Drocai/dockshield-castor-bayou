@@ -150,6 +150,7 @@ Current note: The Reel continuous line v0 is implemented in C++, builds, and has
 - [x] Add Duct Trophy Case HUD evidence v0
 - [x] Add Duct map pass and smoke validation
 - [x] Add Bayou Mutation enemy combat actor, map pass, HUD status, and smoke validation
+- [x] Add mutation combat feedback HUD/light/debug pulse hooks v0
 - [ ] Review static Reel proxy in editor at gameplay camera distance
 - [ ] Review Deep Dock boss arena lighting/readability in editor at gameplay camera distance
 - [ ] Generate or source riggable The Reel A-pose body
@@ -171,7 +172,8 @@ Current note: the image pack is the private canon visual target for the intended
 - [ ] Add basic cast/latch/reel/rescue SFX event hooks
 - [ ] Add basic sonar pulse and root bind VFX placeholders
 - [x] Add one mutation enemy with shared target weak-point support
-- [ ] Add mutation stagger/combo impact VFX/SFX and camera feedback
+- [x] Add mutation stagger/combo impact feedback hooks v0
+- [ ] Replace mutation feedback hooks with first-pass Niagara/SFX assets and camera feedback
 - [ ] Add extraction marker and success/fail counter
 - [ ] Add objective-state HUD card for the current mission step
 - [ ] Convert beta economy rewards into data-driven mission reward rows

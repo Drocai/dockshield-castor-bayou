@@ -99,6 +99,12 @@ public:
     UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
     FString GetDuctStatusText() const;
 
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    FString GetCombatFeedbackStatusText() const;
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Meta")
+    float GetCombatFeedbackFlash() const { return CombatFeedbackFlash; }
+
     UFUNCTION(BlueprintPure, Category = "DockShield|Settings")
     FString GetSettingsStatusText() const;
 
@@ -173,6 +179,9 @@ private:
     int32 DuctSightings = 0;
     int32 DuctNearCatchCount = 0;
     int32 DuctTapeFragments = 0;
+    FString LastCombatFeedbackText = TEXT("COMBAT FEEDBACK: READY");
+    float CombatFeedbackFlash = 0.0f;
+    int32 CombatFeedbackEventCount = 0;
 
     bool bSettingsPanelOpen = false;
     float HudScale = 1.0f;
@@ -193,5 +202,6 @@ private:
     void ShowSwitchMessage() const;
     void RefreshBossArenaAwareness();
     void RefreshMutationEncounterAwareness();
+    void SetCombatFeedback(FName ActionName, const FString& FeedbackText, float FlashSeconds = 1.0f);
     FString GetAchievementLabel(FName AchievementId) const;
 };

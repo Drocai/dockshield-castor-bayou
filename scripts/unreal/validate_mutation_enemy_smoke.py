@@ -70,6 +70,10 @@ def validate_mutation_cdo():
         "get_fly_pressure_count",
         "get_lilly_pressure_count",
         "get_combo_impact_count",
+        "get_last_feedback_event",
+        "get_combat_feedback_text",
+        "get_feedback_pulse_remaining",
+        "get_feedback_pulse_count",
         "is_defeated",
     ]:
         require_method(cdo, method_name)
@@ -113,11 +117,17 @@ def validate_mutation_map_actor():
         fail("Reel impact count did not increment")
     if mutation.get_health() >= start_health:
         fail("Reel impact did not reduce health")
+    if str(mutation.get_last_feedback_event()) != "ReelStagger":
+        fail(f"Reel impact did not trigger ReelStagger feedback: {mutation.get_last_feedback_event()}")
+    if mutation.get_feedback_pulse_remaining() <= 0.0:
+        fail("Reel impact did not arm a feedback pulse")
 
     if not mutation.apply_fly_pressure(1.0):
         fail("apply_fly_pressure returned false")
     if mutation.get_fly_pressure_count() != 1:
         fail("Fly pressure count did not increment")
+    if str(mutation.get_last_feedback_event()) != "FlyMark":
+        fail(f"Fly pressure did not trigger FlyMark feedback: {mutation.get_last_feedback_event()}")
 
     if not mutation.apply_lilly_pressure(1.0):
         fail("apply_lilly_pressure returned false")
@@ -125,6 +135,10 @@ def validate_mutation_map_actor():
         fail("Lilly pressure count did not increment")
     if mutation.get_combo_impact_count() < 1:
         fail("Hook, Line & Sinker combo did not trigger after all three hero actions")
+    if str(mutation.get_last_feedback_event()) != "HookLineSinkerImpact":
+        fail(f"hero combo did not trigger combo feedback: {mutation.get_last_feedback_event()}")
+    if "HOOK" not in str(mutation.get_combat_feedback_text()):
+        fail(f"combat feedback text missing combo language: {mutation.get_combat_feedback_text()}")
 
     for _ in range(3):
         if mutation.is_defeated():
@@ -135,6 +149,8 @@ def validate_mutation_map_actor():
 
     if not mutation.is_defeated():
         fail(f"mutation should be defeated after repeated hero combo cycles: {mutation.get_mutation_status_text()}")
+    if str(mutation.get_last_feedback_event()) != "MutationDefeated":
+        fail(f"defeat did not trigger MutationDefeated feedback: {mutation.get_last_feedback_event()}")
 
     status = str(mutation.get_mutation_status_text())
     if "DEFEATED" not in status or "COMBO" not in status:

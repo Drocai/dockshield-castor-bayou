@@ -338,7 +338,9 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     FString BossStatus = PrototypeController->GetBossArenaStatusText();
     FString MutationStatus = PrototypeController->GetMutationStatusText();
     FString DuctStatus = PrototypeController->GetDuctStatusText();
+    FString CombatFeedback = PrototypeController->GetCombatFeedbackStatusText();
     FString Settings = PrototypeController->GetSettingsStatusText();
+    const float FeedbackFlash = PrototypeController->GetCombatFeedbackFlash();
 
     if (Economy.Len() > 54)
     {
@@ -360,6 +362,10 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     {
         DuctStatus = DuctStatus.Left(45) + TEXT("...");
     }
+    if (CombatFeedback.Len() > 58)
+    {
+        CombatFeedback = CombatFeedback.Left(55) + TEXT("...");
+    }
     if (Settings.Len() > 58)
     {
         Settings = Settings.Left(55) + TEXT("...");
@@ -378,6 +384,16 @@ void ADSPrototypeHUD::DrawMetaHUD(const ADSPrototypePlayerController* PrototypeC
     DrawPanel(CenterX - 278.0f, 96.0f, 556.0f, 34.0f, PanelColor);
     DrawText(TEXT("MUTATION"), WarningColor, CenterX - 258.0f, 106.0f, nullptr, 0.58f * Scale);
     DrawText(MutationStatus, TextColor, CenterX - 148.0f, 106.0f, nullptr, 0.46f * Scale);
+
+    const FLinearColor FeedbackPanelColor = FeedbackFlash > 0.0f
+        ? FLinearColor(0.12f, 0.045f, 0.0f, 0.72f)
+        : PanelColor;
+    const FLinearColor FeedbackColor = FeedbackFlash > 0.0f
+        ? FLinearColor(1.0f, 0.62f, 0.18f, 1.0f)
+        : FLinearColor(0.86f, 0.86f, 0.70f, 1.0f);
+    DrawPanel(CenterX - 240.0f, 136.0f, 480.0f, 38.0f, FeedbackPanelColor);
+    DrawText(TEXT("COMBAT FEEDBACK"), FeedbackColor, CenterX - 222.0f, 146.0f, nullptr, 0.54f * Scale);
+    DrawText(CombatFeedback, TextColor, CenterX - 72.0f, 146.0f, nullptr, 0.44f * Scale);
 
     DrawPanel(ScreenWidth - 384.0f, 256.0f, 356.0f, 54.0f, PanelColor);
     DrawText(Settings, FLinearColor(0.88f, 0.88f, 0.78f, 1.0f), ScreenWidth - 366.0f, 272.0f, nullptr, 0.54f * Scale);

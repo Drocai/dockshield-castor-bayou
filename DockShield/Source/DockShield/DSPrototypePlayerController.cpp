@@ -43,6 +43,8 @@ void ADSPrototypePlayerController::Tick(float DeltaSeconds)
         MutationScanAccumulator = 0.0f;
         RefreshMutationEncounterAwareness();
     }
+
+    CombatFeedbackFlash = FMath::Max(0.0f, CombatFeedbackFlash - DeltaSeconds);
 }
 
 void ADSPrototypePlayerController::SetupInputComponent()
@@ -177,61 +179,75 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
 
     if (ActionName == FName(TEXT("ReelCast")))
     {
+        SetCombatFeedback(ActionName, TEXT("REEL CAST: line out"));
         UnlockAchievement(FName(TEXT("FIRST_CAST")));
     }
     else if (ActionName == FName(TEXT("CivilianRescue")))
     {
+        SetCombatFeedback(ActionName, TEXT("RESCUE REEL: civilian extracted"), 1.25f);
         UnlockAchievement(FName(TEXT("FIRST_RESCUE")));
     }
     else if (ActionName == FName(TEXT("BoatTow")))
     {
+        SetCombatFeedback(ActionName, TEXT("BOAT TOW: hull line attached"));
         UnlockAchievement(FName(TEXT("FIRST_BOAT_TOW")));
     }
     else if (ActionName == FName(TEXT("GrapplePull")))
     {
+        SetCombatFeedback(ActionName, TEXT("GRAPPLE PULL: anchor momentum"));
         UnlockAchievement(FName(TEXT("FIRST_GRAPPLE_PULL")));
     }
     else if (ActionName == FName(TEXT("FlyMark")))
     {
+        SetCombatFeedback(ActionName, TEXT("FLY MARK: sonar outline locked"));
         UnlockAchievement(FName(TEXT("FIRST_FLY_MARK")));
     }
     else if (ActionName == FName(TEXT("LillyBind")))
     {
+        SetCombatFeedback(ActionName, TEXT("LILLY BIND: root snare locked"));
         UnlockAchievement(FName(TEXT("FIRST_LILLY_BIND")));
     }
     else if (ActionName == FName(TEXT("BossWeakPointExposed")))
     {
+        SetCombatFeedback(ActionName, TEXT("WEAK POINT EXPOSED: Reel window open"), 1.2f);
         UnlockAchievement(FName(TEXT("FIRST_BOSS_EXPOSE")));
     }
     else if (ActionName == FName(TEXT("HookLineSinker")))
     {
+        SetCombatFeedback(ActionName, TEXT("HOOK, LINE & SINKER: combo impact"), 1.35f);
         UnlockAchievement(FName(TEXT("FIRST_HOOK_LINE_SINKER")));
     }
     else if (ActionName == FName(TEXT("BossDefeated")))
     {
+        SetCombatFeedback(ActionName, TEXT("DEEP DOCK THREAT DOWN: extract evidence"), 1.5f);
         UnlockAchievement(FName(TEXT("BOSS_DEFEATED")));
     }
     else if (ActionName == FName(TEXT("MutationStagger")))
     {
+        SetCombatFeedback(ActionName, TEXT("REEL STAGGER: mutation shock line"));
         UnlockAchievement(FName(TEXT("FIRST_MUTATION_STAGGER")));
     }
     else if (ActionName == FName(TEXT("MutationCombo")))
     {
+        SetCombatFeedback(ActionName, TEXT("MUTATION COMBO: Hook, Line & Sinker hit"), 1.35f);
         UnlockAchievement(FName(TEXT("FIRST_MUTATION_COMBO")));
     }
     else if (ActionName == FName(TEXT("MutationDefeated")))
     {
+        SetCombatFeedback(ActionName, TEXT("MUTATION DEFEATED: samples secured"), 1.5f);
         UnlockAchievement(FName(TEXT("FIRST_MUTATION_DEFEATED")));
     }
     else if (ActionName == FName(TEXT("DuctSighting")))
     {
         ++DuctSightings;
+        SetCombatFeedback(ActionName, TEXT("DUCT SIGHTING: golden wake ping"), 1.2f);
         UnlockAchievement(FName(TEXT("DUCT_FIRST_SIGHTING")));
     }
     else if (ActionName == FName(TEXT("DuctNearCatch")))
     {
         ++DuctNearCatchCount;
         ++DuctTapeFragments;
+        SetCombatFeedback(ActionName, TEXT("DUCT NEAR-CATCH: tension spike, still uncatchable"), 1.35f);
         UnlockAchievement(FName(TEXT("DUCT_ALMOST_HAD_HIM")));
         if (DuctTapeFragments >= 3)
         {
@@ -241,6 +257,7 @@ void ADSPrototypePlayerController::NotifyPrototypeAction(FName ActionName, int32
     else if (ActionName == FName(TEXT("DuctTrace")))
     {
         ++DuctTapeFragments;
+        SetCombatFeedback(ActionName, TEXT("DUCT TRACE: tape fragment logged"));
         UnlockAchievement(FName(TEXT("DUCT_TAPE_EVIDENCE")));
     }
 }
@@ -293,6 +310,14 @@ FString ADSPrototypePlayerController::GetDuctStatusText() const
         DuctSightings,
         DuctNearCatchCount,
         DuctTapeFragments);
+}
+
+FString ADSPrototypePlayerController::GetCombatFeedbackStatusText() const
+{
+    return FString::Printf(
+        TEXT("%s | EVENTS %d"),
+        *LastCombatFeedbackText,
+        CombatFeedbackEventCount);
 }
 
 FString ADSPrototypePlayerController::GetSettingsStatusText() const
@@ -579,6 +604,23 @@ void ADSPrototypePlayerController::RefreshMutationEncounterAwareness()
     }
 
     LastMutationStatus = TEXT("MUTATION: NOT DEPLOYED");
+}
+
+void ADSPrototypePlayerController::SetCombatFeedback(FName ActionName, const FString& FeedbackText, float FlashSeconds)
+{
+    if (ActionName.IsNone())
+    {
+        return;
+    }
+
+    LastCombatFeedbackText = FeedbackText;
+    CombatFeedbackFlash = FMath::Max(0.1f, FlashSeconds);
+    ++CombatFeedbackEventCount;
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(82034, FlashSeconds, FColor::Orange, LastCombatFeedbackText);
+    }
 }
 
 FString ADSPrototypePlayerController::GetAchievementLabel(FName AchievementId) const

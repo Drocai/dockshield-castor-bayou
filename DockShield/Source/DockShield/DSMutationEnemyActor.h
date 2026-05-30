@@ -4,6 +4,9 @@
 #include "DSTargetActor.h"
 #include "DSMutationEnemyActor.generated.h"
 
+class UPointLightComponent;
+class UStaticMeshComponent;
+
 UENUM(BlueprintType)
 enum class EDSMutationThreatState : uint8
 {
@@ -23,6 +26,7 @@ public:
     ADSMutationEnemyActor();
 
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
 
     UFUNCTION(BlueprintCallable, Category = "DockShield|Mutation")
     bool ApplyReelImpact(float Strength = 1.0f);
@@ -70,9 +74,27 @@ public:
     int32 GetComboImpactCount() const { return ComboImpactCount; }
 
     UFUNCTION(BlueprintPure, Category = "DockShield|Mutation")
+    FName GetLastFeedbackEvent() const { return LastFeedbackEvent; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mutation")
+    FString GetCombatFeedbackText() const { return LastFeedbackText; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mutation")
+    float GetFeedbackPulseRemaining() const { return FeedbackPulseRemaining; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mutation")
+    int32 GetFeedbackPulseCount() const { return FeedbackPulseCount; }
+
+    UFUNCTION(BlueprintPure, Category = "DockShield|Mutation")
     bool IsDefeated() const { return ThreatState == EDSMutationThreatState::Defeated; }
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Mutation Feedback")
+    TObjectPtr<UPointLightComponent> FeedbackLight;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DockShield|Mutation Feedback")
+    TObjectPtr<UStaticMeshComponent> FeedbackRingMesh;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DockShield|Mutation")
     FString MutationName;
 
@@ -113,6 +135,28 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation")
     FString LastCombatText = TEXT("NO CONTACT");
 
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    FName LastFeedbackEvent = FName(TEXT("Ready"));
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    FString LastFeedbackText = TEXT("COMBAT FEEDBACK READY");
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    FLinearColor LastFeedbackColor = FLinearColor::Black;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    float FeedbackPulseRemaining = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    float FeedbackPulseDuration = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    float FeedbackPulseIntensity = 0.0f;
+
+    UPROPERTY(VisibleAnywhere, Category = "DockShield|Mutation Feedback")
+    int32 FeedbackPulseCount = 0;
+
     void ApplyDamage(float DamageAmount, const FString& SourceText);
     int32 GetCurrentComboSignature() const;
+    void TriggerCombatFeedback(FName EventName, const FString& FeedbackText, const FLinearColor& FeedbackColor, float Intensity, float Duration);
 };

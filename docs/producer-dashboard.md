@@ -34,6 +34,7 @@ Phase 2 - Shared targeting v0, continuous Reel feedback, water pressure, water/b
 - `DSMutationEnemyActor` implements the first Bayou Mutation enemy: The Reel can stagger/pull it, The Fly can mark it, Lilly can bind it, and one shared Hook, Line & Sinker combo applies damage through the same target state used by boss weak points.
 - `apply_mutation_enemy_pass.py` places `DS_MutationEnemy_BayouBruiser_Debug` plus toxic glow, warning light, core glow, and wake markers in `M_Test_Targeting`.
 - `validate_mutation_enemy_smoke.py` verifies Reel impact, Fly pressure, Lilly pressure, combo damage, and defeat headlessly.
+- Mutation combat feedback v0 is implemented: Reel stagger, Fly mark, Lilly bind, Hook, Line & Sinker impact, and mutation defeat now drive a prototype pulse/light/debug text hook plus a HUD combat feedback strip.
 - Deep Dock boss arena state actor and commandlet map pass are implemented for `M_Test_Targeting`; the pass places a toxic core, weak-point targets, warning pylons, service decks, and boss lighting.
 - Deep Dock weak points now track Reel exposure, Fly marks, and Lilly binds. When all three are present on one weak point, `DSDeepDockBossArenaActor` applies Hook, Line & Sinker combo damage and advances boss phase from dormant to exposed, enraged, then defeated.
 - `validate_boss_combo_smoke.py` verifies all three weak-point combos and boss defeat headlessly.
@@ -61,7 +62,7 @@ No repo or toolchain blocker is currently stopping the next implementation pass.
 | Riggable Reel source gap | Codex / art pipeline | Generate or source the next A-pose/T-pose Reel body and separate gear props; inspect in Blender before any playable replacement work |
 | Deep Dock boss arena feel test | D RoC or Codex with editor session | Open `M_Test_Targeting`, approach the Deep Dock area, confirm boss core/weak-point targets read clearly under toxic green and warning red lighting |
 | Deep Dock boss combo feel test | D RoC or Codex with editor session | Expose a Deep Dock weak point with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm HUD boss status advances and economy rewards trigger |
-| Bayou Mutation combat feel test | D RoC or Codex with editor session | Find `DS_MutationEnemy_BayouBruiser_Debug`, stagger it with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm the mutation HUD/combo reward/defeat state advances |
+| Bayou Mutation combat feel test | D RoC or Codex with editor session | Find `DS_MutationEnemy_BayouBruiser_Debug`, stagger it with The Reel, switch to The Fly and mark it, switch to Lilly and bind it, then confirm the mutation HUD/combo reward/defeat state and combat feedback strip/pulse advance |
 | Beta economy/settings feel test | D RoC or Codex with editor session | Press `P` or `Esc`, adjust HUD scale with `[`/`]`, adjust gamma value with `-`/`=`, cycle quality with `O`, then complete one rescue/mark/bind to confirm HUD feedback |
 | Duct legendary encounter feel test | D RoC or Codex with editor session | Find `DS_Duct_Legendary_Sighting_Debug`, latch with LMB/E, hold `R`, confirm near-catch pressure builds, Duct slips away, and Trophy Case evidence shows `UNCAUGHT` |
 
@@ -88,7 +89,7 @@ Codex should only create or modify Unreal-generated files through Unreal Editor,
 1. Keep scope locked to the first vertical slice.
 2. Keep The Reel continuous line scope to one grapple target, one civilian target, one invalid hazard target, and one prototype boat target.
 3. Validate prototype runtime wiring and Reel action behavior with `scripts\unreal\validate-prototype.ps1`.
-4. Add readable in-world VFX/SFX hooks for Reel exposure, Fly mark, Lilly bind, mutation stagger, and combo impact.
+4. Upgrade combat feedback from debug pulse/HUD hooks into first-pass Niagara/SFX assets for Reel exposure, Fly mark, Lilly bind, mutation stagger, Duct slip, and combo impact.
 5. Keep beta economy/settings/achievement work prototype-only until the first encounter loop has real win/fail conditions.
 6. Keep Duct uncatchable in this version; expand only sightings, bait, evidence, VFX/SFX, and rarity logic until lore changes.
 7. Next visual pass should generate or source a riggable Reel A-pose source from the prompt pack; the current in-engine Reel GLB is static proxy evidence only.

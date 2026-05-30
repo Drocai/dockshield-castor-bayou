@@ -38,6 +38,8 @@ def validate_player_controller_meta():
         "get_boss_arena_status_text",
         "get_mutation_status_text",
         "get_duct_status_text",
+        "get_combat_feedback_status_text",
+        "get_combat_feedback_flash",
     ]
     for method_name in required_methods:
         require_method(cdo, method_name)
@@ -64,6 +66,10 @@ def validate_player_controller_meta():
     mutation_text = str(cdo.get_mutation_status_text())
     if "MUTATION" not in mutation_text:
         fail(f"mutation status text missing expected fragment: {mutation_text}")
+
+    combat_feedback_text = str(cdo.get_combat_feedback_status_text())
+    if "COMBAT FEEDBACK" not in combat_feedback_text:
+        fail(f"combat feedback status text missing expected fragment: {combat_feedback_text}")
 
 
 def validate_boss_arena_actor():
